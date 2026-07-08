@@ -731,15 +731,6 @@ async function readAttendance(file) {
   
   const nightMatches = text.match(/(?:22|23|00|01|02|03):(?:\d+)/g) || [];
   state.extractedData.nightShifts = nightMatches;
-  
-  if(state.extractedData.workDates.length > 0) {
-    const workPeriods = state.extractedData.workDates.map(d => isHoliday(d));
-    const schoolDays = workPeriods.filter(p => p === 'school').length;
-    const holidayDays = workPeriods.filter(p => p !== 'school').length;
-    
-    state.extractedData.actualPeriod = schoolDays > holidayDays ? 'school' : 'holiday';
-    state.extractedData.workPeriodBreakdown = { schoolDays, holidayDays };
-  }
 }
 
 async function readContract(file) {
