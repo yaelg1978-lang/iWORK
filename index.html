@@ -469,16 +469,6 @@ function isDateInRange(dateStr, start, end) {
   return date >= startDate && date <= endDate;
 }
 
-function isHoliday(dateStr) {
-  for(const year in SCHOOL_CALENDAR) {
-    const cal = SCHOOL_CALENDAR[year];
-    if(isDateInRange(dateStr, cal.summer.start, cal.summer.end)) return 'summer';
-    if(isDateInRange(dateStr, cal.winter.start, cal.winter.end)) return 'winter';
-    if(isDateInRange(dateStr, cal.passover.start, cal.passover.end)) return 'passover';
-  }
-  return 'school';
-}
-
 const state = {
   age: null,
   hasattendance: null,
