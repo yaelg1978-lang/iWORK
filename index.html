@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>MyPay - בדיקת זכויות עובד צעיר</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script>if(window['pdfjsLib']){pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';}</script>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --green: #58CC02;
+  --blue: #1CB0F6;
+  --white: #FFFFFF;
+  --light-gray: #F5F5F5;
+  --dark-text: #222222;
+  --mid-text: #666666;
+  --light-text: #999999;
+  --red: #FF4757;
+  --orange: #FFB020;
+}
+
+html, body { font-family: 'Rubik', sans-serif; background: var(--white); color: var(--dark-text); height: 100%; }
+body { min-height: 100vh; overflow-x: hidden; }
+
+#boot {
+  position: fixed; inset: 0; background: var(--white); z-index: 999;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+}
+.boot-logo {
+  font-size: 48px; font-weight: 900; color: var(--green);
+  text-shadow: 0 0 20px rgba(88, 204, 2, 0.2);
+}
+.boot-msg {
+  font-size: 14px; color: var(--green); text-align: center; font-weight: 600; margin-top: 8px;
+}
+.boot-bar {
+  width: 160px; height: 4px; background: var(--light-gray); border-radius: 2px; overflow: hidden;
+}
+.boot-fill {
+  height: 100%; width: 0; background: linear-gradient(90deg, var(--green), var(--blue)); animation: fill 1.2s ease forwards;
+}
+@keyframes fill { to { width: 100%; } }
+
+#app { display: none; padding-bottom: 140px; }
+.screen { display: none; padding: 16px; max-width: 600px; margin: 0 auto; }
+.screen.active { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.topbar {
+  display: flex; justify-content: space-between; align-items: center; padding: 12px 16px;
+  background: var(--white); border-bottom: 1px solid var(--light-gray);
+}
+.logo { font-size: 16px; font-weight: 900; color: var(--green); }
+
+.question {
+  background: var(--light-gray); padding: 20px; border-radius: 12px; margin: 16px 0;
+}
+.question-title {
+  font-size: 14px; font-weight: 700; color: var(--dark-text); margin-bottom: 12px;
+}
+.options {
+  display: flex; flex-direction: column; gap: 8px;
+}
+.option {
+  padding: 12px; background: var(--white); border: 2px solid var(--light-gray);
+  border-radius: 8px; cursor: pointer; transition: all 0.2s;
+  font-size: 14px; color: var(--dark-text); text-align: center;
+}
+.option:hover { border-color: var(--green); background: rgba(88, 204, 2, 0.05); }
+.option.selected { border-color: var(--green); background: rgba(88, 204, 2, 0.15); color: var(--green); font-weight: 700; }
+
+.btn {
+  padding: 14px 24px; background: var(--green); color: white; border: none;
+  border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer;
+  width: 100%; margin: 16px 0; transition: all 0.2s;
+}
+.btn:active { transform: scale(0.97); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-blue { background: var(--blue); }
+.btn-red { background: var(--red); }
+
+.upload-zone {
+  border: 2px dashed var(--green); border-radius: 12px; padding: 32px;
+  text-align: center; background: rgba(88, 204, 2, 0.05); cursor: pointer;
+  transition: all 0.2s;
+}
+.upload-zone:hover { border-color: var(--blue); background: rgba(28, 176, 246, 0.05); }
+.upload-icon { font-size: 48px; margin-bottom: 12px; }
+.upload-text { font-size: 14px; color: var(--mid-text); margin-bottom: 8px; }
+.file-list {
+  margin: 16px 0; padding: 12px; background: var(--light-gray); border-radius: 8px;
+}
+.file-item {
+  padding: 8px; background: var(--white); border-radius: 6px; margin: 4px 0;
+  font-size: 12px; color: var(--dark-text);
+}
+
+.result-header {
+  font-size: 24px; font-weight: 900; color: var(--dark-text); text-align: center; margin: 24px 0;
+}
+.result-boxes {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin: 24px 0;
+}
+.result-box {
+  padding: 24px; border-radius: 12px; text-align: center; cursor: pointer;
+  transition: all 0.2s; color: white;
+}
+.box-red { background: linear-gradient(135deg, var(--red), #FF6B7A); }
+.box-orange { background: linear-gradient(135deg, var(--orange), #FFC107); }
+.box-blue { background: linear-gradient(135deg, var(--blue), #3EC6FF); }
+.result-box:active { transform: scale(0.95); }
+.box-number {
+  font-size: 36px; font-weight: 900; margin-bottom: 8px;
+}
+.box-label {
+  font-size: 12px; font-weight: 700; opacity: 0.9;
+}
+.details {
+  display: none; background: var(--light-gray); padding: 16px; border-radius: 8px; margin: 16px 0;
+}
+.details.open { display: block; }
+.detail-item {
+  padding: 12px; background: var(--white); border-radius: 6px; margin: 6px 0;
+  font-size: 12px; color: var(--dark-text); line-height: 1.6; border-right: 4px solid var(--green);
+}
+
+.chat-log {
+  height: 280px; overflow-y: auto; background: var(--light-gray); border-radius: 8px;
+  padding: 12px; margin: 12px 0;
+}
+.chat-msg {
+  padding: 8px; margin: 8px 0; border-radius: 6px; max-width: 80%;
+}
+.msg-user { background: var(--green); color: white; }
+.msg-bot { background: var(--white); border: 1px solid var(--light-gray); }
+.chat-input {
+  display: flex; gap: 8px; margin: 12px 0;
+}
+.chat-input input {
+  flex: 1; padding: 10px; border: 1px solid var(--light-gray); border-radius: 6px;
+  font-family: 'Rubik', sans-serif;
+}
+.chat-input button {
+  padding: 10px 16px; background: var(--blue); color: white; border: none; border-radius: 6px;
+  cursor: pointer;
+}
+
+.quick-q {
+  padding: 8px 10px; background: var(--white); border: 1px solid var(--green);
+  border-radius: 6px; font-size: 12px; color: var(--dark-text); cursor: pointer;
+  transition: all 0.2s; font-weight: 600;
+}
+.quick-q:hover { background: rgba(88, 204, 2, 0.1); }
+.quick-q:active { transform: scale(0.95); }
+
+.report-section {
+  background: var(--light-gray); padding: 16px; border-radius: 8px; margin: 12px 0;
+}
+.report-title {
+  font-size: 14px; font-weight: 700; color: var(--dark-text); margin-bottom: 8px;
+}
+.report-text {
+  font-size: 12px; color: var(--mid-text); line-height: 1.6;
+}
+
+.profile-section {
+  background: var(--light-gray); padding: 16px; border-radius: 8px; margin: 12px 0;
+}
+.profile-item {
+  padding: 8px 0; font-size: 14px; color: var(--dark-text);
+}
+.profile-label {
+  font-weight: 700; color: var(--green);
+}
+
+#nav {
+  position: fixed; bottom: 0; left: 0; right: 0; background: var(--white);
+  border-top: 1px solid var(--light-gray); display: flex; justify-content: space-around;
+  z-index: 100;
+}
+.nav-item {
+  flex: 1; padding: 12px; text-align: center; cursor: pointer; transition: all 0.2s;
+  border: none; background: none; font-family: 'Rubik', sans-serif;
+  font-size: 24px;
+}
+.nav-item.active { color: var(--green); }
+.nav-item.inactive { color: var(--light-text); }
+
+.spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid var(--light-gray); border-top-color: var(--green); border-radius: 50%; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div id="boot">
+  <div class="boot-logo">MyPay</div>
+  <div class="boot-msg">בואו נבדוק את המשכורת שלכם 💰</div>
+  <div class="boot-bar"><div class="boot-fill"></div></div>
+</div>
+
+<div id="app">
+  <div class="topbar">
+    <div class="logo">MyPay</div>
+    <div style="font-size: 11px; color: var(--mid-text); font-weight: 700;">עובד צעיר</div>
+  </div>
+
+  <div id="screen-home" class="screen active">
+    <div style="margin: 32px 0;">
+      <div class="question">
+        <div class="question-title">1️⃣ מה הגיל שלך? <span style="font-size: 12px; color: var(--mid-text); font-weight: 400;">(בחר את הגיל המלא שלך - לפי יום ההולדת האחרון)</span></div>
+        <div class="options">
+          <div class="option" data-q="age" data-v="14">14</div>
+          <div class="option" data-q="age" data-v="15">15</div>
+          <div class="option" data-q="age" data-v="16">16</div>
+          <div class="option" data-q="age" data-v="17">17</div>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="question-title">3️⃣ יש לך גליון נוכחות?</div>
+        <div class="options">
+          <div class="option" data-q="hasattendance" data-v="yes">כן - יש לי גליון</div>
+          <div class="option" data-q="hasattendance" data-v="no">לא - אמלא ידנית</div>
+        </div>
+      </div>
+
+      <div id="attendance-form" style="display: none; background: var(--light-gray); padding: 20px; border-radius: 12px; margin: 16px 0;">
+        <div style="font-size: 14px; font-weight: 700; color: var(--dark-text); margin-bottom: 16px;">📊 הזן את כל יום בנפרד:</div>
+        
+        <div style="margin-bottom: 16px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 8px; margin-bottom: 8px;">
+            <div style="font-size: 11px; font-weight: 600; color: var(--dark-text);">תאריך</div>
+            <div style="font-size: 11px; font-weight: 600; color: var(--dark-text);">יום בשבוע</div>
+            <div style="font-size: 11px; font-weight: 600; color: var(--dark-text);">שעות</div>
+            <div></div>
+          </div>
+          
+          <div id="attendance-table"></div>
+          
+          <button type="button" id="btn-add-day" style="width: 100%; padding: 10px; background: var(--green); color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; margin-top: 8px;">+ הוסף יום</button>
+        </div>
+        
+        <div style="background: white; padding: 12px; border-radius: 6px; margin-top: 12px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+            <span style="font-weight: 600;">סה"כ ימים:</span>
+            <span id="total-days">0</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="font-weight: 600;">סה"כ שעות:</span>
+            <span id="total-hours">0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="question-title">4️⃣ יש לך חוזה העסקה בכתב?</div>
+        <div class="options">
+          <div class="option" data-q="hascontract" data-v="yes">כן - יש לי חוזה</div>
+          <div class="option" data-q="hascontract" data-v="no">לא - עבדתי בלי חוזה</div>
+        </div>
+      </div>
+
+      <div id="contract-form" style="display: none; background: var(--light-gray); padding: 20px; border-radius: 12px; margin: 16px 0;">
+        <div style="font-size: 14px; font-weight: 700; color: var(--dark-text); margin-bottom: 16px;">📋 מלא את התנאים שסכמתם עליהם:</div>
+        
+        <div style="margin-bottom: 12px;">
+          <label style="font-size: 12px; font-weight: 600; color: var(--dark-text);">שכר לשעה (₪):</label>
+          <input type="number" id="contract-hourly" placeholder="25.28" step="0.01" style="width: 100%; padding: 8px; border: 1px solid var(--light-gray); border-radius: 6px; margin-top: 4px;">
+        </div>
+      </div>
+
+      <button class="btn" id="btn-start" disabled>START ▶</button>
+    </div>
+  </div>
+
+  <div id="screen-scan" class="screen">
+    <h2 style="margin: 24px 0 16px;">📁 SCANNER</h2>
+    <p style="font-size: 12px; color: var(--mid-text); margin-bottom: 20px;">
+      העלה את הקבצים הנדרשים לבדיקה מעמיקה:
+    </p>
+
+    <div style="margin-bottom: 20px;">
+      <div style="font-size: 13px; font-weight: 700; color: var(--dark-text); margin-bottom: 10px;">1️⃣ תלוש שכר <span style="color: var(--red);">*חובה</span></div>
+      <div class="upload-zone" id="upload-zone-payslip">
+        <div class="upload-icon">💰</div>
+        <div class="upload-text">העלה תלוש שכר</div>
+        <div style="font-size: 11px; color: var(--light-text);">PDF, Word, Excel או תמונה</div>
+      </div>
+      <div class="file-list" id="file-list-payslip"></div>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <div style="font-size: 13px; font-weight: 700; color: var(--dark-text); margin-bottom: 10px;">2️⃣ גליון נוכחות <span id="attendance-requirement" style="color: var(--mid-text);">(אופציונלי)</span></div>
+      <div class="upload-zone" id="upload-zone-attendance">
+        <div class="upload-icon">📋</div>
+        <div class="upload-text">העלה גיליון נוכחות</div>
+        <div style="font-size: 11px; color: var(--light-text);">Excel, PDF או תמונה</div>
+      </div>
+      <div class="file-list" id="file-list-attendance"></div>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <div style="font-size: 13px; font-weight: 700; color: var(--dark-text); margin-bottom: 10px;">3️⃣ חוזה העסקה <span id="contract-requirement" style="color: var(--mid-text);">(אופציונלי)</span></div>
+      <div class="upload-zone" id="upload-zone-contract">
+        <div class="upload-icon">📑</div>
+        <div class="upload-text">העלה חוזה העסקה</div>
+        <div style="font-size: 11px; color: var(--light-text);">PDF או Word</div>
+      </div>
+      <div class="file-list" id="file-list-contract"></div>
+    </div>
+
+    <button class="btn btn-blue" id="btn-scan">בדוק כעת ✓</button>
+  </div>
+
+  <div id="screen-results" class="screen">
+    <div class="result-header">✓ בדיקה הושלמה</div>
+    <div class="result-boxes">
+      <div class="result-box box-red" id="box-errors">
+        <div class="box-number" id="error-count">0</div>
+        <div class="box-label">הפרות חוקיות</div>
+        <div style="font-size: 10px; opacity: 0.8; margin-top: 6px;">לחץ כדי לראות</div>
+      </div>
+      <div class="result-box box-orange" id="box-warnings">
+        <div class="box-number" id="warning-count">0</div>
+        <div class="box-label">נושאים לבדיקה</div>
+        <div style="font-size: 10px; opacity: 0.8; margin-top: 6px;">לחץ כדי לראות</div>
+      </div>
+      <div class="result-box box-blue" id="box-info">
+        <div class="box-number" id="info-count">0</div>
+        <div class="box-label">דברים שצריך לדעת</div>
+        <div style="font-size: 10px; opacity: 0.8; margin-top: 6px;">לחץ כדי לראות</div>
+      </div>
+    </div>
+    <div class="details" id="details-errors">
+      <div style="font-weight: 700; margin-bottom: 8px;">⛔ הפרות חוקיות:</div>
+      <div id="errors-list"></div>
+    </div>
+    <div class="details" id="details-warnings">
+      <div style="font-weight: 700; margin-bottom: 8px;">⚠️ נושאים לבדיקה:</div>
+      <div id="warnings-list"></div>
+    </div>
+    <div class="details" id="details-info">
+      <div style="font-weight: 700; margin-bottom: 8px;">ℹ️ דברים שצריך לדעת:</div>
+      <div id="info-list"></div>
+    </div>
+    <div style="margin-top: 20px; padding: 12px; background: var(--light-gray); border-radius: 8px; border-right: 3px solid var(--orange); text-align: center;">
+      <div style="font-size: 11px; color: var(--mid-text); font-style: italic;">
+        ⚖️ המידע כאן אינו מהווה ייעוץ משפטי. לשאלות משפטיות פנה/י לעורך דין
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-chat" class="screen">
+    <h2 style="margin: 24px 0 16px;">💬 צ'אט עם בודק שכר</h2>
+    
+    <div class="chat-log" id="chat-log"></div>
+    <div class="chat-input">
+      <input type="text" id="chat-input" placeholder="שאל אותי משהו...">
+      <button id="btn-chat-send">שלח</button>
+    </div>
+
+    <div style="margin-top: 16px; padding: 12px; background: var(--light-gray); border-radius: 8px;">
+      <div style="font-size: 12px; font-weight: 700; color: var(--dark-text); margin-bottom: 8px;">שאלות נפוצות:</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+        <button class="quick-q" data-q="minwage">💰 מה שכר מינימום?</button>
+        <button class="quick-q" data-q="hours">⏰ כמה שעות ביום?</button>
+        <button class="quick-q" data-q="night">🌙 עבודה בלילה?</button>
+        <button class="quick-q" data-q="sabbath">📅 עבודה בשבת?</button>
+        <button class="quick-q" data-q="school">🎓 בזמן לימודים?</button>
+        <button class="quick-q" data-q="contract">📄 מה בחוזה?</button>
+        <button class="quick-q" data-q="vacation">🏖️ כמה חופשה?</button>
+        <button class="quick-q" data-q="mydata">📊 מה הנתונים שלי?</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-report" class="screen">
+    <h2 style="margin: 24px 0 16px;">📋 דוח</h2>
+    <div id="report-content">טוען...</div>
+  </div>
+
+  <div id="screen-profile" class="screen">
+    <h2 style="margin: 24px 0 16px;">👤 הפרטים שלך</h2>
+    <div class="profile-section">
+      <div class="profile-item"><span class="profile-label">גיל:</span> <span id="profile-age">-</span></div>
+    </div>
+    <button class="btn btn-red" id="btn-reset">🗑 איפוס מחדש</button>
+  </div>
+
+  <div id="nav">
+    <button class="nav-item active" data-screen="home">🏠</button>
+    <button class="nav-item inactive" data-screen="scan">📁</button>
+    <button class="nav-item inactive" data-screen="chat">💬</button>
+    <button class="nav-item inactive" data-screen="report">📋</button>
+    <button class="nav-item inactive" data-screen="profile">👤</button>
+  </div>
+</div>
+
+<script>
+const LAW = {
+  youth: {
+    '14': { hourly: 24.50, maxDaily: 8, maxWeekly: 40, nightEnd: 20, minAge: 14, schoolBan: true, label: '14', restrictions: 'מאד מחמירות' },
+    '15': { hourly: 25.28, maxDaily: 8, maxWeekly: 40, nightEnd: 20, minAge: 15, schoolBan: true, label: '15', restrictions: 'חמירות' },
+    '16': { hourly: 27.94, maxDaily: 9, maxWeekly: 40, nightEnd: 22, minAge: 16, schoolBan: true, label: '16', restrictions: 'ממוזערות' },
+    '17': { hourly: 30.92, maxDaily: 9, maxWeekly: 40, nightEnd: 22, minAge: 17, schoolBan: false, label: '17', restrictions: 'מעטות' }
+  }
+};
+
+// ===== School Holidays 2025-2026 (תשפ"ו) - משרד החינוך =====
+const SCHOOL_HOLIDAYS = [
+  { name: 'ראש השנה', start: '2025-09-22', end: '2025-09-24' },
+  { name: 'יום כיפור + סוכות', start: '2025-10-01', end: '2025-10-14' },
+  { name: 'חנוקה', start: '2025-12-16', end: '2025-12-22' },
+  { name: 'פורים', start: '2026-03-03', end: '2026-03-04' },
+  { name: 'פסח', start: '2026-03-24', end: '2026-04-08' },
+  { name: 'יום העצמאות', start: '2026-04-22', end: '2026-04-22' },
+  { name: 'ל"ג בעומר', start: '2026-05-05', end: '2026-05-05' },
+  { name: 'שבועות', start: '2026-05-21', end: '2026-05-22' },
+  { name: 'חופשת קיץ', start: '2026-06-20', end: '2026-08-31' }
+];
+
+function isSchoolHoliday(dateString) {
+  const date = new Date(dateString + 'T00:00:00');
+  return SCHOOL_HOLIDAYS.some(holiday => {
+    const start = new Date(holiday.start + 'T00:00:00');
+    const end = new Date(holiday.end + 'T00:00:00');
+    return date >= start && date <= end;
+  });
+}
+
+function getHolidayName(dateString) {
+  const date = new Date(dateString + 'T00:00:00');
+  const holiday = SCHOOL_HOLIDAYS.find(h => {
+    const start = new Date(h.start + 'T00:00:00');
+    const end = new Date(h.end + 'T00:00:00');
+    return date >= start && date <= end;
+  });
+  return holiday ? holiday.name : null;
+}
+
+function isDateInRange(dateStr, start, end) {
+  const date = new Date(dateStr);
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+  return date >= startDate && date <= endDate;
+}
+
+function isHoliday(dateStr) {
+  for(const year in SCHOOL_CALENDAR) {
+    const cal = SCHOOL_CALENDAR[year];
+    if(isDateInRange(dateStr, cal.summer.start, cal.summer.end)) return 'summer';
+    if(isDateInRange(dateStr, cal.winter.start, cal.winter.end)) return 'winter';
+    if(isDateInRange(dateStr, cal.passover.start, cal.passover.end)) return 'passover';
+  }
+  return 'school';
+}
+
+const state = {
+  age: null,
+  hasattendance: null,
+  attendanceData: {
+    daysWorked: null,
+    dailyHours: null,
+    details: []
+  },
+  hascontract: null,
+  contractData: {
+    hourly: null,
+    dailyHours: null,
+    startDate: null,
+    daysWorked: null,
+    hasBreaks: false,
+    nightWork: false,
+    nightEnd: null,
+    saturdayWork: false
+  },
+  errors: [],
+  warnings: [],
+  info: [],
+  uploads: { payslip: null, attendance: null, contract: null },
+  extractedData: {
+    hourlyWage: null,
+    totalHours: null,
+    totalWagePaid: null,
+    nightShifts: [],
+    workDates: [],
+    contractAge: null,
+    hasContract: false,
+    hasPaySlip: false,
+    hasBreaks: false,
+    actualPeriod: null,
+    workPeriodBreakdown: { schoolDays: 0, holidayDays: 0 },
+    deductions: 0
+  }
+};
+
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('boot').style.opacity = '0';
+    setTimeout(() => {
+      document.getElementById('boot').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+    }, 300);
+  }, 1200);
+});
+
+// ===== Attendance Table Management =====
+let attendanceRows = [];
+
+function getDayOfWeek(dateString) {
+  const days = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
+  const date = new Date(dateString + 'T00:00:00');
+  return days[date.getDay()];
+}
+
+function addAttendanceRow(date = '', hours = '') {
+  const id = Date.now();
+  const dayOfWeek = date ? getDayOfWeek(date) : '';
+  
+  attendanceRows.push({ id, date, hours: parseFloat(hours) || 0 });
+  renderAttendanceTable();
+}
+
+function removeAttendanceRow(id) {
+  attendanceRows = attendanceRows.filter(row => row.id !== id);
+  renderAttendanceTable();
+}
+
+function updateAttendanceRow(id, field, value) {
+  const row = attendanceRows.find(r => r.id === id);
+  if(row) {
+    if(field === 'date') {
+      row.date = value;
+    } else if(field === 'hours') {
+      row.hours = parseFloat(value) || 0;
+    }
+    renderAttendanceTable();
+  }
+}
+
+function renderAttendanceTable() {
+  const table = document.getElementById('attendance-table');
+  table.innerHTML = attendanceRows.map(row => `
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 8px; margin-bottom: 8px;">
+      <input type="date" value="${row.date}" onchange="updateAttendanceRow(${row.id}, 'date', this.value)" 
+             style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 12px;">
+      <input type="text" value="${row.date ? getDayOfWeek(row.date) : ''}" disabled 
+             style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 12px; background: #f5f5f5;">
+      <input type="number" value="${row.hours}" onchange="updateAttendanceRow(${row.id}, 'hours', this.value)" 
+             placeholder="8" step="0.5" min="0" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 12px;">
+      <button type="button" onclick="removeAttendanceRow(${row.id})" 
+              style="padding: 6px 10px; background: var(--red); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">✕</button>
+    </div>
+  `).join('');
+  
+  updateAttendanceTotal();
+}
+
+function updateAttendanceTotal() {
+  const totalDays = attendanceRows.length;
+  const totalHours = attendanceRows.reduce((sum, row) => sum + row.hours, 0);
+  
+  document.getElementById('total-days').textContent = totalDays;
+  document.getElementById('total-hours').textContent = totalHours.toFixed(1);
+  
+  // Update state
+  state.attendanceData = {
+    daysWorked: totalDays,
+    dailyHours: null,
+    details: attendanceRows
+  };
+}
+
+document.getElementById('btn-add-day').addEventListener('click', () => {
+  addAttendanceRow();
+});
+
+document.querySelectorAll('.option').forEach(opt => {
+  opt.addEventListener('click', function() {
+    const q = this.dataset.q;
+    const v = this.dataset.v;
+    
+    document.querySelectorAll(`[data-q="${q}"]`).forEach(o => o.classList.remove('selected'));
+    this.classList.add('selected');
+    
+    state[q] = v;
+    
+    // Show/hide attendance form
+    if(q === 'hasattendance') {
+      const form = document.getElementById('attendance-form');
+      if(v === 'no') {
+        form.style.display = 'block';
+      } else {
+        form.style.display = 'none';
+      }
+    }
+    
+    // Show/hide contract form
+    if(q === 'hascontract') {
+      const form = document.getElementById('contract-form');
+      if(v === 'no') {
+        form.style.display = 'block';
+      } else {
+        form.style.display = 'none';
+      }
+    }
+    
+    if(state.age && state.hasattendance && state.hascontract) {
+      document.getElementById('btn-start').disabled = false;
+    }
+  });
+});
+
+document.getElementById('btn-start').addEventListener('click', () => {
+  // If no attendance file, validate attendance table
+  if(state.hasattendance === 'no') {
+    if(attendanceRows.length === 0) {
+      alert('בבקשה הוסף לפחות יום אחד');
+      return;
+    }
+    
+    // Check if all rows have dates and hours
+    const allValid = attendanceRows.every(row => row.date && row.hours > 0);
+    if(!allValid) {
+      alert('בבקשה מלא את כל הימים - תאריך ושעות');
+      return;
+    }
+    
+    // Attendance data is already stored in updateAttendanceTotal
+  }
+  
+  // If no contract selected, validate contract form
+  if(state.hascontract === 'no') {
+    const hourly = document.getElementById('contract-hourly').value;
+    
+    if(!hourly) {
+      alert('בבקשה הזן שכר לשעה');
+      return;
+    }
+    
+    // Store contract data (rest will come from attendance file or table)
+    state.contractData = {
+      hourly: parseFloat(hourly),
+      dailyHours: null,
+      startDate: null,
+      daysWorked: null,
+      hasBreaks: null,
+      nightWork: null,
+      nightEnd: null,
+      saturdayWork: null
+    };
+  }
+  
+  showScreen('scan');
+  updateProfile();
+});
+
+const uploadTypes = {
+  payslip: { zone: 'upload-zone-payslip', list: 'file-list-payslip' },
+  attendance: { zone: 'upload-zone-attendance', list: 'file-list-attendance' },
+  contract: { zone: 'upload-zone-contract', list: 'file-list-contract' }
+};
+
+Object.entries(uploadTypes).forEach(([type, config]) => {
+  const zone = document.getElementById(config.zone);
+  const listDiv = document.getElementById(config.list);
+  const fileInput = document.createElement('input');
+  fileInput.type = 'file';
+
+  zone.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', (e) => {
+    if(e.target.files.length > 0) {
+      state.uploads[type] = e.target.files[0];
+      listDiv.innerHTML = '';
+      const item = document.createElement('div');
+      item.className = 'file-item';
+      item.textContent = '✓ ' + e.target.files[0].name;
+      listDiv.appendChild(item);
+    }
+  });
+});
+
+async function readPayslip(file) {
+  const text = await extractText(file);
+  const wageMatch = text.match(/(?:שכר|wage|salary|payment).*?(\d+\.?\d*)/i);
+  state.extractedData.hourlyWage = wageMatch ? parseFloat(wageMatch[1]) : null;
+  
+  const totalMatch = text.match(/(?:סכום|total|סה"כ).*?(\d+\.?\d*)/i);
+  state.extractedData.totalWagePaid = totalMatch ? parseFloat(totalMatch[1]) : null;
+  
+  const deductMatch = text.match(/(?:ניכוי|deduction|tax).*?(\d+\.?\d*)/i);
+  state.extractedData.deductions = deductMatch ? parseFloat(deductMatch[1]) : 0;
+  
+  state.extractedData.hasPaySlip = true;
+}
+
+async function readAttendance(file) {
+  const text = await extractText(file);
+  
+  const dateRegex = /(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4}|\d{2})/g;
+  const dates = [];
+  let match;
+  
+  while((match = dateRegex.exec(text)) !== null) {
+    const day = match[1].padStart(2, '0');
+    const month = match[2].padStart(2, '0');
+    let year = match[3];
+    if(year.length === 2) year = '20' + year;
+    dates.push(`${year}-${month}-${day}`);
+  }
+  
+  state.extractedData.workDates = [...new Set(dates)];
+  
+  const hoursMatch = text.match(/(\d+\.?\d*)\s*(?:שעות|hours|hrs)/gi);
+  state.extractedData.totalHours = hoursMatch ? 
+    hoursMatch.reduce((sum, h) => sum + parseFloat(h), 0) : 0;
+  
+  const nightMatches = text.match(/(?:22|23|00|01|02|03):(?:\d+)/g) || [];
+  state.extractedData.nightShifts = nightMatches;
+  
+  if(state.extractedData.workDates.length > 0) {
+    const workPeriods = state.extractedData.workDates.map(d => isHoliday(d));
+    const schoolDays = workPeriods.filter(p => p === 'school').length;
+    const holidayDays = workPeriods.filter(p => p !== 'school').length;
+    
+    state.extractedData.actualPeriod = schoolDays > holidayDays ? 'school' : 'holiday';
+    state.extractedData.workPeriodBreakdown = { schoolDays, holidayDays };
+  }
+}
+
+async function readContract(file) {
+  const text = await extractText(file);
+  
+  const ageMatch = text.match(/(?:גיל|age)\s*[:=]?\s*(\d+)/i);
+  state.extractedData.contractAge = ageMatch ? parseInt(ageMatch[1]) : null;
+  state.extractedData.hasContract = true;
+  
+  const breakMatch = text.match(/הפסקה|break|45|דקה/i);
+  state.extractedData.hasBreaks = breakMatch ? true : false;
+}
+
+async function extractText(file) {
+  const ext = file.name.split('.').pop().toLowerCase();
+  
+  if(ext === 'pdf') {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+    let text = '';
+    for(let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      text += content.items.map(item => item.str).join(' ') + ' ';
+    }
+    return text;
+  } else if(['xlsx', 'xls'].includes(ext)) {
+    const arrayBuffer = await file.arrayBuffer();
+    const workbook = XLSX.read(arrayBuffer);
+    let text = '';
+    workbook.SheetNames.forEach(name => {
+      const sheet = workbook.Sheets[name];
+      const csv = XLSX.utils.sheet_to_csv(sheet);
+      text += csv + ' ';
+    });
+    return text;
+  } else if(['docx', 'doc'].includes(ext)) {
+    const arrayBuffer = await file.arrayBuffer();
+    const result = await mammoth.extractRawText({arrayBuffer});
+    return result.value;
+  } else if(['png', 'jpg', 'jpeg'].includes(ext)) {
+    const url = URL.createObjectURL(file);
+    const result = await Tesseract.recognize(url, 'he');
+    URL.revokeObjectURL(url);
+    return result.data.text;
+  }
+  return '';
+}
+
+async function runValidation() {
+  state.errors = [];
+  state.warnings = [];
+  state.info = [];
+  const lawData = LAW.youth[state.age];
+  
+  // If no attendance file but manual data filled, use that data
+  if(state.hasattendance === 'no' && state.attendanceData.daysWorked) {
+    state.extractedData.totalHours = state.attendanceData.details.reduce((sum, row) => sum + row.hours, 0);
+    state.extractedData.workDates = state.attendanceData.details.map(row => row.date);
+    
+    // Check each day for violations
+    state.attendanceData.details.forEach(dayData => {
+      const dayOfWeek = getDayOfWeek(dayData.date);
+      
+      // Check if it's a school holiday
+      const holiday = getHolidayName(dayData.date);
+      if(isSchoolHoliday(dayData.date)) {
+        state.info.push(`ℹ️ ${dayData.date} (${dayOfWeek}) - חופשה רשמית: ${holiday}`);
+        return; // Skip other checks for holiday
+      }
+      
+      // If not a holiday, it's a school day - check age restriction
+      if(state.age === '14' || state.age === '15') {
+        state.errors.push(`⛔ עבודה בזמן לימודים: עבדת ב-${dayData.date} (${dayOfWeek}) בזמן לימודים - אסור לעובד צעיר בגיל ${state.age}`);
+      }
+      
+      // Check for Saturday work
+      if(dayOfWeek === 'שבת') {
+        state.errors.push(`⛔ עבודה בשבת: עבדת בשבת ב-${dayData.date} - עבודה בשבת אסורה לנוער!`);
+      }
+      
+      // Check daily hours limit
+      if(dayData.hours > lawData.maxDaily) {
+        state.errors.push(`⛔ שעות יומיות: עבדת ${dayData.hours} שעות ב-${dayData.date} - מקסימום ${lawData.maxDaily} שעות ביום בגיל ${state.age}`);
+      }
+    });
+    
+    // Check overall weekly average
+    const weeklyAverage = state.extractedData.totalHours / 4.3; // approximate weeks per month
+    if(weeklyAverage > lawData.maxWeekly) {
+      state.warnings.push(`⚠️ שעות בשבוע: ממוצע ${weeklyAverage.toFixed(1)} שעות בשבוע - מקסימום ${lawData.maxWeekly} שעות בשבוע`);
+    }
+  }
+  
+  // If no contract file but contract data filled, use that data
+  if(state.hascontract === 'no' && state.contractData.hourly) {
+    state.extractedData.hourlyWage = state.contractData.hourly;
+    state.extractedData.hasBreaks = state.contractData.hasBreaks;
+    
+    if(state.contractData.saturdayWork) {
+      state.errors.push(`⛔ עבודה בשבת: סכמתם שתעבוד בשבת - עבודה בשבת אסורה לנוער!`);
+    }
+    
+    if(state.contractData.nightWork && state.contractData.nightEnd) {
+      const [hours] = state.contractData.nightEnd.split(':');
+      if(parseInt(hours) > lawData.nightEnd) {
+        state.errors.push(`⛔ עבודה בלילה: סכמתם שתעבוד עד ${state.contractData.nightEnd} - אסור לעבוד אחרי ${lawData.nightEnd}:00 בגיל ${state.age}`);
+      }
+    }
+  }
+  
+  if(state.extractedData.hourlyWage && state.extractedData.hourlyWage < lawData.hourly) {
+    state.errors.push(`⛔ שכר מינימום: התלוש מראה ${state.extractedData.hourlyWage}₪/שעה < ${lawData.hourly}₪ המינימום החוקי`);
+  }
+
+  if(state.extractedData.hourlyWage && state.extractedData.totalHours) {
+    const expectedWage = state.extractedData.hourlyWage * state.extractedData.totalHours;
+    const variance = Math.abs(expectedWage - (state.extractedData.totalWagePaid || 0)) / expectedWage;
+    
+    if(variance > 0.1) {
+      state.warnings.push(`⚠️ חוסר התאמה: התלוש (${state.extractedData.totalWagePaid}₪) לא תואם לנוכחות (${expectedWage.toFixed(0)}₪)`);
+    }
+  }
+
+  if(state.extractedData.totalHours > lawData.maxDaily * 5) {
+    state.errors.push(`⛔ שעות יומיות: ${state.extractedData.totalHours} שעות עולות על ${lawData.maxDaily} שעות/יום`);
+  }
+
+  if(state.extractedData.totalHours > lawData.maxWeekly) {
+    state.warnings.push(`⚠️ שעות שבועיות: עלול להיות יותר מ-${lawData.maxWeekly} שעות בשבוע`);
+  }
+
+  if(state.extractedData.nightShifts.length > 0 && lawData.nightEnd) {
+    state.errors.push(`⛔ עבודה בלילה: בן/בת ${state.age} לא יכול/ה לעבוד אחרי ${lawData.nightEnd}:00 - נמצאו ${state.extractedData.nightShifts.length} שעות לילה`);
+  }
+
+  if(!state.extractedData.hasBreaks && state.extractedData.totalHours > 6) {
+    state.warnings.push(`⚠️ הפסקות: בעבודה של 6+ שעות, חובה הפסקה של 45 דקות - לא נמצאה בחוזה`);
+  }
+
+  const saturdayWork = state.extractedData.workDates.filter(d => {
+    const date = new Date(d);
+    return date.getDay() === 6;
+  }).length;
+  
+  if(saturdayWork > 0) {
+    state.errors.push(`⛔ עבודה בשבת: נמצאו ${saturdayWork} ימי שבת - עבודה בשבת אסורה לנוער`);
+  }
+
+  if(state.extractedData.totalHours > (lawData.maxDaily * 5) && state.age < 17) {
+    state.errors.push(`⛔ שעות נוספות: שעות נוספות אסורות לנוער עד גיל 17`);
+  }
+
+  if(state.extractedData.deductions > (state.extractedData.totalWagePaid * 0.3)) {
+    state.warnings.push(`⚠️ ניכויים: ניכויים של ${state.extractedData.deductions}₪ עשויים להיות מעל 30% - בדוק אם חוקיים`);
+  }
+
+  if(state.age < 16 && state.extractedData.actualPeriod === 'school') {
+    state.errors.push(`⛔ עבודה בלימודים: בן/בת ${state.age} לא יכול/ה לעבוד בזמן לימודים - זה אסור חוקית!`);
+  }
+
+  if(state.extractedData.contractAge && state.extractedData.contractAge != state.age) {
+    state.warnings.push(`⚠️ הגיל בחוזה: בחוזה כתוב גיל ${state.extractedData.contractAge}, אתה בן/בת ${state.age}`);
+  }
+
+  // 13. חוזה בכתב (הודעה אם בחר "אין חוזה")
+  if(state.hascontract === 'no') {
+    state.warnings.push(`⚠️ חוזה בכתב: עבדת ללא חוזה בכתב רשמי. זה זכותך - דרוש חוזה בכתב מהמעסיק!`);
+  } else if(!state.extractedData.hasContract) {
+    state.errors.push(`⛔ מסמכים: חוזה בכתב הוא חובה חוקית - לא יכול להיות עבודה ללא חוזה`);
+  }
+
+  if(!state.extractedData.hasPaySlip) {
+    state.warnings.push(`⚠️ ביטוח לאומי: בדוק שהמעסיק דיווח אותך לביטוח לאומי וניכה מס הכנסה`);
+  }
+
+  if(state.extractedData.workDates.length > 0 && state.extractedData.workDates.length < 30) {
+    state.info.push(`ℹ️ תקופת ניסיון: עבדת ${state.extractedData.workDates.length} ימים - תקופה עד 30 ימים בלבד`);
+  }
+
+  const daysWorked = state.extractedData.workDates.length;
+  if(daysWorked > 90) {
+    state.info.push(`ℹ️ חופשה שנתית: עבדת ${daysWorked} ימים - זכאות ל-18 ימי חופשה לשנה`);
+  }
+
+  if(state.extractedData.workDates.length > 0) {
+    state.info.push(`ℹ️ סיום עבודה: אם תחדל להיות עובד, המעסיק חייב להודיע לך 30 יום מראש`);
+  }
+
+  if(state.age === '14') {
+    state.info.push(`⚠️ גיל 14 - הגבלות חמורות: אסור לעבוד בלימודים, שעות מוגבלות, שכר ${lawData.hourly}₪/שעה`);
+  } else if(state.age === '15') {
+    state.info.push(`ℹ️ גיל 15 - הגבלות: אסור לעבוד בלימודים, שכר ${lawData.hourly}₪/שעה`);
+  } else if(state.age === '16') {
+    state.info.push(`ℹ️ גיל 16 - חוקי עבודה: אסור לעבוד בלימודים, שכר ${lawData.hourly}₪/שעה, עד 9 שעות ביום`);
+  } else if(state.age === '17') {
+    state.info.push(`ℹ️ גיל 17 - אפשר לעבוד בתנאים: שכר ${lawData.hourly}₪/שעה, עד 9 שעות ביום, עד 22:00`);
+  }
+
+  if(lawData.nightEnd) {
+    state.info.push(`ℹ️ שעות לילה: בגיל ${state.age}, אתה יכול לעבוד רק עד ${lawData.nightEnd}:00`);
+  }
+
+  state.info.push(`ℹ️ זכויות שלך: שכר מינימום, הפסקה בעבודה של 6+ שעות, ביטוח לאומי, חוזה בכתב, תלוש שכר חודשי`);
+}
+
+document.getElementById('btn-scan').addEventListener('click', async () => {
+  // Payslip is always required
+  if(!state.uploads.payslip) {
+    alert('בבקשה העלה תלוש שכר');
+    return;
+  }
+  
+  // Attendance required only if user uploaded a file
+  if(state.hasattendance === 'yes' && !state.uploads.attendance) {
+    alert('בבקשה העלה גליון נוכחות');
+    return;
+  }
+  
+  // Contract required only if user chose "yes, I have contract"
+  if(state.hascontract === 'yes' && !state.uploads.contract) {
+    alert('בבקשה העלה קובץ חוזה');
+    return;
+  }
+
+  const scanBtn = document.getElementById('btn-scan');
+  scanBtn.disabled = true;
+  scanBtn.innerHTML = '<div class="spinner"></div> בודק...';
+
+  try {
+    // Read payslip (always required)
+    await readPayslip(state.uploads.payslip);
+    
+    // Read attendance from file OR use manual data
+    if(state.uploads.attendance) {
+      await readAttendance(state.uploads.attendance);
+    } else if(state.hasattendance === 'no' && state.attendanceData.daysWorked) {
+      // Use manually entered attendance data from table
+      state.extractedData.totalHours = state.attendanceData.details.reduce((sum, row) => sum + row.hours, 0);
+      state.extractedData.workDates = state.attendanceData.details.map(row => row.date);
+    }
+    
+    // Read contract only if uploaded
+    if(state.uploads.contract) {
+      await readContract(state.uploads.contract);
+    }
+    
+    await runValidation();
+    
+    document.getElementById('error-count').textContent = state.errors.length;
+    document.getElementById('warning-count').textContent = state.warnings.length;
+    document.getElementById('info-count').textContent = state.info.length;
+    
+    const errList = document.getElementById('errors-list');
+    errList.innerHTML = state.errors.map(e => `<div class="detail-item">• ${e}</div>`).join('') || '<div class="detail-item">✅ אין הפרות</div>';
+    
+    const warnList = document.getElementById('warnings-list');
+    warnList.innerHTML = state.warnings.map(w => `<div class="detail-item">• ${w}</div>`).join('') || '<div class="detail-item">✅ אין נושאים לבדיקה</div>';
+    
+    const infoList = document.getElementById('info-list');
+    infoList.innerHTML = state.info.map(i => `<div class="detail-item">• ${i}</div>`).join('');
+    
+    showScreen('results');
+  } catch(err) {
+    alert('שגיאה: ' + err.message);
+  } finally {
+    scanBtn.disabled = false;
+    scanBtn.innerHTML = 'בדוק כעת ✓';
+  }
+});
+
+document.getElementById('box-errors').addEventListener('click', () => {
+  document.getElementById('details-errors').classList.toggle('open');
+});
+document.getElementById('box-warnings').addEventListener('click', () => {
+  document.getElementById('details-warnings').classList.toggle('open');
+});
+document.getElementById('box-info').addEventListener('click', () => {
+  document.getElementById('details-info').classList.toggle('open');
+});
+
+function getChatResponse(question) {
+  if(!state.age) return '⚠️ בחר את הגיל שלך קודם!';
+  
+  const lawData = LAW.youth[state.age];
+  const q = question.toLowerCase();
+  
+  // ===== שאלות מהירות (כפתורים) =====
+  if(question === 'minwage') {
+    return `💰 שכר מינימום בגיל ${state.age}: ${lawData.hourly}₪ לשעה. בפועל התלוש שלך מראה ${state.extractedData.hourlyWage || 'לא ברור'}₪.`;
+  }
+  
+  if(question === 'hours') {
+    const msg = `⏰ בגיל ${state.age}, את/ה יכול/ה לעבוד מקסימום ${lawData.maxDaily} שעות ביום ו-${lawData.maxWeekly} שעות בשבוע.`;
+    if(state.extractedData.totalHours) {
+      return msg + ` בנוכחות שלך: ${state.extractedData.totalHours} שעות סה"כ.`;
+    }
+    return msg;
+  }
+  
+  if(question === 'night') {
+    if(lawData.nightEnd) {
+      return `🌙 בגיל ${state.age}, עבודה בלילה אסורה אחרי ${lawData.nightEnd}:00. ${state.extractedData.nightShifts.length > 0 ? '⚠️ בנוכחות שלך נמצאו שעות לילה!' : '✓ לא נמצאו שעות לילה.'}`;
+    }
+  }
+  
+  if(question === 'sabbath') {
+    const saturdayCount = state.extractedData.workDates.filter(d => new Date(d).getDay() === 6).length;
+    return `📅 עבודה בשבת אסורה לכל נוער עד גיל 17. ${saturdayCount > 0 ? '⚠️ בנוכחות שלך נמצאו ' + saturdayCount + ' ימי שבת!' : '✓ לא עבדת בשבת.'}`;
+  }
+  
+  if(question === 'school') {
+    if(state.age < 16) {
+      return `🎓 בגיל ${state.age}, עבודה בזמן לימודים היא אסורה חוקית!\n\nהמערכת בודקת אוטומטית את ימי הלימודים והחופשות הרשמיות שלך.`;
+    }
+    return `🎓 בגיל ${state.age}, ניתן לעבוד בזמן לימודים בתנאים מסויימים.\n\nהמערכת בודקת אוטומטית את ימי הלימודים והחופשות הרשמיות שלך.`;
+  }
+  
+  if(question === 'contract') {
+    const items = ['✓ שם המעסיק וכתובת', '✓ משכורת/שכר לשעה', '✓ שעות עבודה ודניים', '✓ תאריך התחלה', '✓ תנאים מיוחדים', '✓ הגיל שלך'];
+    return `📄 בחוזה חייב להיות:\n${items.join('\n')}\n\n${state.extractedData.contractAge ? '✓ בחוזה שלך כתוב גיל ' + state.extractedData.contractAge : '❌ לא נמצא גיל בחוזה'}`;
+  }
+  
+  if(question === 'vacation') {
+    return `🏖️ זכאות לחופשה שנתית: 18 ימים לשנה.\n${state.extractedData.workDates.length > 90 ? '✓ עבדת מספיק כדי להיות זכאי/ת לחופשה' : 'עבדת ' + state.extractedData.workDates.length + ' ימים'}`;
+  }
+  
+  if(question === 'mydata') {
+    return `📊 הנתונים שלך:\n▪ גיל: ${state.age}\n▪ שכר לשעה (בפועל): ${state.extractedData.hourlyWage || '?'}₪\n▪ סה"כ שעות: ${state.extractedData.totalHours || '?'}\n▪ ימי עבודה: ${state.extractedData.workDates.length}`;
+  }
+  
+  // ===== שאלות חופשיות - pattern matching חכם =====
+  if(q.includes('שכר') || q.includes('משכור') || q.includes('מינימום') || q.includes('כמה אני מרוויח')) {
+    return getChatResponse('minwage');
+  }
+  
+  if(q.includes('שעות') && !q.includes('לילה') && !q.includes('שבת')) {
+    return getChatResponse('hours');
+  }
+  
+  if(q.includes('לילה') || q.includes('בלילה') || q.includes('שעות מאוחרות') || q.includes('אחרי')) {
+    return getChatResponse('night');
+  }
+  
+  if(q.includes('שבת') || q.includes('שישי') || q.includes('סוף שבוע')) {
+    return getChatResponse('sabbath');
+  }
+  
+  if(q.includes('לימודים') || q.includes('בזמן') || q.includes('בחופשה') || q.includes('בתוך שנה') || q.includes('בזמן סמסטר')) {
+    return getChatResponse('school');
+  }
+  
+  if(q.includes('חוזה') || q.includes('חוקים') || q.includes('מה צריך') || q.includes('מה צריכה')) {
+    return getChatResponse('contract');
+  }
+  
+  if(q.includes('חופשה') || q.includes('ימי חופשה') || q.includes('זכאות')) {
+    return getChatResponse('vacation');
+  }
+  
+  if(q.includes('נתונים') || q.includes('שלי') || q.includes('מה הנתונים')) {
+    return getChatResponse('mydata');
+  }
+  
+  // ===== תשובה כללית =====
+  return '👨‍💼 בודק שכר מוסמך כאן. שאל אותי על:\n▪ שכר מינימום\n▪ שעות עבודה\n▪ עבודה בלילה\n▪ עבודה בשבת\n▪ עבודה בלימודים\n▪ חוזה העסקה\n▪ חופשה שנתית\n▪ הנתונים שלך';
+}
+
+document.querySelectorAll('.quick-q').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const q = this.dataset.q;
+    const log = document.getElementById('chat-log');
+    
+    const userMsg = document.createElement('div');
+    userMsg.className = 'chat-msg msg-user';
+    userMsg.textContent = this.textContent;
+    log.appendChild(userMsg);
+    
+    const botMsg = document.createElement('div');
+    botMsg.className = 'chat-msg msg-bot';
+    botMsg.textContent = getChatResponse(q);
+    setTimeout(() => log.appendChild(botMsg), 300);
+    
+    log.scrollTop = log.scrollHeight;
+  });
+});
+
+document.getElementById('btn-chat-send').addEventListener('click', () => {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if(!msg) return;
+  
+  const log = document.getElementById('chat-log');
+  
+  const userMsg = document.createElement('div');
+  userMsg.className = 'chat-msg msg-user';
+  userMsg.textContent = msg;
+  log.appendChild(userMsg);
+  
+  const botMsg = document.createElement('div');
+  botMsg.className = 'chat-msg msg-bot';
+  botMsg.textContent = getChatResponse(msg);
+  setTimeout(() => log.appendChild(botMsg), 300);
+  
+  input.value = '';
+  log.scrollTop = log.scrollHeight;
+});
+
+document.querySelectorAll('[data-screen]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    showScreen(btn.dataset.screen);
+  });
+});
+
+function showScreen(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + screenId).classList.add('active');
+  
+  document.querySelectorAll('[data-screen]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.screen === screenId);
+    btn.classList.toggle('inactive', btn.dataset.screen !== screenId);
+  });
+  
+  if(screenId === 'scan') {
+    // Show/hide message if manual attendance data
+    let messageHTML = '';
+    if(state.hasattendance === 'no') {
+      const totalHours = state.attendanceData.details ? state.attendanceData.details.reduce((sum, row) => sum + row.hours, 0) : 0;
+      messageHTML = `<div style="background: var(--light-gray); padding: 12px; border-radius: 8px; margin-bottom: 16px; border-right: 3px solid var(--orange);">
+        <div style="font-size: 12px; color: var(--dark-text);"><strong>📊 בחרת להזין נתונים ידיים:</strong> ${state.attendanceData.daysWorked} ימים, סה"כ ${totalHours} שעות</div>
+      </div>`;
+    }
+    
+    // Insert message at the top of scan screen
+    const scanScreen = document.getElementById('screen-scan');
+    const existingMsg = scanScreen.querySelector('[data-manual-attendance]');
+    if(existingMsg) existingMsg.remove();
+    
+    if(messageHTML) {
+      const msgDiv = document.createElement('div');
+      msgDiv.setAttribute('data-manual-attendance', 'true');
+      msgDiv.innerHTML = messageHTML;
+      const paragraph = scanScreen.querySelector('p');
+      if(paragraph) paragraph.parentNode.insertBefore(msgDiv, paragraph.nextSibling);
+    }
+    
+    // Update attendance requirement label
+    const attendanceLabel = document.getElementById('attendance-requirement');
+    if(state.hasattendance === 'yes') {
+      attendanceLabel.innerHTML = '<span style="color: var(--red);">*חובה</span>';
+    } else {
+      attendanceLabel.innerHTML = '<span style="color: var(--mid-text);">(אופציונלי)</span>';
+    }
+    
+    // Update contract requirement label
+    const contractLabel = document.getElementById('contract-requirement');
+    if(state.hascontract === 'yes') {
+      contractLabel.innerHTML = '<span style="color: var(--red);">*חובה</span>';
+    } else {
+      contractLabel.innerHTML = '<span style="color: var(--mid-text);">(אופציונלי)</span>';
+    }
+  }
+  
+  if(screenId === 'report') {
+    updateReportScreen();
+  }
+}
+
+function updateReportScreen() {
+  const lawData = LAW.youth[state.age];
+  
+  let html = `
+    <div class="report-section">
+      <div class="report-title">📊 נתונים חוקיים לגילך</div>
+      <div class="report-text">
+        <strong>גיל:</strong> ${state.age}<br>
+        <strong>שכר מינימום:</strong> ${lawData.hourly}₪/שעה<br>
+        <strong>שעות ביום:</strong> עד ${lawData.maxDaily} שעות<br>
+        <strong>שעות בשבוע:</strong> עד ${lawData.maxWeekly} שעות<br>
+        <strong>עבודה עד:</strong> ${lawData.nightEnd ? lawData.nightEnd + ':00' : 'ללא הגבלה'}<br>
+        ${state.age === '14' ? '<br><strong style="color: var(--red);">⚠️ גיל 14 - הגבלות מאד חמורות!</strong>' : ''}
+      </div>
+    </div>
+    
+    ${state.hasattendance === 'no' ? `
+    <div class="report-section">
+      <div class="report-title">📊 הנתונים שהזנת (ללא גליון נוכחות)</div>
+      <div class="report-text">
+        ${state.attendanceData.details && state.attendanceData.details.length > 0 ? `
+          <div style="margin-bottom: 12px;">
+            <strong>ימי עבודה מפורטים:</strong>
+            <div style="margin-top: 8px; background: white; padding: 8px; border-radius: 6px;">
+              ${state.attendanceData.details.map(day => `
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1.5fr; gap: 12px; padding: 6px 0; border-bottom: 1px solid #eee; font-size: 12px;">
+                  <div><strong>${day.date}</strong></div>
+                  <div>${getDayOfWeek(day.date)}</div>
+                  <div>${day.hours} שעות</div>
+                  <div style="color: ${isSchoolHoliday(day.date) ? 'var(--green)' : 'var(--orange)'}">
+                    ${isSchoolHoliday(day.date) ? `🏖️ ${getHolidayName(day.date)}` : 'זמן לימודים'}
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          <strong>סה"כ ימים:</strong> ${state.attendanceData.daysWorked}<br>
+          <strong>סה"כ שעות:</strong> ${state.attendanceData.details.reduce((sum, row) => sum + row.hours, 0)}<br>
+        ` : `
+          <strong>ימים עבודה:</strong> ${state.attendanceData.daysWorked} ימים<br>
+          <strong>שעות ביום:</strong> ${state.attendanceData.dailyHours} שעות<br>
+          <strong>סה"כ שעות:</strong> ${state.attendanceData.daysWorked * state.attendanceData.dailyHours} שעות<br>
+        `}
+      </div>
+    </div>
+    ` : ''}
+      <div class="report-title">📄 מה חולץ מהקבצים</div>
+      <div class="report-text">
+        <strong>שכר לשעה:</strong> ${state.extractedData.hourlyWage ? state.extractedData.hourlyWage + '₪' : '❌ לא נמצא'}<br>
+        <strong>סה"כ שעות:</strong> ${state.extractedData.totalHours || '❌ לא נמצא'}<br>
+        <strong>סה"כ תשלום:</strong> ${state.extractedData.totalWagePaid ? state.extractedData.totalWagePaid + '₪' : '❌ לא נמצא'}<br>
+        <strong>גיל בחוזה:</strong> ${state.extractedData.contractAge || '❌ לא נמצא'}<br>
+        <strong>ימים עבודה:</strong> ${state.extractedData.workDates.length}
+      </div>
+    </div>
+    
+    ${state.hascontract === 'no' ? `
+    <div class="report-section">
+      <div class="report-title">📋 התנאים שהזנת (ללא חוזה רשמי)</div>
+      <div class="report-text">
+        <strong>שכר לשעה:</strong> ${state.contractData.hourly}₪<br>
+        <strong style="color: var(--red);">⚠️ זכור: חוזה בכתב זה זכותך! דרוש חוזה בכתב מהמעסיק.</strong>
+      </div>
+    </div>
+    ` : ''}
+    
+    ${state.extractedData.workPeriodBreakdown.schoolDays > 0 || state.extractedData.workPeriodBreakdown.holidayDays > 0 ? `
+    <div class="report-section">
+      <div class="report-title">📅 ניתוח תאריכים</div>
+      <div class="report-text">
+        <strong>בלימודים:</strong> ${state.extractedData.workPeriodBreakdown.schoolDays} ימים<br>
+        <strong>בחופשה:</strong> ${state.extractedData.workPeriodBreakdown.holidayDays} ימים
+      </div>
+    </div>
+    ` : ''}
+  `;
+  
+  document.getElementById('report-content').innerHTML = html;
+}
+
+function updateProfile() {
+  const ageMap = { '14': '14', '15': '15', '16': '16', '17': '17' };
+  
+  document.getElementById('profile-age').textContent = ageMap[state.age] || '-';
+}
+
+document.getElementById('btn-reset').addEventListener('click', () => {
+  if(confirm('איפוס מחדש?')) {
+    // Clear attendance rows
+    attendanceRows = [];
+    
+    Object.assign(state, {
+      age: null, hasattendance: null, hascontract: null, errors: [], warnings: [], info: [],
+      attendanceData: {
+        daysWorked: null,
+        dailyHours: null,
+        details: []
+      },
+      contractData: {
+        hourly: null,
+        dailyHours: null,
+        startDate: null,
+        daysWorked: null,
+        hasBreaks: false,
+        nightWork: false,
+        nightEnd: null,
+        saturdayWork: false
+      },
+      uploads: { payslip: null, attendance: null, contract: null },
+      extractedData: {
+        hourlyWage: null, totalHours: null, totalWagePaid: null, nightShifts: [], workDates: [],
+        contractAge: null, hasContract: false, hasPaySlip: false, hasBreaks: false,
+        actualPeriod: null, workPeriodBreakdown: { schoolDays: 0, holidayDays: 0 }, deductions: 0
+      }
+    });
+    document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+    document.getElementById('btn-start').disabled = true;
+    // Reset attendance form
+    document.getElementById('attendance-table').innerHTML = '';
+    document.getElementById('total-days').textContent = '0';
+    document.getElementById('total-hours').textContent = '0';
+    ['payslip', 'attendance', 'contract'].forEach(t => {
+      document.getElementById(`file-list-${t}`).innerHTML = '';
+    });
+    showScreen('home');
+  }
+});
+</script>
+
+</body>
+</html>
