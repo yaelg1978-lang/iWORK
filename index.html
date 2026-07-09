@@ -705,6 +705,14 @@ async function readPayslip(file) {
   const deductMatch = text.match(/(?:ניכוי|deduction|tax).*?(\d+\.?\d*)/i);
   state.extractedData.deductions = deductMatch ? parseFloat(deductMatch[1]) : 0;
   
+  // חלץ שם עובד
+  const nameMatch = text.match(/(?:שם|name)\s*[:=]?\s*([^\n\t,]+)/i);
+  state.extractedData.employeeName = nameMatch ? nameMatch[1].trim() : null;
+  
+  // חלץ מספר זהות
+  const idMatch = text.match(/(?:תעודת זהות|מספר זהות|id|identity|תז)\s*[:=]?\s*(\d+)/i);
+  state.extractedData.employeeId = idMatch ? idMatch[1] : null;
+  
   state.extractedData.hasPaySlip = true;
 }
 
@@ -738,7 +746,19 @@ async function readContract(file) {
   
   const ageMatch = text.match(/(?:גיל|age)\s*[:=]?\s*(\d+)/i);
   state.extractedData.contractAge = ageMatch ? parseInt(ageMatch[1]) : null;
+  
+  // חלץ שם מעסיק
+  const employerMatch = text.match(/(?:מעסיק|employer|company|חברה)\s*[:=]?\s*([^\n]+)/i);
+  state.extractedData.employerName = employerMatch ? employerMatch[1].trim() : null;
+  
+  // בדוק אם יש מידע בחוזה
   state.extractedData.hasContract = true;
+  
+  // חלץ שכר לשעה מחוזה אם קיים
+  const hourlyMatch = text.match(/(?:שכר|wage|salary)\s*(?:לשעה|per hour)?\s*[:=]?\s*(\d+\.?\d*)/i);
+  if(hourlyMatch) {
+    state.extractedData.hourlyWage = parseFloat(hourlyMatch[1]);
+  }
   
   const breakMatch = text.match(/הפסקה|break|45|דקה/i);
   state.extractedData.hasBreaks = breakMatch ? true : false;
@@ -894,6 +914,71 @@ async function runValidation() {
 
   if(state.extractedData.contractAge && state.extractedData.contractAge != state.age) {
     state.warnings.push(`⚠️ הגיל בחוזה: בחוזה כתוב גיל ${state.extractedData.contractAge}, אתה בן/בת ${state.age}`);
+  }
+
+  // ===== בדיקות שדות חובה בחוזה =====
+  if(state.hascontract === 'yes' && state.uploads.contract) {
+    // אם הועלה חוזה, בדוק שדות חובה
+    let missingFields = [];
+    
+    if(!state.extractedData.employerName || state.extractedData.employerName.length < 2) {
+      missingFields.push('שם מעסיק');
+    }
+    if(!state.extractedData.contractAge) {
+      missingFields.push('גיל עובד');
+    }
+    if(!state.extractedData.hourlyWage) {
+      missingFields.push('שכר לשעה');
+    }
+    
+    if(missingFields.length > 0) {
+      state.warnings.push(`⚠️ חוזה - שדות חסרים: לא נמצאו: ${missingFields.join(', ')}. בדוק שהחוזה מכיל שדות חובה אלה`);
+    } else {
+      state.info.push(`ℹ️ חוזה - שדות חובה: ✓ נמצאו כל השדות החובה בחוזה`);
+    }
+  }
+
+  // ===== בדיקות שדות חובה בתלוש =====
+  if(state.uploads.payslip && state.extractedData.totalWagePaid) {
+    // אם הועלה תלוש, בדוק שדות חובה
+    let missingFields = [];
+    
+    if(!state.extractedData.employeeName || state.extractedData.employeeName.length < 2) {
+      missingFields.push('שם עובד');
+    }
+    if(!state.extractedData.employeeId) {
+      missingFields.push('מספר זהות');
+    }
+    if(!state.extractedData.hourlyWage) {
+      missingFields.push('שכר לשעה');
+    }
+    if(!state.extractedData.totalHours) {
+      missingFields.push('סה"כ שעות');
+    }
+    
+    if(missingFields.length > 0) {
+      state.warnings.push(`⚠️ תלוש - שדות חסרים: לא נמצאו: ${missingFields.join(', ')}. בדוק שהתלוש מכיל שדות חובה אלה`);
+    } else {
+      state.info.push(`ℹ️ תלוש - שדות חובה: ✓ נמצאו כל השדות החובה בתלוש`);
+    }
+  }
+
+  // ===== בדיקה לניכויים בלתי חוקיים =====
+  // ניכויים חוקיים: מס הכנסה, קופת גמל, ביטוח לאומי
+  // ניכויים בלתי חוקיים: פריקה, נזק, קנס, דיור, הוצאות
+  
+  if(state.extractedData.deductions && state.extractedData.deductions > 0) {
+    const deductionPercent = (state.extractedData.deductions / (state.extractedData.totalWagePaid || 1)) * 100;
+    
+    // אם יש ניכוי גדול - זה סימן אפשרי לבעיה
+    if(deductionPercent > 15) {
+      state.warnings.push(`⚠️ ניכויים גבוהים: יש ניכוי של ${deductionPercent.toFixed(1)}% מהשכר - בדוק שהוא חוקי (חוקיים בלבד: מס הכנסה, קופת גמל, ביטוח לאומי)`);
+    }
+    
+    // אם יש ניכוי יותר מדי גבוה - זה בעיה
+    if(deductionPercent > 30) {
+      state.errors.push(`⛔ ניכויים בלתי חוקיים: ניכוי של ${deductionPercent.toFixed(1)}% הוא מעל 30% - זה בחזקת הוכחה לניכויים בלתי חוקיים!`);
+    }
   }
 
   // 13. חוזה בכתב (הודעה אם בחר "אין חוזה")
