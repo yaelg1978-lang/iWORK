@@ -240,9 +240,27 @@ body { min-height: 100vh; overflow-x: hidden; }
   </div>
 
   <div id="screen-home" class="screen active">
+    <!-- Welcome Section -->
+    <div style="text-align: right; margin: 20px 0 24px; padding: 16px; background: rgba(88, 204, 2, 0.1); border-radius: 12px; border-right: 4px solid var(--green);">
+      <div style="font-size: 18px; font-weight: 700; color: var(--dark-text); margin-bottom: 12px;">🚀 ברוכים הבאים ל-MyPay</div>
+      
+      <div style="font-size: 14px; font-weight: 600; color: var(--dark-text); margin-bottom: 8px;">מה האפליקציה עושה:</div>
+      <div style="font-size: 13px; color: var(--mid-text); line-height: 1.6; margin-bottom: 12px;">✅ בודקת אם המעסיק שלך משלם לך כחוק</div>
+      
+      <div style="font-size: 14px; font-weight: 600; color: var(--dark-text); margin-bottom: 8px;">איך להתחיל:</div>
+      <div style="font-size: 13px; color: var(--mid-text); line-height: 1.8; margin-bottom: 12px;">
+        1. בחר את הגיל שלך<br>
+        2. העלה את המסמכים שלך (תלוש, חוזה, נוכחות)<br>
+        3. האפליקציה בודקת הכל<br>
+        4. קבל דוח מלא על מה שלא שולם לך או לא נעשה כחוק
+      </div>
+      
+      <div style="font-size: 12px; color: var(--green); font-weight: 600;">🔒 כל המידע שלך נשאר בטלפון שלך בלבד - בטוח ופרטי!</div>
+    </div>
+    
     <!-- Header Logo and Title -->
     <div style="text-align: center; margin: 24px 0 32px;">
-      <div style="font-size: 14px; font-weight: 600; color: var(--dark-text); letter-spacing: 0.5px;">תענה על השאלות הבאות ונתקדם:</div>
+      <h2 style="margin: 24px 0 16px; text-align: right;">תענה על השאלות הבאות ונתקדם:</h2>
     </div>
     
     <div style="margin: 32px 0;">
@@ -413,6 +431,9 @@ body { min-height: 100vh; overflow-x: hidden; }
 
   <div id="screen-chat" class="screen">
     <h2 style="margin: 24px 0 16px;">💬 צ'אט עם בודק שכר</h2>
+    <div style="background: var(--light-gray); padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 13px; color: var(--mid-text); text-align: right;">
+      ℹ️ הערה: כדי להשתמש בצ'אט, עליך למלא את הגיל שלך בדף הבית קודם לכן.
+    </div>
     
     <div class="chat-log" id="chat-log"></div>
     <div class="chat-input">
@@ -429,7 +450,18 @@ body { min-height: 100vh; overflow-x: hidden; }
         <button class="quick-q" data-q="sabbath">📅 עבודה בשבת?</button>
         <button class="quick-q" data-q="school">🎓 בזמן לימודים?</button>
         <button class="quick-q" data-q="contract">📄 מה בחוזה?</button>
-        <button class="quick-q" data-q="vacation">🏖️ כמה חופשה?</button>
+        <button class="quick-q" data-q="vacation">🏖️ כמה חופש?</button>
+        <button class="quick-q" data-q="breaks">🕐 הפסקות?</button>
+        <button class="quick-q" data-q="deductions">💳 ניכויים חוקיים?</button>
+        <button class="quick-q" data-q="payslip">📋 מה בתלוש?</button>
+        <button class="quick-q" data-q="holidays">🎉 שכר בחגים?</button>
+        <button class="quick-q" data-q="overtime">⏳ שעות נוספות?</button>
+        <button class="quick-q" data-q="shortterm">📍 עבודה קצרה?</button>
+        <button class="quick-q" data-q="termination">🚪 סיום עבודה?</button>
+        <button class="quick-q" data-q="blackwork">⚫ עבודה בשחור?</button>
+        <button class="quick-q" data-q="socialinsurance">🏥 ביטוח לאומי?</button>
+        <button class="quick-q" data-q="sick">🤒 ימי מחלה?</button>
+        <button class="quick-q" data-q="complaint">📞 לאן לפנות?</button>
         <button class="quick-q" data-q="mydata">📊 מה הנתונים שלי?</button>
       </div>
     </div>
@@ -445,6 +477,12 @@ body { min-height: 100vh; overflow-x: hidden; }
     <div class="profile-section">
       <div class="profile-item"><span class="profile-label">גיל:</span> <span id="profile-age">-</span></div>
     </div>
+    
+    <h3 style="font-size: 16px; font-weight: 700; margin: 24px 0 12px; text-align: right;">✅ הזכויות החוקיות שלך:</h3>
+    <div id="rights-list" style="background: var(--light-gray); padding: 16px; border-radius: 12px; margin-bottom: 16px;">
+      <!-- זכויות יתעדכנו כאן בהתאם לגיל -->
+    </div>
+    
     <button class="btn btn-red" id="btn-reset">🗑 איפוס מחדש</button>
   </div>
 
@@ -452,7 +490,7 @@ body { min-height: 100vh; overflow-x: hidden; }
     <button class="nav-item active" data-screen="home">🏠</button>
     <button class="nav-item inactive" data-screen="scan">📁</button>
     <button class="nav-item inactive" data-screen="chat">💬</button>
-    <button class="nav-item inactive" data-screen="report">📋</button>
+
     <button class="nav-item inactive" data-screen="profile">👤</button>
   </div>
 </div>
@@ -531,6 +569,7 @@ const state = {
   uploads: { payslip: null, attendance: null, contract: null },
   extractedData: {
     hourlyWage: null,
+    contractHourlyWage: null,
     totalHours: null,
     totalWagePaid: null,
     nightShifts: [],
@@ -636,6 +675,11 @@ document.querySelectorAll('.option').forEach(opt => {
     
     state[q] = v;
     
+    // Update profile if age was changed
+    if(q === 'age') {
+      updateProfile();
+    }
+    
     // Show/hide attendance form
     if(q === 'hasattendance') {
       const form = document.getElementById('attendance-form');
@@ -733,14 +777,20 @@ Object.entries(uploadTypes).forEach(([type, config]) => {
 
 async function readPayslip(file) {
   const text = await extractText(file);
-  const wageMatch = text.match(/(?:שכר|wage|salary|payment).*?(\d+\.?\d*)/i);
-  state.extractedData.hourlyWage = wageMatch ? parseFloat(wageMatch[1]) : null;
   
-  const totalMatch = text.match(/(?:סכום|total|סה"כ).*?(\d+\.?\d*)/i);
-  state.extractedData.totalWagePaid = totalMatch ? parseFloat(totalMatch[1]) : null;
+  // Extract hourly wage - specifically look for "שכר לשעה" followed by number
+  // This is the MOST specific pattern - must match the exact phrase
+  const wageMatch = text.match(/שכר\s+לשעה[^\n]*?(\d+(?:[.,]\d+)?)\s*[₪$€]/i);
+  state.extractedData.hourlyWage = wageMatch ? parseFloat(wageMatch[1].replace(',', '.')) : null;
+  console.log(`DEBUG readPayslip: hourlyWage=${state.extractedData.hourlyWage}`);
   
-  const deductMatch = text.match(/(?:ניכוי|deduction|tax).*?(\d+\.?\d*)/i);
-  state.extractedData.deductions = deductMatch ? parseFloat(deductMatch[1]) : 0;
+  // Extract total wage (brutto) - specifically look for "שכר ברוטו"
+  const totalMatch = text.match(/שכר\s+ברוטו[^\n]*?(\d+(?:[.,]\d+)?)\s*[₪$€]/i);
+  state.extractedData.totalWagePaid = totalMatch ? parseFloat(totalMatch[1].replace(',', '.')) : null;
+  
+  // Extract deductions - specifically look for "סה"כ ניכויים"
+  const deductMatch = text.match(/סה["\u05f4]כ\s+ניכויים[^\n]*?(\d+(?:[.,]\d+)?)\s*[₪$€]/i);
+  state.extractedData.deductions = deductMatch ? parseFloat(deductMatch[1].replace(',', '.')) : 0;
   
   // חלץ שם עובד
   const nameMatch = text.match(/(?:שם|name)\s*[:=]?\s*([^\n\t,]+)/i);
@@ -791,10 +841,11 @@ async function readContract(file) {
   // בדוק אם יש מידע בחוזה
   state.extractedData.hasContract = true;
   
-  // חלץ שכר לשעה מחוזה אם קיים
+  // חלץ שכר לשעה מחוזה אם קיים - שמור בנפרד כדי להשוות עם התלוש
   const hourlyMatch = text.match(/(?:שכר|wage|salary)\s*(?:לשעה|per hour)?\s*[:=]?\s*(\d+\.?\d*)/i);
   if(hourlyMatch) {
-    state.extractedData.hourlyWage = parseFloat(hourlyMatch[1]);
+    state.extractedData.contractHourlyWage = parseFloat(hourlyMatch[1]);
+    console.log(`DEBUG readContract: contractHourlyWage=${state.extractedData.contractHourlyWage}`);
   }
   
   const breakMatch = text.match(/הפסקה|break|45|דקה/i);
@@ -855,7 +906,7 @@ async function runValidation() {
       // Check if it's a school holiday
       const holiday = getHolidayName(dayData.date);
       if(isSchoolHoliday(dayData.date)) {
-        state.info.push(`ℹ️ ${dayData.date} (${dayOfWeek}) - חופשה רשמית: ${holiday}`);
+        state.info.push(`ℹ️ ${dayData.date} (${dayOfWeek}) - חופש רשמי: ${holiday}`);
         return; // Skip other checks for holiday
       }
       
@@ -864,7 +915,16 @@ async function runValidation() {
         state.errors.push(`⛔ עבודה בזמן לימודים: עבדת ב-${dayData.date} (${dayOfWeek}) בזמן לימודים - אסור לעובד צעיר בגיל ${state.age}`);
       }
       
-      // Check for Saturday work
+      // Check for Saturday work - by actual date calculation
+      const dateObj = new Date(dayData.date);
+      const dayOfWeekNum = dateObj.getDay(); // 0=Sunday, 1=Monday, ..., 5=Friday, 6=Saturday
+      const isActualSaturday = dayOfWeekNum === 6;
+      
+      if(isActualSaturday) {
+        state.errors.push(`⛔ עבודה בשבת: התאריך ${dayData.date} הוא שבת (גם אם כתוב אחרת בגליון) - עבודה בשבת אסורה לנוער!`);
+      }
+      
+      // Also check if text says Saturday
       if(dayOfWeek === 'שבת') {
         state.errors.push(`⛔ עבודה בשבת: עבדת בשבת ב-${dayData.date} - עבודה בשבת אסורה לנוער!`);
       }
@@ -928,13 +988,13 @@ async function runValidation() {
     state.warnings.push(`⚠️ הפסקות: בעבודה של 6+ שעות, חובה הפסקה של 45 דקות - לא נמצאה בחוזה`);
   }
 
-  const saturdayWork = state.extractedData.workDates.filter(d => {
+  const saturdayWorkDates = state.extractedData.workDates.filter(d => {
     const date = new Date(d);
     return date.getDay() === 6;
-  }).length;
+  });
   
-  if(saturdayWork > 0) {
-    state.errors.push(`⛔ עבודה בשבת: נמצאו ${saturdayWork} ימי שבת - עבודה בשבת אסורה לנוער`);
+  if(saturdayWorkDates.length > 0) {
+    state.errors.push(`⛔ עבודה בשבת: נמצאו ${saturdayWorkDates.length} ימי שבת (התאריכים בפועל): ${saturdayWorkDates.join(', ')} - עבודה בשבת אסורה לנוער`);
   }
 
   if(state.extractedData.totalHours > (lawData.maxDaily * 5) && state.age < 17) {
@@ -1000,6 +1060,40 @@ async function runValidation() {
     }
   }
 
+  // ===== בדיקת כל ערכי השכר לשעה שנמצאו בקבצים השונים =====
+  let wageLocations = [];
+  if(state.extractedData.hourlyWage) {
+    wageLocations.push(`תלוש: ${state.extractedData.hourlyWage}₪`);
+  }
+  if(state.extractedData.contractHourlyWage) {
+    wageLocations.push(`חוזה: ${state.extractedData.contractHourlyWage}₪`);
+  }
+  
+  if(wageLocations.length > 0) {
+    state.info.push(`ℹ️ שכר לשעה - מקומות שנמצאו: ${wageLocations.join(', ')}`);
+  }
+
+  // ===== בדיקת התאמה בין שכר בחוזה לשכר בתלוש =====
+  console.log(`DEBUG: contractHourlyWage=${state.extractedData.contractHourlyWage}, hourlyWage=${state.extractedData.hourlyWage}`);
+  if(state.extractedData.contractHourlyWage) {
+    if(state.extractedData.hourlyWage) {
+      // שניהם קיימים - בדוק אם תואמים
+      console.log(`DEBUG: Comparing ${state.extractedData.contractHourlyWage} !== ${state.extractedData.hourlyWage}`);
+      if(state.extractedData.contractHourlyWage !== state.extractedData.hourlyWage) {
+        console.log(`DEBUG: Mismatch detected!`);
+        state.errors.push(`⛔ חוסר התאמה בשכר - שכר שונה במקומות שונים:`);
+        state.errors.push(`   ▪ חוזה: ${state.extractedData.contractHourlyWage}₪/שעה`);
+        state.errors.push(`   ▪ תלוש: ${state.extractedData.hourlyWage}₪/שעה`);
+        state.errors.push(`   ▪ פער: ${Math.abs(state.extractedData.hourlyWage - state.extractedData.contractHourlyWage)}₪/שעה`);
+      }
+    } else {
+      console.log(`DEBUG: Only contract wage found`);
+      state.warnings.push(`⚠️ תלוש - שכר לשעה לא נמצא: החוזה מציין ${state.extractedData.contractHourlyWage}₪/שעה, אבל לא הצלחנו לחלץ את שכר השעה מהתלוש`);
+    }
+  } else {
+    console.log(`DEBUG: No contract wage found`);
+  }
+
   // ===== בדיקה לניכויים בלתי חוקיים =====
   // ניכויים חוקיים: מס הכנסה, קופת גמל, ביטוח לאומי
   // ניכויים בלתי חוקיים: פריקה, נזק, קנס, דיור, הוצאות
@@ -1035,7 +1129,7 @@ async function runValidation() {
 
   const daysWorked = state.extractedData.workDates.length;
   if(daysWorked > 90) {
-    state.info.push(`ℹ️ חופשה שנתית: עבדת ${daysWorked} ימים - זכאות ל-18 ימי חופשה לשנה`);
+    state.info.push(`ℹ️ חופש שנתי: עבדת ${daysWorked} ימים - זכאות ל-18 ימי חופש לשנה`);
   }
 
   if(state.extractedData.workDates.length > 0) {
@@ -1166,9 +1260,9 @@ function getChatResponse(question) {
   
   if(question === 'school') {
     if(state.age < 16) {
-      return `🎓 בגיל ${state.age}, עבודה בזמן לימודים היא אסורה חוקית!\n\nהמערכת בודקת אוטומטית את ימי הלימודים והחופשות הרשמיות שלך.`;
+      return `🎓 בגיל ${state.age}, עבודה בזמן שנת הלימודים היא אסורה חוקית!\n\n✅ אתה כן יכול/ה לעבוד בחופשים (חופש גדול, חופש קטן וכו')\n❌ אבל לא בימי לימודים רגילים\n\nהמערכת בודקת אוטומטית את ימי הלימודים והחופשות הרשמיות שלך.`;
     }
-    return `🎓 בגיל ${state.age}, ניתן לעבוד בזמן לימודים בתנאים מסויימים.\n\nהמערכת בודקת אוטומטית את ימי הלימודים והחופשות הרשמיות שלך.`;
+    return `🎓 בגיל ${state.age}, ניתן לעבוד בזמן לימודים בתנאים מסויימים.\n\n✅ אתה יכול/ה לעבוד בחופשים (חופש גדול, חופש קטן וכו')\n\nהמערכת בודקת אוטומטית את ימי הלימודים והחופשות הרשמיות שלך.`;
   }
   
   if(question === 'contract') {
@@ -1176,8 +1270,52 @@ function getChatResponse(question) {
     return `📄 בחוזה חייב להיות:\n${items.join('\n')}\n\n${state.extractedData.contractAge ? '✓ בחוזה שלך כתוב גיל ' + state.extractedData.contractAge : '❌ לא נמצא גיל בחוזה'}`;
   }
   
+  if(question === 'breaks') {
+    return `🕐 הפסקה בעבודה:\n\n✅ בעבודה של 6 שעות או יותר: הפסקה של 45 דקות\n✅ הפסקה זו לא נחשבת כשעות עבודה\n✅ חייבים לתת אותה באמצע היום או בסוף (לפי הסכם)\n\n${state.extractedData.hasBreaks ? '✓ בחוזה שלך כתוב על הפסקות' : 'בדוק את החוזה שלך לפרטים על הפסקות'}`;
+  }
+
+  if(question === 'deductions') {
+    return `💰 ניכויים מהשכר - מה חוקי:\n\n✅ חוקיים:\n   • מס הכנסה\n   • ביטוח לאומי (בדרך כלל)\n   • קופת גמל (אם הסכמת)\n\n❌ בלתי חוקיים:\n   • דורון למעסיק\n   • קנסות\n   • סכום גבוה שלא הוסכם\n   • ניכוי מעל 30% מהשכר\n\n⚠️ בדוק את התלוש שלך - ${state.extractedData.deductions ? `יש לך ניכויים של ${state.extractedData.deductions}₪` : 'אם יש ניכויים לא מוסברים, זה חוקי!'}`;
+  }
+
+  if(question === 'payslip') {
+    return `📄 תלוש שכר - מה חייב להיות בו:\n\n✅ שדות חובה:\n   • שם העובד ותעודת זהות\n   • שם המעסיק וכתובת\n   • תאריך ותקופת עבודה\n   • מספר שעות עבודה\n   • שכר לשעה ושכר ברוטו\n   • רכיבי ניכויים (מס, ביטוח וכו')\n   • שכר נקי (אחרי ניכויים)\n   • תאריך תשלום\n\n⚠️ אם חסר מידע כלשהו, בקש מהמעסיק תלוש עדכני!\n✅ חסוך את כל התלושים שלך`;
+  }
+
+  if(question === 'holidays') {
+    return `🎉 עבודה בחגים - שכר מוגבר:\n\n✅ בימי חג:\n   • שכר מוגבר של 125% (125% מהשכר הרגיל)\n   • בחגים מסויימים עד 150-200%\n\n📅 חגים שמעניינים:\n   • יום העצמאות\n   • חנוכה\n   • פסח (ערבי אל וחג)\n   • שבועות\n   • ראש השנה וכיפור\n   • סוכות\n\n💡 בדוק בחוזה או עם המעסיק מה השכר בחגים\n⚠️ אם לא שילموך בצורה הגבוהה יותר, זה עברה חוקית`;
+  }
+
+  if(question === 'overtime') {
+    return `⏰ עבודה מעבר ל-40 שעות בשבוע:\n\n✅ זכויות כל גיל:\n   • שעות נוספות צריכות להיות מתויקות\n   • יכול להיות תשלום תוספת או זמן חופש במקום\n\n⚠️ אם עבדת יותר מ-${lawData.maxWeekly} שעות בשבוע:\n   ${state.extractedData.totalHours && state.extractedData.totalHours > lawData.maxWeekly ? '❌ זה חריגה מהחוק!' : '✓ עדכן אם יש שעות נוספות'}\n\n💡 דבר עם המעסיק על פיצוי על שעות נוספות`;
+  }
+
+  if(question === 'shortterm') {
+    return `📍 עבודה קצרה (פחות מ-3 חודשים):\n\n✅ הזכויות שלך בעבודה קצרה:\n   • שכר מינימום חוקי - חייבים לתת\n   • ניכויים (מס וביטוח) - כמו בעבודה רגילה\n   • תלוש שכר - חייבים לתת\n   • בדיקת שעות ושיכור\n\n❌ מה לא חייבים לתת:\n   • חופש שנתי (רק בעבודה ממושכת)\n   • פיצוי התפטרות\n\n⚠️ עדיין יש לך זכויות! בדוק את התלוש`;
+  }
+
+  if(question === 'termination') {
+    return `🚪 התפטרות או סיום עבודה:\n\n✅ זכויות שלך בסיום:\n   • תשלום חופש שנתי שלא ניצלת\n   • תשלום חו"ד (פיצוי פרישה) - לפי חוק\n   • תשלום ימי מחלה בלתי מנוצלים\n   • תלוש סופי עם כל הנתונים\n\n💡 חוק ההשכרה מגן עליך גם בסיום עבודה\n\n⚠️ אם לא קיבלת כל זה - בקש מהמעסיק!\nאם סירב - פנה ל-MOITAL`;
+  }
+
+  if(question === 'blackwork') {
+    return `⚫ עבודה בשחור - זה מסוכן!\n\n❌ מה הבעיה בעבודה בשחור:\n   • אין ביטוח לאומי\n   • אין ביטוח בעבודה (אם נפגעת)\n   • אין תלוש רשמי (קשה להוכיח)\n   • אין זכויות חוקיות\n   • המעסיק יכול לא לשלם בכלל\n\n⚠️ מה לעשות:\n   1. דרוש תלוש בכתב\n   2. הסכם בכתב עם המעסיק\n   3. אם סירב - דוח ל-MOITAL\n   4. רישום רשמי של העבודה\n\n💡 זכויותיך מוגנות גם בעבודה בשחור!`;
+  }
+
+  if(question === 'socialinsurance') {
+    return `🏥 ביטוח לאומי ומס הכנסה - למה מנכים:\n\n💰 ניכויים חוקיים מהשכר:\n   • ביטוח לאומי (~7-7.5%) - כיסוי בעבודה, מחלה, בטיחות\n   • מס הכנסה (~10%) - מס למדינה\n\n✅ מה אתה מקבל בחזרה:\n   • כיסוי בעבודה (אם נפגעת)\n   • ביטוח בעבודה של 3 חודשים בשנה\n   • זכות לתגמול אם מעוטל\n   • חופש מבוטח\n\n💡 הניכויים הם להגנה שלך, לא הוצאה\n⚠️ אם לא קיבלת ניכויים - בעיה! פנה ל-MOITAL`;
+  }
+
   if(question === 'vacation') {
-    return `🏖️ זכאות לחופשה שנתית: 18 ימים לשנה.\n${state.extractedData.workDates.length > 90 ? '✓ עבדת מספיק כדי להיות זכאי/ת לחופשה' : 'עבדת ' + state.extractedData.workDates.length + ' ימים'}`;
+    return `🏖️ חופש שנתי - זכויות שלך:\n\n✅ זכאות לחופש:\n   • בעבודה של שנה שלמה: 18 ימי חופש בשנה\n   • בעבודה קצרה (פחות משנה): זכאי/ת לחופש בחלוקה (יום וחצי בחודש בערך)\n\n📋 חישוב הימים:\n   • 18 ימים = לפחות 2.5 ימים בחודש עבודה\n   • אם עבדת 4 חודשים: בעד לפחות 10 ימי חופש\n\n💡 שימוש בחופש:\n   • חופש מתישנה כל שנה (לפי הנטו הסופי של הקבוצה שלך)\n   • חייב/ת לקחת חופש, לא ניתן לבטל אותו\n   • בסיום עבודה - משלם לך עבור ימי חופש שלא ניצלת\n\n${state.extractedData.workDates.length > 90 ? '✓ בנוכחות שלך: עבדת ' + state.extractedData.workDates.length + ' ימים - אתה זכאי/ת לחופש!' : state.extractedData.workDates.length > 0 ? '▪ בנוכחות שלך: עבדת ' + state.extractedData.workDates.length + ' ימים' : ''}`;
+  }
+
+  if(question === 'sick') {
+    return `🤒 יום מחלה - זכויות שלך:\n\n✅ זכאות לימי מחלה:\n   • אתה זכאי/ת לימי מחלה בשכר מלא\n   • בעבודה של 6 חודשים - 5 ימי מחלה בשנה\n   • בעבודה ממושכת יותר - עד 10 ימים\n\n📋 איך להשתמש:\n   1. דוח למעסיק ביום הראשון של החלות\n   2. קבל אישור מתעודת רופא\n   3. שלח לעורך דין אם צריך\n\n⚠️ אם לא קיבלת שכר בימי מחלה - זו עברה חוקית!`;
+  }
+
+  if(question === 'complaint') {
+    return `📞 אם המעסיק עובר על החוק - לאן לפנות:\n\n1️⃣ **MOITAL - משרד התעסוקה**\n   • דוח על הפרות זכויות עובדים\n   • אתר: www.moital.gov.il\n   • טלפון: 02-5195555\n\n2️⃣ **ביטוח לאומי**\n   • תלונה על ניכויים לא חוקיים\n   • אתר: www.btl.gov.il\n\n3️⃣ **עורך דין עבודה**\n   • הליך משפטי למשיכת כספים\n   • עוד הגנה על זכויותיך\n\n4️⃣ **פיקוח על עבודת נוער**\n   • משרד הכלכלה\n   • דוח על הפרות עבודה של נוער\n\n💡 **שמור ראיות:**\n   • תלושים\n   • מעמודי עבודה\n   • הודעות/צ'אטים עם המעסיק\n   • תמונות של תנאי עבודה\n\n⚠️ אל תחזור לעבודה זו אם מזיקים לך!`;
   }
   
   if(question === 'mydata') {
@@ -1185,15 +1323,21 @@ function getChatResponse(question) {
   }
   
   // ===== שאלות חופשיות - pattern matching חכם =====
-  if(q.includes('שכר') || q.includes('משכור') || q.includes('מינימום') || q.includes('כמה אני מרוויח')) {
+  
+  // בדוק שילובים תחילה (קודם מהשאלות הספציפיות יותר)
+  if((q.includes('שכר') || q.includes('משכור')) && q.includes('שבת')) {
+    return `⛔ בשבת אסור לעבוד לנוער עד גיל 17!\n\nלכן:\n❌ אתה לא זכאי/ת לשכר בשבת (העבודה אסורה)\n💡 אם המעסיק שלם לך בשבת, זה אומר שעברת על החוק\n\n${state.extractedData.workDates.filter(d => new Date(d).getDay() === 6).length > 0 ? '⚠️ בנוכחות שלך נמצאו ימי שבת!' : '✓ לא עבדת בשבת'}`;
+  }
+  
+  if(q.includes('שכר') || q.includes('משכור') || q.includes('מינימום') || q.includes('כמה אני מרוויח') || q.includes('כמה אני מרוויחה')) {
     return getChatResponse('minwage');
   }
   
-  if(q.includes('שעות') && !q.includes('לילה') && !q.includes('שבת')) {
+  if((q.includes('שעות') || q.includes('בכמה שעות')) && !q.includes('לילה') && !q.includes('שבת')) {
     return getChatResponse('hours');
   }
   
-  if(q.includes('לילה') || q.includes('בלילה') || q.includes('שעות מאוחרות') || q.includes('אחרי')) {
+  if(q.includes('לילה') || q.includes('בלילה') || q.includes('שעות מאוחרות') || q.includes('אחרי') || q.includes('רק עד')) {
     return getChatResponse('night');
   }
   
@@ -1201,24 +1345,68 @@ function getChatResponse(question) {
     return getChatResponse('sabbath');
   }
   
-  if(q.includes('לימודים') || q.includes('בזמן') || q.includes('בחופשה') || q.includes('בתוך שנה') || q.includes('בזמן סמסטר')) {
-    return getChatResponse('school');
-  }
-  
-  if(q.includes('חוזה') || q.includes('חוקים') || q.includes('מה צריך') || q.includes('מה צריכה')) {
-    return getChatResponse('contract');
-  }
-  
-  if(q.includes('חופשה') || q.includes('ימי חופשה') || q.includes('זכאות')) {
+  if(q.includes('חופש') || q.includes('ימי חופש') || q.includes('זכאות')) {
     return getChatResponse('vacation');
   }
   
-  if(q.includes('נתונים') || q.includes('שלי') || q.includes('מה הנתונים')) {
+  if(q.includes('לימודים') || q.includes('בזמן') || q.includes('בתוך שנה') || q.includes('בזמן סמסטר') || q.includes('כשיש לי בי"ס')) {
+    return getChatResponse('school');
+  }
+  
+  if(q.includes('חוזה') || q.includes('חוקים') || q.includes('מה צריך') || q.includes('מה צריכה') || q.includes('זכויות')) {
+    return getChatResponse('contract');
+  }
+  
+  if(q.includes('נתונים') || q.includes('שלי') || q.includes('מה הנתונים') || q.includes('מה יש לי')) {
     return getChatResponse('mydata');
   }
   
-  // ===== תשובה כללית =====
-  return '👨‍💼 בודק שכר מוסמך כאן. שאל אותי על:\n▪ שכר מינימום\n▪ שעות עבודה\n▪ עבודה בלילה\n▪ עבודה בשבת\n▪ עבודה בלימודים\n▪ חוזה העסקה\n▪ חופשה שנתית\n▪ הנתונים שלך';
+  if(q.includes('הפסקה') || q.includes('הפסקות') || q.includes('זמן הפסקה') || q.includes('זמן מנוחה') || q.includes('מנוחה') || q.includes('break')) {
+    return getChatResponse('breaks');
+  }
+  
+  if(q.includes('ניכוי') || q.includes('ניכויים') || q.includes('מנכים') || q.includes('הוציאו לי') || q.includes('הם תופסים לי')) {
+    return getChatResponse('deductions');
+  }
+  
+  if(q.includes('תלוש') || q.includes('משכורת') || q.includes('מה צריך בתלוש') || q.includes('תלוש חייב')) {
+    return getChatResponse('payslip');
+  }
+  
+  if(q.includes('חג') || q.includes('חגים') || q.includes('יום העצמאות') || q.includes('פסח') || q.includes('חנוכה') || q.includes('כיפור')) {
+    return getChatResponse('holidays');
+  }
+  
+  if(q.includes('עבודה נוספת') || q.includes('שעות נוספות') || q.includes('יותר מ-40') || q.includes('overtime') || q.includes('יותר שעות')) {
+    return getChatResponse('overtime');
+  }
+  
+  if(q.includes('עבודה קצרה') || q.includes('קצר זמן') || q.includes('חודש') || q.includes('שבועות') || q.includes('זמן קצר')) {
+    return getChatResponse('shortterm');
+  }
+  
+  if(q.includes('התפטרות') || q.includes('סיום') || q.includes('פרישה') || q.includes('מסיימים') || q.includes('עוזבת')) {
+    return getChatResponse('termination');
+  }
+  
+  if(q.includes('שחור') || q.includes('מעסיקים בשחור') || q.includes('בלי תלוש') || q.includes('בלי רישום')) {
+    return getChatResponse('blackwork');
+  }
+  
+  if(q.includes('ביטוח לאומי') || q.includes('מס הכנסה') || q.includes('למה מנכים') || q.includes('ביטוח') || q.includes('מס')) {
+    return getChatResponse('socialinsurance');
+  }
+  
+  if(q.includes('מחלה') || q.includes('חום') || q.includes('חלה') || q.includes('חולה') || q.includes('יום מחלה')) {
+    return getChatResponse('sick');
+  }
+  
+  if(q.includes('תלונה') || q.includes('לאן') || q.includes('לפנות') || q.includes('פנייה') || q.includes('דוח') || q.includes('MOITAL') || q.includes('משרד') || q.includes('עורך דין')) {
+    return getChatResponse('complaint');
+  }
+  
+  // ===== תשובה חכמה כשאין התאמה =====
+  return `😊 שאלה טובה!\n\nלא בדיוק הבנתי, אבל אני יכול/ה לעזור בנושאים:\n💰 שכר מינימום\n⏰ שעות עבודה\n🌙 עבודה בלילה\n📅 עבודה בשבת\n🎓 עבודה בזמן לימודים\n📄 חוזה העסקה\n🏖️ חופש שנתי\n🕐 הפסקות בעבודה\n💳 ניכויים מהשכר\n📋 תלוש שכר\n🎉 שכר בחגים\n⏳ שעות נוספות\n📍 עבודה קצרה\n🚪 סיום עבודה\n⚫ עבודה בשחור\n🏥 ביטוח לאומי ומס\n🤒 ימי מחלה\n📞 לאן לפנות בבעיות\n\nנסה לשאול בקשר לאחד הנושאים האלה!`;
 }
 
 document.querySelectorAll('.quick-q').forEach(btn => {
@@ -1392,7 +1580,7 @@ function updateReportScreen() {
       <div class="report-title">📅 ניתוח תאריכים</div>
       <div class="report-text">
         <strong>בלימודים:</strong> ${state.extractedData.workPeriodBreakdown.schoolDays} ימים<br>
-        <strong>בחופשה:</strong> ${state.extractedData.workPeriodBreakdown.holidayDays} ימים
+        <strong>בחופש:</strong> ${state.extractedData.workPeriodBreakdown.holidayDays} ימים
       </div>
     </div>
     ` : ''}
@@ -1405,6 +1593,56 @@ function updateProfile() {
   const ageMap = { '14': '14', '15': '15', '16': '16', '17': '17' };
   
   document.getElementById('profile-age').textContent = ageMap[state.age] || '-';
+  
+  // Generate rights list based on age
+  const rights = {
+    '14': [
+      '✅ שכר מינימום: 24.50₪/שעה',
+      '✅ מקסימום 8 שעות ביום',
+      '✅ מקסימום 40 שעות בשבוע',
+      '✅ אין עבודה בלילה אחרי 20:00',
+      '✅ אין עבודה בשבת',
+      '✅ אין עבודה בימי לימודים',
+      '✅ הפסקה של 45 דקות בעבודה של 6+ שעות',
+      '✅ ביטוח לאומי ומס הכנסה',
+      '⚠️ הגבלות מחמירות ביותר'
+    ],
+    '15': [
+      '✅ שכר מינימום: 25.28₪/שעה',
+      '✅ מקסימום 8 שעות ביום',
+      '✅ מקסימום 40 שעות בשבוע',
+      '✅ אין עבודה בלילה אחרי 20:00',
+      '✅ אין עבודה בשבת',
+      '✅ אין עבודה בימי לימודים',
+      '✅ הפסקה של 45 דקות בעבודה של 6+ שעות',
+      '✅ ביטוח לאומי ומס הכנסה',
+      '⚠️ הגבלות חמירות'
+    ],
+    '16': [
+      '✅ שכר מינימום: 27.94₪/שעה',
+      '✅ מקסימום 9 שעות ביום',
+      '✅ מקסימום 40 שעות בשבוע',
+      '✅ אין עבודה בלילה אחרי 22:00',
+      '✅ אין עבודה בשבת',
+      '✅ הפסקה של 45 דקות בעבודה של 6+ שעות',
+      '✅ ביטוח לאומי ומס הכנסה',
+      '⚠️ הגבלות ממוזערות'
+    ],
+    '17': [
+      '✅ שכר מינימום: 30.92₪/שעה',
+      '✅ מקסימום 9 שעות ביום',
+      '✅ מקסימום 40 שעות בשבוע',
+      '✅ ניתן להעבוד בלילה עד 23:00',
+      '✅ אין עבודה בשבת',
+      '✅ הפסקה של 45 דקות בעבודה של 6+ שעות',
+      '✅ ביטוח לאומי ומס הכנסה',
+      '✅ הגבלות מינימליות'
+    ]
+  };
+  
+  const ageRights = rights[state.age] || [];
+  const rightsList = document.getElementById('rights-list');
+  rightsList.innerHTML = ageRights.map(r => `<div style="padding: 8px 0; font-size: 14px; line-height: 1.6; text-align: right;">• ${r}</div>`).join('');
 }
 
 document.getElementById('btn-reset').addEventListener('click', () => {
@@ -1431,7 +1669,7 @@ document.getElementById('btn-reset').addEventListener('click', () => {
       },
       uploads: { payslip: null, attendance: null, contract: null },
       extractedData: {
-        hourlyWage: null, totalHours: null, totalWagePaid: null, nightShifts: [], workDates: [],
+        hourlyWage: null, contractHourlyWage: null, totalHours: null, totalWagePaid: null, nightShifts: [], workDates: [],
         contractAge: null, hasContract: false, hasPaySlip: false, hasBreaks: false,
         actualPeriod: null, workPeriodBreakdown: { schoolDays: 0, holidayDays: 0 }, deductions: 0
       }
