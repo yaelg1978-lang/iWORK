@@ -286,13 +286,186 @@
             color: #666;
             font-size: 0.9em;
         }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                border-radius: 15px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+                margin-bottom: 8px;
+            }
+
+            .header p {
+                font-size: 0.95em;
+            }
+
+            .tabs {
+                display: flex;
+                flex-wrap: wrap;
+                border-bottom: 2px solid #f0f0f0;
+            }
+
+            .tab-button {
+                flex: 1;
+                min-width: 80px;
+                padding: 12px 10px;
+                font-size: 0.85em;
+                white-space: normal;
+            }
+
+            .tab-content {
+                padding: 20px;
+            }
+
+            .btn {
+                padding: 10px 16px;
+                font-size: 0.9em;
+                width: 100%;
+                margin: 5px 0;
+            }
+
+            label {
+                font-size: 0.95em !important;
+            }
+
+            input, textarea, select {
+                font-size: 1em !important;
+            }
+
+            .upload-area {
+                padding: 25px;
+            }
+
+            .upload-area p {
+                font-size: 0.95em;
+            }
+
+            .wage-info {
+                padding: 15px !important;
+            }
+
+            .wage-info h3 {
+                font-size: 1em;
+            }
+
+            .wage-info p, .wage-info li {
+                font-size: 0.9em;
+            }
+
+            .alert {
+                padding: 12px;
+                font-size: 0.9em;
+            }
+
+            table {
+                font-size: 0.85em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
+            }
+
+            .header {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 1.5em;
+                margin-bottom: 5px;
+            }
+
+            .header p {
+                font-size: 0.9em;
+            }
+
+            .tabs {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .tab-button {
+                width: 100%;
+                padding: 10px;
+                font-size: 0.8em;
+                border-bottom: 2px solid #f0f0f0;
+                border-right: none;
+            }
+
+            .tab-button.active {
+                border-bottom: 3px solid #667eea;
+                border-right: none;
+            }
+
+            .tab-content {
+                padding: 15px;
+            }
+
+            .btn {
+                padding: 10px 12px;
+                font-size: 0.85em;
+            }
+
+            label {
+                font-size: 0.9em !important;
+            }
+
+            input, textarea, select {
+                font-size: 0.95em !important;
+            }
+
+            .upload-area {
+                padding: 15px;
+            }
+
+            .upload-area p {
+                font-size: 0.85em;
+            }
+
+            .wage-info {
+                padding: 12px !important;
+            }
+
+            .wage-info h3 {
+                font-size: 0.95em;
+            }
+
+            .wage-info p, .wage-info li {
+                font-size: 0.85em;
+            }
+
+            .alert {
+                padding: 10px;
+                font-size: 0.85em;
+            }
+
+            table {
+                font-size: 0.8em;
+            }
+
+            .footer {
+                font-size: 0.8em;
+                padding: 15px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>💼 MyPay</h1>
-            <p>בדוק את זכויות השכר שלך בקלות</p>
+            <h1>MyPay</h1>
+            <p>אפליקציה לנוער בגילאי 14-18 לבדיקת תלוש שכר והעסקה חוקית</p>
         </div>
 
         <div class="tabs">
@@ -305,19 +478,10 @@
         <!-- TAB 1: תלוש שכר -->
         <div id="payslip" class="tab-content active">
             <h2>📄 נתוני תלוש שכר</h2>
-            <p style="color: #666; margin-bottom: 20px;">הזן את פרטי תלוש השכר שלך</p>
-
-            <div class="alert alert-info" style="background: #e3f2fd; border-right: 4px solid #2196f3; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                <p style="color: #1565c0; margin: 0;"><strong>💡 חשוב:</strong></p>
-                <p style="color: #1565c0; margin: 10px 0 0 0;">תמלא את כל השדות למטה ואז תלחץ על "שמור נתונים"</p>
-            </div>
-
+            <p style="color: #1565c0; margin-bottom: 20px;">💡 תמלא את כל השדות למטה ואז תלחץ על "שמור נתונים"</p>
             <label style="display: block; font-weight: 600; margin-bottom: 10px;">תאריך לידה:</label>
-            <input type="date" id="birthDateInput" onchange="displayAge()" style="width: 100%; margin-bottom: 10px; font-size: 1.1em; padding: 10px;">
-            <div id="ageDisplay" style="background: #e8f5e9; padding: 12px; border-radius: 8px; border-right: 3px solid #4caf50; margin-bottom: 20px; display: none;">
-                <p style="margin: 0; color: #2e7d32;"><strong>📅 הגיל שלך:</strong></p>
-                <p id="ageValue" style="font-size: 1.3em; color: #2e7d32; margin: 5px 0 0 0;"><strong></strong></p>
-            </div>
+            <input type="date" id="birthDateInput" onblur="displayAge()" style="width: 100%; margin-bottom: 10px; font-size: 1.1em; padding: 10px;">
+            <p id="ageDisplay" style="color: #1565c0; margin-bottom: 20px; display: none;">הגיל שלך: <span id="ageValue"></span> שנים</p>
 
             <div id="ageWarning" style="background: #b71c1c; padding: 20px; border-radius: 8px; border-right: 4px solid #b71c1c; margin-bottom: 20px; display: none;">
                 <p style="margin: 0; color: #fff; font-size: 1.1em;"><strong>🚨 אסור לך לעבוד לפי החוק!</strong></p>
@@ -326,9 +490,6 @@
                 </p>
                 <p style="color: #fff; margin: 10px 0 0 0; font-size: 0.95em;">
                     גילך הנוכחי: <strong id="warningAge">-</strong> שנים
-                </p>
-                <p style="color: #fff; margin: 10px 0 0 0; font-size: 0.9em;">
-                    חכה עד שתמלא 14 שנים, ואז תוכל להתחיל לעבוד בזמן החופשות.
                 </p>
             </div>
 
@@ -341,7 +502,7 @@
                     גילך הנוכחי: <strong id="warningAgeOver18">-</strong> שנים
                 </p>
                 <p style="color: #fff; margin: 10px 0 0 0; font-size: 0.9em;">
-                    זכויות עובדים מבוגרים שונות מהן של נוער. אנא פנה לעמותות כמו "כל זכות" או "תאגיד הסכמי עבודה" לקבלת ייעוץ מתאים.
+                    זכויות עובדים מבוגרים שונות מהן של נוער.
                 </p>
             </div>
 
@@ -379,23 +540,23 @@
                 <p style="color: #1565c0; margin: 0;"><strong>עלות נסיעה יומית (צפויה):</strong> <span id="transportCostValue">0</span> ₪</p>
             </div>
 
-            <div id="distanceInputContainer" style="display: none; background: #ffcccc; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 2px solid #f44336;">
-                <p style="color: #c62828; margin-bottom: 10px;"><strong>⚠️ בחרת אותה עיר למגורים ולעבודה</strong></p>
-                <label style="display: block; font-weight: 600; margin-bottom: 10px; color: #c62828;">הזן מרחק בק"מ בין הבית לעבודה: <span style="color: #f44336;">*</span></label>
-                <input type="number" id="customDistanceInput" placeholder="לדוגמה: 15" step="0.1" min="0.1" onchange="updateTransportCost()" style="width: 100%; margin-bottom: 10px; font-size: 1.1em; padding: 10px; border: 2px solid #f44336;">
-                <small style="color: #c62828;"><strong>שדה זה הוא חובה!</strong> הזן את המרחק בק"מ בין מקום מגוריך לבין מקום העבודה.</small>
+            <div id="distanceInputContainer" style="display: none; background: transparent; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 2px solid #1565c0;">
+                <p style="color: #1565c0; margin-bottom: 10px;"><strong>⚠️ בחרת אותה עיר למגורים ולעבודה</strong></p>
+                <label style="display: block; font-weight: 600; margin-bottom: 10px; color: #1565c0;">הזן מרחק בק"מ בין הבית לעבודה: <span style="color: #1565c0;">*</span></label>
+                <input type="number" id="customDistanceInput" placeholder="לדוגמה: 15" step="0.1" min="0.1" onchange="updateTransportCost()" style="width: 100%; margin-bottom: 10px; font-size: 1.1em; padding: 10px; border: 2px solid #1565c0;">
+                <small style="color: #1565c0;"><strong>שדה זה הוא חובה!</strong></small>
             </div>
 
-            <label style="display: block; font-weight: 600; margin-bottom: 10px;">סכום נסיעות ששולם:</label>
+            <label style="display: block; font-weight: 600; margin-bottom: 10px;">סכום נסיעות ששולם (ש"ח):</label>
             <input type="number" id="transportInput" placeholder="0.00" step="0.01" min="0" style="width: 100%; margin-bottom: 20px; font-size: 1.1em; padding: 10px;">
 
-            <label style="display: block; font-weight: 600; margin-bottom: 10px;">שכר ששולם (כמות שעות X תעריף שעה):</label>
+            <label style="display: block; font-weight: 600; margin-bottom: 10px;">שכר ששולם (ש"ח) - כמות שעות X תעריף שעה:</label>
             <input type="number" id="salaryInput" placeholder="0.00" step="0.01" min="0" style="width: 100%; margin-bottom: 20px; font-size: 1.1em; padding: 10px;">
 
-            <label style="display: block; font-weight: 600; margin-bottom: 10px;">תעריף שעה:</label>
+            <label style="display: block; font-weight: 600; margin-bottom: 10px;">תעריף שעה (ש"ח):</label>
             <input type="number" id="hourlyRateInput" placeholder="0.00" step="0.01" min="0" style="width: 100%; margin-bottom: 20px; font-size: 1.1em; padding: 10px;">
 
-            <label style="display: block; font-weight: 600; margin-bottom: 10px;">סה"כ נטו לבנק:</label>
+            <label style="display: block; font-weight: 600; margin-bottom: 10px;">סה"כ נטו לבנק (ש"ח):</label>
             <input type="number" id="netSalaryInput" placeholder="0.00" step="0.01" min="0" style="width: 100%; margin-bottom: 20px; font-size: 1.1em; padding: 10px;">
 
             <label style="display: block; font-weight: 600; margin-bottom: 15px; margin-top: 20px;">האם יש ניכויים בשכר שלך?</label>
@@ -418,18 +579,21 @@
                 </label>
             </div>
 
-            <button class="btn btn-primary" onclick="savePayslipData()">💾 שמור נתונים</button>
+            <button class="btn btn-primary" onclick="savePayslipData()">שמור נתונים</button>
 
+            <div style="background: transparent; padding: 20px; border-radius: 8px; margin-top: 20px; margin-bottom: 20px;">
+                <p style="color: #1565c0; margin: 10px 0;"><strong>נתונים נשמרו בהצלחה!</strong></p>
+            </div>
             <div id="payslipContent"></div>
         </div>
 
         <!-- TAB 2: נוכחות -->
         <div id="attendance" class="tab-content">
             <h2>📊 נתוני נוכחות</h2>
-            <p style="color: #666; margin-bottom: 20px;">העלה קובץ אקסל של נוכחות או הזן ידנית</p>
+            <p style="color: #1565c0; margin-bottom: 20px;">💡 העלה קובץ אקסל של נוכחות או הזן ידנית</p>
 
             <div class="upload-area" onclick="document.getElementById('attendanceFile').click();">
-                <p>📁 לחצו כאן או גררו קובץ</p>
+                <p>📁 לחצו כאן והוסיפו קובץ נוכחות</p>
                 <small>Excel (.xlsx, .xls)</small>
                 <input type="file" id="attendanceFile" accept=".xlsx,.xls" onchange="handleAttendanceUpload(event)">
             </div>
@@ -437,12 +601,8 @@
             <div id="attendanceContent"></div>
 
             <div id="excelUploadedWarning" style="background: #fff3cd; padding: 20px; border-radius: 8px; border-right: 4px solid #ff9800; margin-bottom: 20px; display: none;">
-                <p style="margin: 0; color: #e65100; font-size: 1.1em;"><strong>⚠️ העלת Excel</strong></p>
-                <p style="color: #e65100; margin: 10px 0 0 0; font-size: 0.95em;">
-                    כבר העלית קובץ Excel של נוכחות. לא ניתן להוסיף רשומות ידניות בו-זמנית.
-                </p>
                 <p style="color: #e65100; margin: 10px 0 0 0; font-size: 0.9em;">
-                    אם רצונך להוסיף רשומות ידניות, אנא התחל מחדש בלי קובץ Excel.
+                    אם ברצונך לעדכן ידנית את הנוכחות, קודם תמחק את קובץ האקסל שהוספת
                 </p>
             </div>
 
@@ -460,7 +620,7 @@
                 <label style="display: block; font-weight: 600; margin-bottom: 10px;">שעת יציאה:</label>
                 <input type="time" id="manualCheckOutInput" style="width: 100%; margin-bottom: 20px; font-size: 1.1em; padding: 10px;">
 
-                <button class="btn btn-primary" onclick="addManualAttendance()">➕ הוסף רשומה</button>
+                <button class="btn btn-primary" onclick="addManualAttendance()">הוסף רשומה</button>
 
                 <div id="manualAttendanceList" style="margin-top: 20px;"></div>
             </div>
@@ -470,20 +630,12 @@
         <div id="check" class="tab-content">
             <h2>✅ בדיקת עמידה בחוק</h2>
 
-            <div id="checkRequirementsWarning" style="background: #fff3cd; padding: 20px; border-radius: 8px; border-right: 4px solid #ff9800; margin-bottom: 20px;">
-                <p style="margin: 0; color: #e65100; font-size: 1.1em;"><strong>⚠️ נדרש למלא קודם:</strong></p>
-                <div id="checkRequirementsList" style="margin-top: 15px; color: #e65100;">
-                    <p style="margin: 8px 0;">
-                        <span id="checkRequirementPayslip">❌</span>
-                        <strong>נתוני תלוש שכר</strong>
-                    </p>
-                    <p style="margin: 8px 0;">
-                        <span id="checkRequirementAttendance">❌</span>
-                        <strong>נתוני נוכחות</strong>
-                    </p>
-                </div>
-            </div>
+            <p style="color: #1565c0; margin-bottom: 20px;">⚠️ נדרש למלא קודם:<br>❌ נתוני תלוש שכר<br>❌ נתוני נוכחות</p>
 
+            <div id="checkRequirementsWarning" style="display: none;">
+                <span id="checkRequirementPayslip">❌</span>
+                <span id="checkRequirementAttendance">❌</span>
+            </div>
             <button id="checkRightsButton" class="btn btn-primary" onclick="checkRights()" disabled style="opacity: 0.5; cursor: not-allowed;">🔍 בצע בדיקה</button>
 
             <div id="checkContent"></div>
@@ -503,8 +655,8 @@
 
     <!-- Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script src="https://unpkg.com/tesseract.js@5/dist/tesseract.min.js"></script>
-    <script src="https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
     <script>
         // ===== APP DATA =====
@@ -829,11 +981,7 @@
 
             document.getElementById('payslipContent').innerHTML = `
                 <div class="alert alert-success" style="margin-top: 20px;">
-                    <strong>✅ נתונים נשמרו בהצלחה!</strong>
-                    <p style="margin-top: 10px;">🔒 הנתונים נשמרו בעצמך בלבד - לא בשרת</p>
-                    <p style="margin-top: 10px; font-size: 0.9em; color: #666;">
-                        💡 <strong>יידוע חוקי:</strong> זכאות להחזר נסיעות חלה רק על מרחק של 500 מטרים לפחות.
-                    </p>
+                    <strong style="color: #1565c0;">נתונים נשמרו בהצלחה!</strong>
                 </div>
             `;
             
@@ -1109,8 +1257,8 @@
                             <strong>✅ קובץ Excel נטען בהצלחה!</strong>
                             <p style="margin-top: 10px;">📄 ${file.name}</p>
                             <p style="font-size: 0.9em; color: #666; margin-top: 10px;">נמצאו ${processedData.length} רשומות</p>
-                            <button class="btn btn-secondary" onclick="deleteAttendanceUpload()" style="margin-top: 15px; background-color: #f44336; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-size: 0.95em;">
-                                🗑️ מחק Excel
+                            <button class="btn btn-secondary" onclick="deleteAttendanceUpload()" style="margin-top: 15px; background-color: #4caf50; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-size: 0.95em;">
+                                מחק קובץ
                             </button>
                         </div>
                     `;
@@ -1371,7 +1519,7 @@
         function addManualAttendance() {
             // בדוק אם Excel כבר העלו
             if (appData.attendanceData && appData.attendanceData.length > 0) {
-                alert('⚠️ כבר העלית קובץ Excel של נוכחות. לא ניתן להוסיף רשומות ידניות בו-זמנית.\n\nבחר אחד מהשתיים: או Excel או הוספה ידנית.');
+                alert('⚠️ בחר אחד מהשתיים: או Excel או הוספה ידנית.');
                 return;
             }
             
@@ -1536,7 +1684,7 @@
                     document.getElementById('ageWarning').style.display = 'none';
                     document.getElementById('ageWarningOver18').style.display = 'none';
                     document.getElementById('ageDisplay').style.display = 'block';
-                    document.getElementById('ageValue').innerHTML = `${age} שנים`;
+                    document.getElementById('ageValue').innerHTML = `${age}`;
                     
                     // הפעל את כל השדות
                     enableAllFields();
@@ -1643,7 +1791,7 @@
                             MyPay מותאמת לנוער בגיל 14-18 שנים בלבד.
                         </p>
                         <p style="color: #b71c1c; margin: 10px 0 0 0;">
-                            זכויות עובדים מבוגרים שונות מהן של נוער. פנה לעמותות כמו "כל זכות" או משרד העבודה.
+                            זכויות עובדים מבוגרים שונות מהן של נוער.
                         </p>
                     </div>
                 `;
@@ -1863,7 +2011,6 @@
                             </p>
                             <p style="color: #fff; font-size: 0.95em; margin-top: 15px;">
                                 <strong>מה לעשות:</strong><br>
-                                חכה עד שתמלא 14 שנים, ואז תוכל להתחיל לעבוד בזמן החופשות.
                             </p>
                         </div>
                     </div>
