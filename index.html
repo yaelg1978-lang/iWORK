@@ -54,10 +54,15 @@
         .header h1 {
             font-size: 2em;
             margin-bottom: 8px;
-            font-weight: 600;
+            font-weight: 800;
             letter-spacing: -0.5px;
             position: relative;
             z-index: 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-block;
         }
 
         .header p {
@@ -639,7 +644,7 @@
             /* Mobile adjustments for main menu */
             .main-menu {
                 grid-template-columns: 1fr;
-                gap: 12px;
+                gap: 14px;
                 padding: 16px;
                 min-height: auto;
             }
@@ -662,6 +667,74 @@
             }
 
             .menu-card-title {
+                font-size: 0.95em;
+                font-weight: 700;
+            }
+
+            /* First card optimization for mobile */
+            .menu-card:first-child {
+                padding: 22px 15px;
+                box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+                border-radius: 18px;
+            }
+
+            .menu-card:first-child .menu-card-icon {
+                width: 64px;
+                height: 64px;
+            }
+
+            .menu-card:first-child .menu-card-title {
+                font-size: 0.95em;
+                font-weight: 700;
+            }
+
+            /* Second card optimization for mobile */
+            .menu-card:nth-child(2) {
+                padding: 22px 15px;
+                box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+                border-radius: 18px;
+            }
+
+            .menu-card:nth-child(2) .menu-card-icon {
+                width: 64px;
+                height: 64px;
+            }
+
+            .menu-card:nth-child(2) .menu-card-title {
+                font-size: 0.95em;
+                font-weight: 700;
+            }
+
+            /* Third card optimization for mobile */
+            .menu-card:nth-child(3) {
+                padding: 22px 15px;
+                box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+                border-radius: 18px;
+            }
+
+            .menu-card:nth-child(3) .menu-card-icon {
+                width: 64px;
+                height: 64px;
+            }
+
+            .menu-card:nth-child(3) .menu-card-title {
+                font-size: 0.95em;
+                font-weight: 700;
+            }
+
+            /* Fourth card optimization for mobile */
+            .menu-card:nth-child(4) {
+                padding: 22px 15px;
+                box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+                border-radius: 18px;
+            }
+
+            .menu-card:nth-child(4) .menu-card-icon {
+                width: 64px;
+                height: 64px;
+            }
+
+            .menu-card:nth-child(4) .menu-card-title {
                 font-size: 0.95em;
                 font-weight: 700;
             }
@@ -752,7 +825,7 @@
             /* Extra small screens - main menu optimization */
             .main-menu {
                 grid-template-columns: 1fr;
-                gap: 10px;
+                gap: 11px;
                 padding: 12px;
             }
 
@@ -767,6 +840,74 @@
             }
 
             .menu-card-title {
+                font-size: 0.9em;
+                font-weight: 700;
+            }
+
+            /* First card optimization for extra small screens */
+            .menu-card:first-child {
+                padding: 16px 14px;
+                box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+                border-radius: 18px;
+            }
+
+            .menu-card:first-child .menu-card-icon {
+                width: 56px;
+                height: 56px;
+            }
+
+            .menu-card:first-child .menu-card-title {
+                font-size: 0.9em;
+                font-weight: 700;
+            }
+
+            /* Second card optimization for extra small screens */
+            .menu-card:nth-child(2) {
+                padding: 16px 14px;
+                box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+                border-radius: 18px;
+            }
+
+            .menu-card:nth-child(2) .menu-card-icon {
+                width: 56px;
+                height: 56px;
+            }
+
+            .menu-card:nth-child(2) .menu-card-title {
+                font-size: 0.9em;
+                font-weight: 700;
+            }
+
+            /* Third card optimization for extra small screens */
+            .menu-card:nth-child(3) {
+                padding: 16px 14px;
+                box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+                border-radius: 18px;
+            }
+
+            .menu-card:nth-child(3) .menu-card-icon {
+                width: 56px;
+                height: 56px;
+            }
+
+            .menu-card:nth-child(3) .menu-card-title {
+                font-size: 0.9em;
+                font-weight: 700;
+            }
+
+            /* Fourth card optimization for extra small screens */
+            .menu-card:nth-child(4) {
+                padding: 16px 14px;
+                box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+                border-radius: 18px;
+            }
+
+            .menu-card:nth-child(4) .menu-card-icon {
+                width: 56px;
+                height: 56px;
+            }
+
+            .menu-card:nth-child(4) .menu-card-title {
                 font-size: 0.9em;
                 font-weight: 700;
             }
@@ -1060,7 +1201,95 @@
         }
 
         .menu-card:active {
-            transform: translateY(-2px);
+            transform: scale(0.94);
+        }
+
+        /* ===== FIRST CARD DESIGN TEST ===== */
+        .menu-card:first-child {
+            padding: 28px 16px;
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+            border-radius: 20px;
+        }
+
+        .menu-card:first-child:hover {
+            box-shadow: 0 16px 42px rgba(102, 126, 234, 0.28);
+        }
+
+        .menu-card:first-child .menu-card-icon {
+            width: 72px;
+            height: 72px;
+        }
+
+        .menu-card:first-child .menu-card-title {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        /* ===== SECOND CARD DESIGN ===== */
+        .menu-card:nth-child(2) {
+            padding: 28px 16px;
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+            border-radius: 20px;
+        }
+
+        .menu-card:nth-child(2):hover {
+            box-shadow: 0 16px 42px rgba(102, 126, 234, 0.28);
+        }
+
+        .menu-card:nth-child(2) .menu-card-icon {
+            width: 72px;
+            height: 72px;
+        }
+
+        .menu-card:nth-child(2) .menu-card-title {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        /* ===== THIRD CARD DESIGN ===== */
+        .menu-card:nth-child(3) {
+            padding: 28px 16px;
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+            border-radius: 20px;
+        }
+
+        .menu-card:nth-child(3):hover {
+            box-shadow: 0 16px 42px rgba(102, 126, 234, 0.28);
+        }
+
+        .menu-card:nth-child(3) .menu-card-icon {
+            width: 72px;
+            height: 72px;
+        }
+
+        .menu-card:nth-child(3) .menu-card-title {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        /* ===== FOURTH CARD DESIGN ===== */
+        .menu-card:nth-child(4) {
+            padding: 28px 16px;
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+            border-radius: 20px;
+        }
+
+        .menu-card:nth-child(4):hover {
+            box-shadow: 0 16px 42px rgba(102, 126, 234, 0.28);
+        }
+
+        .menu-card:nth-child(4) .menu-card-icon {
+            width: 72px;
+            height: 72px;
+        }
+
+        .menu-card:nth-child(4) .menu-card-title {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #667eea;
         }
 
         .menu-card-icon {
