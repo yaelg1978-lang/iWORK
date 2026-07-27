@@ -610,6 +610,47 @@
                 padding: 20px 18px;
                 text-align: center;
             }
+
+            /* Mobile adjustments for main menu */
+            .main-menu {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                padding: 20px 16px;
+                min-height: auto;
+            }
+
+            .menu-card {
+                padding: 24px 20px;
+                gap: 12px;
+            }
+
+            .menu-card-icon {
+                width: 70px;
+                height: 70px;
+            }
+
+            .menu-card-title {
+                font-size: 1.1em;
+            }
+
+            /* Mobile adjustments for dedicated views */
+            .dedicated-view {
+                padding: 20px 16px;
+            }
+
+            .view-header {
+                gap: 12px;
+                margin-bottom: 24px;
+            }
+
+            .back-btn {
+                font-size: 1.3em;
+                padding: 6px 10px;
+            }
+
+            .view-header h2 {
+                font-size: 1.3em;
+            }
         }
 
         /* Extra small screens (360px and below) */
@@ -896,6 +937,98 @@
             }
         }
 
+        /* ===== MAIN MENU STYLES ===== */
+        .main-menu {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 30px;
+            min-height: 500px;
+        }
+
+        .menu-card {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            border-color: #764ba2;
+        }
+
+        .menu-card:active {
+            transform: translateY(-2px);
+        }
+
+        .menu-card-icon {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-card-icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .menu-card-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* ===== DEDICATED VIEW STYLES ===== */
+        .dedicated-view {
+            display: none;
+            padding: 30px;
+        }
+
+        .dedicated-view.active {
+            display: block;
+        }
+
+        .view-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 8px 12px;
+            transition: all 0.2s;
+            color: #667eea;
+        }
+
+        .back-btn:hover {
+            transform: scale(1.2);
+            color: #764ba2;
+        }
+
+        .view-header h2 {
+            flex: 1;
+            margin: 0;
+            color: #333;
+        }
+
         /* Mobile adjustments for security popup */
         @media (max-width: 480px) {
             .security-popup-content {
@@ -966,16 +1099,88 @@
             <p>אפליקציה לנוער בגילאי 14-18 לבדיקת תלוש שכר והעסקה חוקית</p>
         </div>
 
-        <div class="tabs">
-            <button class="tab-button active" onclick="switchTab('payslip')">📄 תלוש שכר</button>
-            <button class="tab-button" onclick="switchTab('attendance')">📊 נוכחות</button>
-            <button class="tab-button" onclick="switchTab('check')">✅ בדיקת עמידה בחוק</button>
-            <button class="tab-button" onclick="switchTab('chat')">⚖️ הזכויות שלי</button>
+        <div class="main-menu" id="mainMenu">
+            <div class="menu-card" onclick="navigateToView('payslip')">
+                <div class="menu-card-icon">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <rect x="20" y="15" width="60" height="70" rx="4" fill="url(#grad1)" stroke="none"/>
+                        <rect x="28" y="25" width="44" height="4" rx="2" fill="white" opacity="0.8"/>
+                        <rect x="28" y="35" width="44" height="3" rx="1.5" fill="white" opacity="0.6"/>
+                        <rect x="28" y="42" width="44" height="3" rx="1.5" fill="white" opacity="0.6"/>
+                        <rect x="28" y="49" width="44" height="3" rx="1.5" fill="white" opacity="0.6"/>
+                        <rect x="28" y="56" width="30" height="3" rx="1.5" fill="white" opacity="0.6"/>
+                    </svg>
+                </div>
+                <div class="menu-card-title">מילוי פרטי תלוש שכר</div>
+            </div>
+            <div class="menu-card" onclick="navigateToView('attendance')">
+                <div class="menu-card-icon">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <rect x="22" y="18" width="56" height="64" rx="3" fill="url(#grad2)" stroke="none"/>
+                        <rect x="30" y="26" width="40" height="6" rx="2" fill="white" opacity="0.8"/>
+                        <circle cx="35" cy="42" r="3" fill="white" opacity="0.6"/>
+                        <circle cx="65" cy="42" r="3" fill="white" opacity="0.6"/>
+                        <circle cx="35" cy="58" r="3" fill="white" opacity="0.6"/>
+                        <circle cx="65" cy="58" r="3" fill="white" opacity="0.6"/>
+                        <rect x="30" y="39" width="40" height="1" fill="white" opacity="0.4"/>
+                        <rect x="30" y="55" width="40" height="1" fill="white" opacity="0.4"/>
+                    </svg>
+                </div>
+                <div class="menu-card-title">מילוי פרטי נוכחות</div>
+            </div>
+            <div class="menu-card" onclick="navigateToView('check')">
+                <div class="menu-card-icon">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <circle cx="50" cy="50" r="35" fill="url(#grad3)" stroke="none"/>
+                        <path d="M 35 50 L 45 62 L 70 38" stroke="white" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="menu-card-title">בדיקת עמידה בחוק</div>
+            </div>
+            <div class="menu-card" onclick="navigateToView('chat')">
+                <div class="menu-card-icon">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="grad4" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <polygon points="25,30 75,30 70,75 30,75" fill="url(#grad4)" stroke="none"/>
+                        <polygon points="70,75 75,85 30,85 35,75" fill="url(#grad4)" stroke="none"/>
+                        <circle cx="40" cy="50" r="4" fill="white" opacity="0.8"/>
+                        <circle cx="50" cy="50" r="4" fill="white" opacity="0.8"/>
+                        <circle cx="60" cy="50" r="4" fill="white" opacity="0.8"/>
+                    </svg>
+                </div>
+                <div class="menu-card-title">הזכויות שלי</div>
+            </div>
         </div>
 
-        <!-- TAB 1: תלוש שכר -->
-        <div id="payslip" class="tab-content active">
-            <h2>📄 נתוני תלוש שכר</h2>
+        <!-- DEDICATED VIEWS -->
+        <div id="payslip" class="dedicated-view">
+            <div class="view-header">
+                <button class="back-btn" onclick="navigateToView('menu')">🔙</button>
+                <h2>📄 נתוני תלוש שכר</h2>
+            </div>
             <p style="color: #1565c0; margin-bottom: 20px;">💡 תמלא את כל השדות למטה ואז תלחץ על "שמור נתונים"</p>
             <label style="display: block; font-weight: 600; margin-bottom: 10px;">תאריך לידה:</label>
             <input type="date" id="birthDateInput" onblur="displayAge()" style="width: 100%; margin-bottom: 10px; font-size: 1.1em; padding: 10px;">
@@ -1083,8 +1288,11 @@
         </div>
 
         <!-- TAB 2: נוכחות -->
-        <div id="attendance" class="tab-content">
-            <h2>📊 נתוני נוכחות</h2>
+        <div id="attendance" class="dedicated-view">
+            <div class="view-header">
+                <button class="back-btn" onclick="navigateToView('menu')">🔙</button>
+                <h2>📊 נתוני נוכחות</h2>
+            </div>
             <p style="color: #1565c0; margin-bottom: 20px;">💡 העלה קובץ אקסל של נוכחות או הזן ידנית</p>
 
             <div class="upload-area" onclick="document.getElementById('attendanceFile').click();">
@@ -1121,9 +1329,12 @@
             </div>
         </div>
 
-        <!-- TAB 3: בדוק זכויות -->
-        <div id="check" class="tab-content">
-            <h2>✅ בדיקת עמידה בחוק</h2>
+        <!-- DEDICATED VIEW: בדוק זכויות -->
+        <div id="check" class="dedicated-view">
+            <div class="view-header">
+                <button class="back-btn" onclick="navigateToView('menu')">🔙</button>
+                <h2>✅ בדיקת עמידה בחוק</h2>
+            </div>
 
             <p style="color: #1565c0; margin-bottom: 20px;">⚠️ נדרש למלא קודם:<br>❌ נתוני תלוש שכר<br>❌ נתוני נוכחות</p>
 
@@ -1136,9 +1347,12 @@
             <div id="checkContent"></div>
         </div>
 
-        <!-- TAB 4: צ'אט -->
-        <div id="chat" class="tab-content">
-            <h2>⚖️ הזכויות שלי</h2>
+        <!-- DEDICATED VIEW: הזכויות שלי -->
+        <div id="chat" class="dedicated-view">
+            <div class="view-header">
+                <button class="back-btn" onclick="navigateToView('menu')">🔙</button>
+                <h2>⚖️ הזכויות שלי</h2>
+            </div>
 
             <div id="chatContent" style="margin-top: 20px;"></div>
         </div>
@@ -1264,6 +1478,21 @@
             },
             minDistanceMeters: 500  // מרחק מינימלי להזכאות לדמי נסיעות
         };
+
+        // ===== NAVIGATION FUNCTIONS =====
+        function navigateToView(viewName) {
+            // Hide all views
+            document.querySelectorAll('.dedicated-view').forEach(view => view.classList.remove('active'));
+            document.getElementById('mainMenu').style.display = viewName === 'menu' ? 'grid' : 'none';
+            
+            // Show selected view
+            if (viewName !== 'menu') {
+                const view = document.getElementById(viewName);
+                if (view) {
+                    view.classList.add('active');
+                }
+            }
+        }
 
         // ===== TAB SWITCHING =====
         function switchTab(tabName) {
@@ -2927,8 +3156,8 @@
                 }
             }
 
-            // Hide splash after 1 second from load
-            setTimeout(hideSplashScreen, 1000);
+            // Hide splash after 4 seconds from load
+            setTimeout(hideSplashScreen, 4000);
 
             // ===== SHOW SECURITY POPUP =====
             setTimeout(() => {
@@ -2936,7 +3165,7 @@
                 if (popup && !popup.classList.contains('hidden')) {
                     // Popup will show by default
                 }
-            }, 2000);
+            }, 4000);
             
             console.log('✅ MyPay loaded successfully!');
             console.log('📊 App ready - Tesseract.js active');
@@ -2958,6 +3187,9 @@
 
         // Check if popup was already closed in this session
         window.addEventListener('load', () => {
+            // ===== INITIALIZE MAIN MENU =====
+            navigateToView('menu');
+            
             const popup = document.getElementById('security-popup');
             if (popup && sessionStorage.getItem('securityPopupClosed')) {
                 popup.classList.add('hidden');
