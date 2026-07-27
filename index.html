@@ -289,24 +289,27 @@
 
         @media (max-width: 768px) {
             body {
-                padding: 10px;
+                padding: 16px;
             }
 
             .container {
-                border-radius: 15px;
+                border-radius: 16px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             }
 
             .header {
-                padding: 20px;
+                padding: 28px 24px;
             }
 
             .header h1 {
-                font-size: 1.8em;
-                margin-bottom: 8px;
+                font-size: 2em;
+                margin-bottom: 12px;
+                font-weight: 700;
             }
 
             .header p {
-                font-size: 0.95em;
+                font-size: 1em;
+                line-height: 1.5;
             }
 
             .tabs {
@@ -317,151 +320,470 @@
 
             .tab-button {
                 flex: 1;
-                min-width: 80px;
-                padding: 12px 10px;
-                font-size: 0.85em;
+                min-width: 100px;
+                padding: 16px 14px;
+                font-size: 0.9em;
                 white-space: normal;
+                border: none;
+                min-height: 48px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                font-weight: 600;
             }
 
             .tab-content {
-                padding: 20px;
+                padding: 28px 24px;
             }
 
             .btn {
-                padding: 10px 16px;
-                font-size: 0.9em;
+                padding: 14px 20px;
+                font-size: 0.95em;
                 width: 100%;
-                margin: 5px 0;
+                margin: 10px 0;
+                min-height: 48px;
+                border-radius: 10px;
+                font-weight: 600;
             }
 
             label {
                 font-size: 0.95em !important;
+                display: block;
+                margin-bottom: 8px;
+                font-weight: 500;
             }
 
             input, textarea, select {
                 font-size: 1em !important;
+                padding: 12px 14px;
+                min-height: 48px;
+                border-radius: 8px;
+                margin-bottom: 12px;
             }
 
             .upload-area {
-                padding: 25px;
+                padding: 30px 24px;
+                border-radius: 12px;
             }
 
             .upload-area p {
                 font-size: 0.95em;
+                line-height: 1.5;
             }
 
             .wage-info {
-                padding: 15px !important;
+                padding: 18px !important;
+                margin-bottom: 16px;
+                border-radius: 10px;
             }
 
             .wage-info h3 {
-                font-size: 1em;
+                font-size: 1.05em;
+                margin-bottom: 10px;
+                font-weight: 600;
             }
 
             .wage-info p, .wage-info li {
                 font-size: 0.9em;
+                line-height: 1.6;
             }
 
             .alert {
-                padding: 12px;
+                padding: 14px 16px;
                 font-size: 0.9em;
+                border-radius: 8px;
+                margin-bottom: 12px;
             }
 
             table {
                 font-size: 0.85em;
+                margin-bottom: 16px;
+            }
+
+            th, td {
+                padding: 10px;
             }
         }
 
         @media (max-width: 480px) {
             body {
-                padding: 5px;
+                padding: 12px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+            }
+
+            .container {
+                border-radius: 16px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+                overflow: hidden;
             }
 
             .header {
-                padding: 15px;
+                padding: 32px 20px;
+                text-align: center;
             }
 
             .header h1 {
-                font-size: 1.5em;
-                margin-bottom: 5px;
+                font-size: 1.8em;
+                margin-bottom: 10px;
+                font-weight: 700;
+                line-height: 1.2;
+            }
+
+            .header p {
+                font-size: 0.95em;
+                line-height: 1.5;
+                opacity: 0.95;
+            }
+
+            .tabs {
+                display: flex;
+                flex-direction: column;
+                border-bottom: none;
+                background: #f8f9fa;
+            }
+
+            .tab-button {
+                width: 100%;
+                padding: 16px 18px;
+                font-size: 0.9em;
+                border-bottom: 1px solid #e0e0e0;
+                border-right: none;
+                min-height: 50px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                text-align: center;
+                font-weight: 600;
+                transition: all 0.2s;
+            }
+
+            .tab-button:active {
+                background: #f0f0f0;
+            }
+
+            .tab-button.active {
+                border-bottom: 3px solid #667eea;
+                border-right: none;
+                background: white;
+                color: #667eea;
+            }
+
+            .tab-content {
+                padding: 24px 20px;
+            }
+
+            .btn {
+                padding: 16px 20px;
+                font-size: 0.95em;
+                width: 100%;
+                margin: 12px 0;
+                min-height: 50px;
+                border-radius: 10px;
+                font-weight: 600;
+                border: none;
+                cursor: pointer;
+                transition: all 0.2s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .btn:active {
+                transform: scale(0.98);
+            }
+
+            label {
+                font-size: 0.95em !important;
+                display: block;
+                margin-bottom: 10px;
+                font-weight: 600;
+                color: #333;
+            }
+
+            input, textarea, select {
+                font-size: 1em !important;
+                padding: 14px 16px;
+                min-height: 50px;
+                border-radius: 8px;
+                margin-bottom: 14px;
+                width: 100%;
+                border: 1px solid #ddd;
+                font-family: inherit;
+            }
+
+            input:focus, textarea:focus, select:focus {
+                outline: none;
+                border-color: #667eea;
+                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            }
+
+            .upload-area {
+                padding: 32px 20px;
+                border-radius: 12px;
+                border: 2px dashed #667eea;
+                margin-bottom: 16px;
+                text-align: center;
+            }
+
+            .upload-area p {
+                font-size: 0.95em;
+                line-height: 1.6;
+                margin-bottom: 12px;
+            }
+
+            .wage-info {
+                padding: 20px !important;
+                margin-bottom: 16px;
+                border-radius: 10px;
+                border: 1px solid #e0e0e0;
+                background: #f9f9f9;
+            }
+
+            .wage-info h3 {
+                font-size: 1.05em;
+                margin-bottom: 12px;
+                font-weight: 600;
+                color: #333;
+            }
+
+            .wage-info p {
+                font-size: 0.9em;
+                line-height: 1.6;
+                margin-bottom: 8px;
+            }
+
+            .wage-info li {
+                font-size: 0.9em;
+                line-height: 1.6;
+                margin: 8px 0;
+                margin-right: 20px;
+            }
+
+            .alert {
+                padding: 16px 18px;
+                font-size: 0.9em;
+                border-radius: 8px;
+                margin-bottom: 14px;
+                border-left: 4px solid;
+            }
+
+            table {
+                font-size: 0.85em;
+                margin-bottom: 16px;
+                width: 100%;
+            }
+
+            th, td {
+                padding: 12px 8px;
+                text-align: center;
+            }
+
+            th {
+                font-weight: 600;
+                background: #f5f5f5;
+            }
+
+            /* Splash Screen adjustments for mobile */
+            .splash-logo-text {
+                font-size: 48px;
+            }
+
+            .splash-tagline {
+                font-size: 16px;
+                margin-bottom: 50px;
+            }
+
+            .splash-spinner {
+                width: 40px;
+                height: 40px;
+            }
+
+            .splash-loader p {
+                font-size: 13px;
+            }
+
+            .footer {
+                font-size: 0.85em;
+                padding: 20px 18px;
+                text-align: center;
+            }
+        }
+
+        /* Extra small screens (360px and below) */
+        @media (max-width: 360px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                border-radius: 14px;
+            }
+
+            .header {
+                padding: 28px 16px;
+            }
+
+            .header h1 {
+                font-size: 1.6em;
+                margin-bottom: 8px;
             }
 
             .header p {
                 font-size: 0.9em;
             }
 
-            .tabs {
-                display: flex;
-                flex-direction: column;
-            }
-
             .tab-button {
-                width: 100%;
-                padding: 10px;
-                font-size: 0.8em;
-                border-bottom: 2px solid #f0f0f0;
-                border-right: none;
-            }
-
-            .tab-button.active {
-                border-bottom: 3px solid #667eea;
-                border-right: none;
+                padding: 14px 12px;
+                font-size: 0.85em;
+                min-height: 48px;
             }
 
             .tab-content {
-                padding: 15px;
+                padding: 20px 16px;
             }
 
             .btn {
-                padding: 10px 12px;
-                font-size: 0.85em;
-            }
-
-            label {
-                font-size: 0.9em !important;
+                padding: 14px 16px;
+                font-size: 0.9em;
+                min-height: 48px;
+                margin: 10px 0;
             }
 
             input, textarea, select {
+                padding: 12px 14px;
+                min-height: 48px;
                 font-size: 0.95em !important;
+                margin-bottom: 12px;
             }
 
             .upload-area {
-                padding: 15px;
-            }
-
-            .upload-area p {
-                font-size: 0.85em;
+                padding: 28px 16px;
             }
 
             .wage-info {
-                padding: 12px !important;
+                padding: 16px !important;
+                margin-bottom: 14px;
             }
 
-            .wage-info h3 {
-                font-size: 0.95em;
-            }
-
-            .wage-info p, .wage-info li {
-                font-size: 0.85em;
-            }
-
-            .alert {
-                padding: 10px;
-                font-size: 0.85em;
-            }
-
-            table {
+            th, td {
+                padding: 10px 6px;
                 font-size: 0.8em;
             }
+        }
 
-            .footer {
-                font-size: 0.8em;
-                padding: 15px;
+        /* ===== SPLASH SCREEN STYLES ===== */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: splashFadeOut 0.8s ease-in-out forwards;
+            animation-delay: 2s;
+        }
+
+        #splash-screen.hidden {
+            animation: splashFadeOut 0.8s ease-in-out forwards;
+        }
+
+        .splash-container {
+            text-align: center;
+            animation: splashPulse 2s ease-in-out infinite;
+        }
+
+        .splash-logo-text {
+            font-size: 64px;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 12px;
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            letter-spacing: -2px;
+        }
+
+        .splash-tagline {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 400;
+            letter-spacing: 1px;
+            margin-bottom: 60px;
+        }
+
+        .splash-loader {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .splash-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: splashSpin 1s linear infinite;
+        }
+
+        .splash-loader p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        @keyframes splashSpin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes splashPulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes splashFadeOut {
+            0% {
+                opacity: 1;
+                visibility: visible;
+            }
+            100% {
+                opacity: 0;
+                visibility: hidden;
             }
         }
     </style>
 </head>
 <body>
+    <!-- ===== SPLASH SCREEN ===== -->
+    <div id="splash-screen">
+        <div class="splash-container">
+            <div class="splash-logo">
+                <div class="splash-logo-text">MyPay</div>
+                <div class="splash-tagline">בדיקת תלוש שכר לנוער</div>
+            </div>
+            <div class="splash-loader">
+                <div class="splash-spinner"></div>
+                <p>טוען...</p>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="header">
             <h1>MyPay</h1>
@@ -2419,12 +2741,35 @@
 
         // ===== LOAD DATA =====
         window.addEventListener('load', () => {
+            // ===== HIDE SPLASH SCREEN =====
+            function hideSplashScreen() {
+                const splashScreen = document.getElementById('splash-screen');
+                if (splashScreen) {
+                    splashScreen.classList.add('hidden');
+                    
+                    setTimeout(() => {
+                        splashScreen.style.pointerEvents = 'none';
+                    }, 800);
+                }
+            }
+
+            // Hide splash after 1 second from load
+            setTimeout(hideSplashScreen, 1000);
+            
             console.log('✅ MyPay loaded successfully!');
             console.log('📊 App ready - Tesseract.js active');
             
             // בדוק דרישות בעת טעינת הדף
             updateCheckRequirements();
             displayChatRules();
+        });
+
+        // Hide splash on error too
+        window.addEventListener('error', () => {
+            const splashScreen = document.getElementById('splash-screen');
+            if (splashScreen) {
+                splashScreen.classList.add('hidden');
+            }
         });
     </script>
 </body>
