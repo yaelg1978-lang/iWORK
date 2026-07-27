@@ -767,9 +767,185 @@
                 visibility: hidden;
             }
         }
+
+        /* ===== SECURITY POPUP STYLES ===== */
+        .security-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            animation: popupFadeIn 0.3s ease-in-out;
+        }
+
+        .security-popup.hidden {
+            display: none;
+        }
+
+        .security-popup-content {
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: popupSlideIn 0.3s ease-out;
+        }
+
+        .security-popup-header {
+            background: white;
+            padding: 24px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .security-popup-close {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #999;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .security-popup-close:hover {
+            color: #333;
+            transform: scale(1.1);
+        }
+
+        .security-popup-body {
+            padding: 24px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .security-popup-body p {
+            margin-bottom: 14px;
+            font-size: 0.95em;
+        }
+
+        .security-popup-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        .security-popup-footer {
+            padding: 20px 24px;
+            border-top: 1px solid #f0f0f0;
+            background: white;
+            display: flex;
+            justify-content: center;
+        }
+
+        .security-popup-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 44px;
+            min-width: 120px;
+        }
+
+        .security-popup-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .security-popup-btn:active {
+            transform: translateY(0);
+        }
+
+        @keyframes popupFadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes popupSlideIn {
+            0% {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Mobile adjustments for security popup */
+        @media (max-width: 480px) {
+            .security-popup-content {
+                width: 95%;
+                max-width: none;
+            }
+
+            .security-popup-header {
+                padding: 20px;
+                font-size: 1em;
+            }
+
+            .security-popup-body {
+                padding: 20px;
+            }
+
+            .security-popup-body p {
+                font-size: 0.9em;
+                margin-bottom: 12px;
+            }
+
+            .security-popup-footer {
+                padding: 16px 20px;
+            }
+
+            .security-popup-btn {
+                padding: 12px 24px;
+                font-size: 0.9em;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- ===== SECURITY POPUP ===== -->
+    <div id="security-popup" class="security-popup">
+        <div class="security-popup-content">
+            <div class="security-popup-header">
+                <span>🔒 אבטחת המידע שלך</span>
+                <button class="security-popup-close" onclick="closeSecurityPopup()">✕</button>
+            </div>
+            <div class="security-popup-body">
+                <p>המידע שלך מאוחסן בדפדפן המקומי שלך בלבד.</p>
+                <p>אנחנו לא שומרים את הנתונים בשרתים ולא משתפים אותם עם צדדים שלישיים.</p>
+            </div>
+            <div class="security-popup-footer">
+                <button class="security-popup-btn" onclick="closeSecurityPopup()">הבנתי</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ===== SPLASH SCREEN ===== -->
     <div id="splash-screen">
         <div class="splash-container">
@@ -903,9 +1079,6 @@
 
             <button class="btn btn-primary" onclick="savePayslipData()">שמור נתונים</button>
 
-            <div style="background: transparent; padding: 20px; border-radius: 8px; margin-top: 20px; margin-bottom: 20px;">
-                <p style="color: #1565c0; margin: 10px 0;"><strong>נתונים נשמרו בהצלחה!</strong></p>
-            </div>
             <div id="payslipContent"></div>
         </div>
 
@@ -971,7 +1144,8 @@
         </div>
 
         <div class="footer">
-            <p>MyPay © 2025 - בדוק את זכויות השכר שלך 💼</p>
+            <p>MyPay © 2026 - אפליקציה לנוער בגילאי 14-18 לבדיקת תלוש שכר והעסקה חוקית</p>
+            <p style="font-size: 0.75em; color: #999; margin-top: 8px; opacity: 0.8;">אפליקציה זו אינה מהווה ייעוץ משפטי. לעצות משפטית, אנא פנה לעורך דין.</p>
         </div>
     </div>
 
@@ -2755,6 +2929,14 @@
 
             // Hide splash after 1 second from load
             setTimeout(hideSplashScreen, 1000);
+
+            // ===== SHOW SECURITY POPUP =====
+            setTimeout(() => {
+                const popup = document.getElementById('security-popup');
+                if (popup && !popup.classList.contains('hidden')) {
+                    // Popup will show by default
+                }
+            }, 2000);
             
             console.log('✅ MyPay loaded successfully!');
             console.log('📊 App ready - Tesseract.js active');
@@ -2762,6 +2944,24 @@
             // בדוק דרישות בעת טעינת הדף
             updateCheckRequirements();
             displayChatRules();
+        });
+
+        // ===== SECURITY POPUP FUNCTIONS =====
+        function closeSecurityPopup() {
+            const popup = document.getElementById('security-popup');
+            if (popup) {
+                popup.classList.add('hidden');
+                // Store in sessionStorage so it doesn't show again in this session
+                sessionStorage.setItem('securityPopupClosed', 'true');
+            }
+        }
+
+        // Check if popup was already closed in this session
+        window.addEventListener('load', () => {
+            const popup = document.getElementById('security-popup');
+            if (popup && sessionStorage.getItem('securityPopupClosed')) {
+                popup.classList.add('hidden');
+            }
         });
 
         // Hide splash on error too
