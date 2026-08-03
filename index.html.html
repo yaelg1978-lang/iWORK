@@ -1,0 +1,4732 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyPay - בדוק את זכויות השכר שלך</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8f9fc 0%, #f0f4ff 100%);
+            min-height: 100vh;
+            padding: 12px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,255,0.95) 100%);
+            border-radius: 24px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.15), 0 0 40px rgba(102, 126, 234, 0.05);
+        }
+
+        .header {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+            color: #2d2d4d;
+            padding: 32px 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 20%, rgba(102, 126, 234, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 8px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-block;
+        }
+
+        .header p {
+            font-size: 0.85em;
+            color: #667eea;
+            font-weight: 500;
+            line-height: 1.4;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #f0f0f0;
+            overflow-x: auto;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            background: #f5f5f5;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+        }
+
+        .tab-button:hover {
+            background: #e8e8e8;
+        }
+
+        .tab-button.active {
+            background: white;
+            border-bottom-color: #667eea;
+            color: #667eea;
+        }
+
+        .tab-content {
+            padding: 30px;
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .upload-area {
+            border: 2px solid #c7d2fe;
+            border-radius: 16px;
+            padding: 48px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #f8f9fc 0%, #eef2ff 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .upload-area:hover {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e8e8fb 100%);
+            border-color: #667eea;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .upload-area:hover::before {
+            opacity: 1;
+        }
+
+        .upload-area.dragover {
+            background: linear-gradient(135deg, #e8e8fb 0%, #e0dcf7 100%);
+            border-color: #764ba2;
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+            transform: scale(1.02);
+        }
+
+        .upload-area p {
+            font-size: 1.05em;
+            color: #1e293b;
+            margin-bottom: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .upload-area small {
+            color: #64748b;
+            font-size: 0.9em;
+            display: block;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        .upload-area svg {
+            color: #667eea;
+            stroke: currentColor;
+            stroke-width: 2;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e8e8e8;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            border-right: 4px solid #4caf50;
+            color: #2e7d32;
+        }
+
+        .alert-error {
+            background: #ffebee;
+            border-right: 4px solid #f44336;
+            color: #c62828;
+        }
+
+        .alert-info {
+            background: #e3f2fd;
+            border-right: 4px solid #2196f3;
+            color: #1565c0;
+        }
+
+        .alert-warning {
+            background: #fff9c4;
+            border-right: 4px solid #fbc02d;
+            color: #f57f17;
+        }
+
+        .file-item {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .file-item strong {
+            display: block;
+            color: #333;
+        }
+
+        .file-item small {
+            color: #999;
+            display: block;
+            margin-top: 5px;
+        }
+
+        .wage-info {
+            background: linear-gradient(135deg, #f8f9fc 0%, #f0f4ff 100%);
+            padding: 24px;
+            border-radius: 14px;
+            margin: 16px 0;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .wage-info:hover {
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.12);
+            border-color: #c7d2fe;
+        }
+
+        .wage-info p {
+            margin: 10px 0;
+            font-size: 1em;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .wage-info strong {
+            color: #667eea;
+            font-weight: 700;
+        }
+
+        .wage-info h3 {
+            color: #1e293b;
+            font-size: 1.1em;
+            font-weight: 700;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .wage-info li {
+            margin: 8px 0;
+            color: #475569;
+            line-height: 1.6;
+        }
+
+        /* ===== TABLE STYLING ===== */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.08);
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 12px;
+            text-align: right;
+            font-weight: 700;
+            font-size: 0.95em;
+            border: none;
+            direction: rtl;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: right;
+            color: #1e293b;
+            font-size: 0.95em;
+            direction: rtl;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: #f8f9fc;
+            transition: background 0.2s ease;
+        }
+
+        tbody tr:nth-child(even) td {
+            background: #f9fafb;
+        }
+
+        tbody tr:nth-child(even):hover td {
+            background: #f0f4ff;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.8;
+            }
+        }
+
+        .dedicated-view {
+            animation: slideInUp 0.4s ease;
+        }
+
+        .wage-info {
+            animation: slideInUp 0.5s ease;
+        }
+
+        table {
+            animation: fadeIn 0.3s ease;
+        }
+
+        .upload-area {
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* Smooth transitions for interactive elements */
+        .back-btn,
+        .btn,
+        .upload-area,
+        .wage-info,
+        .dedicated-view input,
+        .dedicated-view select {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Focus animations */
+        .dedicated-view input:focus,
+        .dedicated-view select:focus {
+            animation: pulse 0.3s ease;
+        }
+
+        /* ===== FINAL POLISH & MICRO-INTERACTIONS ===== */
+
+        /* Input Placeholders */
+        .dedicated-view input::placeholder,
+        .dedicated-view select::placeholder {
+            color: #cbd5e1;
+            font-weight: 500;
+        }
+
+        .dedicated-view input:focus::placeholder {
+            color: #94a3b8;
+            transition: color 0.3s ease;
+        }
+
+        /* Checkbox & Radio Styling */
+        .dedicated-view input[type="checkbox"],
+        .dedicated-view input[type="radio"] {
+            accent-color: #667eea !important;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .dedicated-view input[type="checkbox"]:hover,
+        .dedicated-view input[type="radio"]:hover {
+            transform: scale(1.1);
+        }
+
+        .dedicated-view input[type="checkbox"]:checked,
+        .dedicated-view input[type="radio"]:checked {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        /* Label Hover Effect */
+        .dedicated-view label:has(input[type="checkbox"]):hover,
+        .dedicated-view label:has(input[type="radio"]):hover {
+            color: #667eea;
+            transition: color 0.2s ease;
+        }
+
+        /* Select Dropdown Enhancement */
+        .dedicated-view select {
+            color: #1e293b;
+            background-color: white;
+        }
+
+        .dedicated-view select option {
+            color: #1e293b;
+            background: white;
+            padding: 10px;
+        }
+
+        .dedicated-view select option:hover {
+            background: #f0f4ff;
+        }
+
+        .dedicated-view select option:checked {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        /* Button States Enhancement */
+        .btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:active::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* Primary Button Disabled State */
+        .btn-primary:disabled,
+        .btn-primary[disabled] {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%) !important;
+        }
+
+        .btn-primary:disabled:hover {
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Back Button Enhanced */
+        .back-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .back-btn svg {
+            transition: transform 0.3s ease;
+        }
+
+        .back-btn:hover svg {
+            transform: translateX(2px);
+        }
+
+        .back-btn:active svg {
+            transform: translateX(-1px);
+        }
+
+        /* Input Valid/Invalid States */
+        .dedicated-view input[type="date"]:valid,
+        .dedicated-view input[type="number"]:valid {
+            border-color: #10b981;
+            background: linear-gradient(to right, white 95%, #ecfdf5 100%);
+        }
+
+        .dedicated-view input[type="date"]:invalid,
+        .dedicated-view input[type="number"]:invalid {
+            border-color: #ef4444;
+            background: linear-gradient(to right, white 95%, #fef2f2 100%);
+        }
+
+        /* Loading Skeleton Animation */
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+
+        .skeleton {
+            animation: shimmer 2s infinite;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 1000px 100%;
+        }
+
+        /* Input Focus Ring - Better Visual */
+        .dedicated-view input:focus,
+        .dedicated-view select:focus {
+            outline: none !important;
+            border-color: #667eea !important;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1), 0 0 0 2px white, 0 0 8px rgba(102, 126, 234, 0.2) !important;
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* File Input Enhancement */
+        input[type="file"] {
+            display: none;
+        }
+
+        input[type="file"]::-webkit-file-upload-button {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        input[type="file"]::-webkit-file-upload-button:hover {
+            background: #764ba2;
+        }
+
+        /* Text Area Enhancement */
+        textarea {
+            border: 2px solid #e2e8f0 !important;
+            border-radius: 12px !important;
+            padding: 12px 14px !important;
+            font-size: 16px !important;
+            font-family: 'Segoe UI', sans-serif !important;
+            transition: all 0.3s ease !important;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            outline: none !important;
+            border-color: #667eea !important;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1) !important;
+        }
+
+        /* Tooltip-like Hints */
+        .hint-text {
+            font-size: 0.85em;
+            color: #64748b;
+            margin-top: 4px;
+            display: block;
+        }
+
+        /* Better List Styling */
+        .dedicated-view ul,
+        .dedicated-view ol {
+            margin: 12px 0;
+            padding-left: 24px;
+        }
+
+        .dedicated-view li {
+            margin: 6px 0;
+            line-height: 1.6;
+        }
+
+        /* HR Refinement */
+        hr {
+            border: none;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+            margin: 24px 0;
+        }
+
+        /* Link Styling */
+        a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        /* Box Shadow Consistency */
+        .shadow-sm {
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        .shadow-md {
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+        }
+
+        .shadow-lg {
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+        }
+
+        /* Focus Visible for Keyboard Navigation */
+        *:focus-visible {
+            outline: 2px solid #667eea;
+            outline-offset: 2px;
+        }
+
+        input[type="number"],
+        input[type="text"],
+        input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            margin: 10px 0 20px 0;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus,
+        input[type="text"]:focus,
+        input[type="date"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .rights-status {
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.2em;
+        }
+
+        .rights-ok {
+            background: #e8f5e9;
+            border: 2px solid #4caf50;
+            color: #2e7d32;
+        }
+
+        .rights-not-ok {
+            background: #ffebee;
+            border: 2px solid #f44336;
+            color: #c62828;
+        }
+
+        .rights-warning {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            color: #856404;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .footer {
+            background: #f5f5f5;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 16px;
+            }
+
+            .container {
+                border-radius: 16px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            }
+
+            .header {
+                padding: 28px 24px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+                margin-bottom: 12px;
+                font-weight: 700;
+            }
+
+            .header p {
+                font-size: 1em;
+                line-height: 1.5;
+            }
+
+            .tabs {
+                display: flex;
+                flex-wrap: wrap;
+                border-bottom: 2px solid #f0f0f0;
+            }
+
+            .tab-button {
+                flex: 1;
+                min-width: 100px;
+                padding: 16px 14px;
+                font-size: 0.9em;
+                white-space: normal;
+                border: none;
+                min-height: 48px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                font-weight: 600;
+            }
+
+            .tab-content {
+                padding: 28px 24px;
+            }
+
+            .btn {
+                padding: 14px 20px;
+                font-size: 0.95em;
+                width: 100%;
+                margin: 10px 0;
+                min-height: 48px;
+                border-radius: 10px;
+                font-weight: 600;
+            }
+
+            label {
+                font-size: 0.95em !important;
+                display: block;
+                margin-bottom: 8px;
+                font-weight: 500;
+            }
+
+            input, textarea, select {
+                font-size: 1em !important;
+                padding: 12px 14px;
+                min-height: 48px;
+                border-radius: 8px;
+                margin-bottom: 12px;
+            }
+
+            .upload-area {
+                padding: 32px 20px;
+                border-radius: 14px;
+                margin-bottom: 20px;
+            }
+
+            .upload-area p {
+                font-size: 0.95em;
+                line-height: 1.5;
+                gap: 6px;
+            }
+
+            .upload-area small {
+                font-size: 0.85em;
+            }
+
+            .wage-info {
+                padding: 18px !important;
+                margin-bottom: 16px;
+                border-radius: 10px;
+            }
+
+            .wage-info h3 {
+                font-size: 1.05em;
+                margin-bottom: 10px;
+                font-weight: 600;
+            }
+
+            .wage-info p, .wage-info li {
+                font-size: 0.9em;
+                line-height: 1.6;
+            }
+
+            .alert {
+                padding: 14px 16px;
+                font-size: 0.9em;
+                border-radius: 8px;
+                margin-bottom: 12px;
+            }
+
+            table {
+                font-size: 0.85em;
+                margin-bottom: 16px;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+        }
+
+        /* Respect user's motion preferences */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+                background: linear-gradient(135deg, #f8f9fc 0%, #f0f4ff 100%);
+                min-height: 100vh;
+            }
+
+            .container {
+                border-radius: 24px;
+                box-shadow: 0 20px 60px rgba(102, 126, 234, 0.15), 0 0 40px rgba(102, 126, 234, 0.05);
+                overflow: hidden;
+            }
+
+            .header {
+                padding: 16px 12px;
+                text-align: center;
+            }
+
+            .header h1 {
+                font-size: 1.4em;
+                margin-bottom: 4px;
+                font-weight: 700;
+                line-height: 1.2;
+            }
+
+            .header p {
+                font-size: 0.75em;
+                line-height: 1.3;
+                opacity: 0.95;
+            }
+
+            .tabs {
+                display: flex;
+                flex-direction: column;
+                border-bottom: none;
+                background: #f8f9fa;
+            }
+
+            .tab-button {
+                width: 100%;
+                padding: 16px 18px;
+                font-size: 0.9em;
+                border-bottom: 1px solid #e0e0e0;
+                border-right: none;
+                min-height: 50px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                text-align: center;
+                font-weight: 600;
+                transition: all 0.2s;
+            }
+
+            .tab-button:active {
+                background: #f0f0f0;
+            }
+
+            .tab-button.active {
+                border-bottom: 3px solid #667eea;
+                border-right: none;
+                background: white;
+                color: #667eea;
+            }
+
+            .tab-content {
+                padding: 24px 20px;
+            }
+
+            .btn {
+                padding: 16px 20px;
+                font-size: 0.95em;
+                width: 100%;
+                margin: 12px 0;
+                min-height: 50px;
+                border-radius: 10px;
+                font-weight: 600;
+                border: none;
+                cursor: pointer;
+                transition: all 0.2s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .btn:active {
+                transform: scale(0.98);
+            }
+
+            label {
+                font-size: 0.95em !important;
+                display: block;
+                margin-bottom: 10px;
+                font-weight: 600;
+                color: #333;
+            }
+
+            input, textarea, select {
+                font-size: 1em !important;
+                padding: 14px 16px;
+                min-height: 50px;
+                border-radius: 8px;
+                margin-bottom: 14px;
+                width: 100%;
+                border: 1px solid #ddd;
+                font-family: inherit;
+            }
+
+            input:focus, textarea:focus, select:focus {
+                outline: none;
+                border-color: #667eea;
+                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            }
+
+            .upload-area {
+                padding: 32px 20px;
+                border-radius: 12px;
+                border: 2px dashed #667eea;
+                margin-bottom: 16px;
+                text-align: center;
+            }
+
+            .upload-area p {
+                font-size: 0.95em;
+                line-height: 1.6;
+                margin-bottom: 12px;
+            }
+
+            .wage-info {
+                padding: 20px !important;
+                margin-bottom: 16px;
+                border-radius: 10px;
+                border: 1px solid #e0e0e0;
+                background: #f9f9f9;
+            }
+
+            .wage-info h3 {
+                font-size: 1.05em;
+                margin-bottom: 12px;
+                font-weight: 600;
+                color: #333;
+            }
+
+            .wage-info p {
+                font-size: 0.9em;
+                line-height: 1.6;
+                margin-bottom: 8px;
+            }
+
+            .wage-info li {
+                font-size: 0.9em;
+                line-height: 1.6;
+                margin: 8px 0;
+                margin-right: 20px;
+            }
+
+            .alert {
+                padding: 16px 18px;
+                font-size: 0.9em;
+                border-radius: 8px;
+                margin-bottom: 14px;
+                border-left: 4px solid;
+            }
+
+            table {
+                font-size: 0.85em;
+                margin-bottom: 16px;
+                width: 100%;
+            }
+
+            th, td {
+                padding: 12px 8px;
+                text-align: center;
+            }
+
+            th {
+                font-weight: 600;
+                background: #f5f5f5;
+            }
+
+            /* Splash Screen adjustments for mobile */
+            .splash-logo-text {
+                font-size: 48px;
+            }
+
+            .splash-tagline {
+                font-size: 16px;
+                margin-bottom: 50px;
+            }
+
+            .splash-spinner {
+                width: 40px;
+                height: 40px;
+            }
+
+            .splash-loader p {
+                font-size: 13px;
+            }
+
+            .footer {
+                font-size: 0.75em;
+                padding: 10px 12px;
+                text-align: center;
+            }
+
+            /* Mobile adjustments for main menu */
+            .main-menu {
+                grid-template-columns: 1fr;
+                gap: 14px;
+                padding: 16px;
+                min-height: auto;
+            }
+
+            .menu-card {
+                padding: 18px 14px;
+                gap: 10px;
+                border-radius: 16px;
+                box-shadow: 0 8px 24px rgba(102, 126, 234, 0.1), inset 0 1px 0 rgba(255,255,255,0.8);
+            }
+
+            .menu-card:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 12px 32px rgba(102, 126, 234, 0.15), inset 0 1px 0 rgba(255,255,255,0.9);
+            }
+
+            .menu-card-icon {
+                width: 58px;
+                height: 58px;
+            }
+
+            .menu-card-title {
+                font-size: 0.95em;
+                font-weight: 700;
+            }
+
+            /* First card optimization for mobile */
+            .menu-card:first-child {
+                padding: 22px 15px;
+                box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+                border-radius: 18px;
+            }
+
+            .menu-card:first-child .menu-card-icon {
+                width: 64px;
+                height: 64px;
+            }
+
+            .menu-card:first-child .menu-card-title {
+                font-size: 0.95em;
+                font-weight: 700;
+            }
+
+            /* Second card optimization for mobile */
+            .menu-card:nth-child(2) {
+                padding: 22px 15px;
+                box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+                border-radius: 18px;
+            }
+
+            .menu-card:nth-child(2) .menu-card-icon {
+                width: 64px;
+                height: 64px;
+            }
+
+            .menu-card:nth-child(2) .menu-card-title {
+                font-size: 0.95em;
+                font-weight: 700;
+            }
+
+            /* Third card optimization for mobile */
+            .menu-card:nth-child(3) {
+                padding: 22px 15px;
+                box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+                border-radius: 18px;
+            }
+
+            .menu-card:nth-child(3) .menu-card-icon {
+                width: 64px;
+                height: 64px;
+            }
+
+            .menu-card:nth-child(3) .menu-card-title {
+                font-size: 0.95em;
+                font-weight: 700;
+            }
+
+            /* Fourth card optimization for mobile */
+            .menu-card:nth-child(4) {
+                padding: 22px 15px;
+                box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+                border-radius: 18px;
+            }
+
+            .menu-card:nth-child(4) .menu-card-icon {
+                width: 64px;
+                height: 64px;
+            }
+
+            .menu-card:nth-child(4) .menu-card-title {
+                font-size: 0.95em;
+                font-weight: 700;
+            }
+
+            /* Mobile adjustments for dedicated views */
+            .dedicated-view {
+                padding: 20px 16px;
+            }
+
+            .view-header {
+                gap: 12px;
+                margin-bottom: 24px;
+            }
+
+            .back-btn {
+                font-size: 1.3em;
+                padding: 6px 10px;
+            }
+
+            .view-header h2 {
+                font-size: 1.3em;
+            }
+
+            /* Mobile Form Styling (480px) */
+            .dedicated-view {
+                padding: 16px;
+                margin: 0;
+                border-radius: 18px;
+            }
+
+            .dedicated-view label {
+                font-size: 0.9em !important;
+                margin-bottom: 8px !important;
+            }
+
+            .dedicated-view input[type="text"],
+            .dedicated-view input[type="date"],
+            .dedicated-view input[type="time"],
+            .dedicated-view input[type="number"],
+            .dedicated-view select {
+                padding: 12px 12px !important;
+                font-size: 16px !important;
+                border-radius: 10px !important;
+                margin-bottom: 16px !important;
+            }
+
+            .dedicated-view > p {
+                font-size: 0.9em !important;
+                padding: 12px 12px !important;
+                margin-bottom: 20px !important;
+            }
+
+            .dedicated-view > div[style*="background: #"] {
+                padding: 12px 12px !important;
+                border-radius: 10px !important;
+                margin-bottom: 16px !important;
+            }
+
+            .dedicated-view .btn {
+                font-size: 15px !important;
+                min-height: 44px !important;
+                border-radius: 10px !important;
+            }
+
+            /* Mobile Polish - 480px */
+            input[type="checkbox"],
+            input[type="radio"] {
+                width: 22px !important;
+                height: 22px !important;
+            }
+
+            .dedicated-view input[type="checkbox"]:hover,
+            .dedicated-view input[type="radio"]:hover {
+                transform: scale(1.15);
+            }
+
+            .upload-area::before {
+                opacity: 0.05;
+            }
+
+            .upload-area:hover::before {
+                opacity: 0.08;
+            }
+
+            .wage-info {
+                transition: all 0.2s ease;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            /* Touch-friendly active states */
+            button:active {
+                transform: scale(0.98);
+            }
+        }
+
+        /* Extra small screens (360px and below) */
+        @media (max-width: 360px) {
+            body {
+                padding: 10px;
+                background: linear-gradient(135deg, #f8f9fc 0%, #f0f4ff 100%);
+            }
+
+            .container {
+                border-radius: 20px;
+                box-shadow: 0 20px 60px rgba(102, 126, 234, 0.15), 0 0 40px rgba(102, 126, 234, 0.05);
+            }
+
+            .header {
+                padding: 12px 10px;
+            }
+
+            .header h1 {
+                font-size: 1.3em;
+                margin-bottom: 4px;
+            }
+
+            .header p {
+                font-size: 0.7em;
+            }
+
+            .tab-button {
+                padding: 14px 12px;
+                font-size: 0.85em;
+                min-height: 48px;
+            }
+
+            .tab-content {
+                padding: 20px 16px;
+            }
+
+            .btn {
+                padding: 14px 16px;
+                font-size: 0.9em;
+                min-height: 48px;
+                margin: 10px 0;
+            }
+
+            input, textarea, select {
+                padding: 12px 14px;
+                min-height: 48px;
+                font-size: 0.95em !important;
+                margin-bottom: 12px;
+            }
+
+            /* Extra small form styling (360px) */
+            .dedicated-view {
+                padding: 12px;
+                margin: 0;
+                border-radius: 16px;
+            }
+
+            .dedicated-view label {
+                font-size: 0.85em !important;
+                margin-bottom: 6px !important;
+            }
+
+            .dedicated-view input[type="text"],
+            .dedicated-view input[type="date"],
+            .dedicated-view input[type="time"],
+            .dedicated-view input[type="number"],
+            .dedicated-view select {
+                padding: 11px 10px !important;
+                font-size: 16px !important;
+                border-radius: 9px !important;
+                margin-bottom: 14px !important;
+            }
+
+            .dedicated-view > p {
+                font-size: 0.85em !important;
+                padding: 10px 10px !important;
+                margin-bottom: 16px !important;
+            }
+
+            .dedicated-view > div[style*="background: #"] {
+                padding: 10px 10px !important;
+                border-radius: 9px !important;
+                margin-bottom: 14px !important;
+            }
+
+            .dedicated-view .btn {
+                font-size: 14px !important;
+                min-height: 44px !important;
+                border-radius: 9px !important;
+            }
+
+            .view-header {
+                gap: 10px;
+                margin-bottom: 20px;
+                padding-bottom: 16px;
+            }
+
+            .back-btn {
+                min-width: 40px;
+                min-height: 40px;
+            }
+
+            .upload-area {
+                padding: 28px 14px;
+                border-radius: 12px;
+                margin-bottom: 18px;
+            }
+
+            .upload-area p {
+                font-size: 0.9em;
+                gap: 5px;
+            }
+
+            .upload-area small {
+                font-size: 0.8em;
+            }
+
+            .wage-info {
+                padding: 16px !important;
+                margin-bottom: 14px;
+            }
+
+            th, td {
+                padding: 10px 6px;
+                font-size: 0.8em;
+            }
+
+            /* Extra small screens - main menu optimization */
+            .main-menu {
+                grid-template-columns: 1fr;
+                gap: 11px;
+                padding: 12px;
+            }
+
+            .menu-card {
+                padding: 14px 12px;
+                gap: 8px;
+            }
+
+            .menu-card-icon {
+                width: 50px;
+                height: 50px;
+            }
+
+            .menu-card-title {
+                font-size: 0.9em;
+                font-weight: 700;
+            }
+
+            /* First card optimization for extra small screens */
+            .menu-card:first-child {
+                padding: 16px 14px;
+                box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+                border-radius: 18px;
+            }
+
+            .menu-card:first-child .menu-card-icon {
+                width: 56px;
+                height: 56px;
+            }
+
+            .menu-card:first-child .menu-card-title {
+                font-size: 0.9em;
+                font-weight: 700;
+            }
+
+            /* Second card optimization for extra small screens */
+            .menu-card:nth-child(2) {
+                padding: 16px 14px;
+                box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+                border-radius: 18px;
+            }
+
+            .menu-card:nth-child(2) .menu-card-icon {
+                width: 56px;
+                height: 56px;
+            }
+
+            .menu-card:nth-child(2) .menu-card-title {
+                font-size: 0.9em;
+                font-weight: 700;
+            }
+
+            /* Third card optimization for extra small screens */
+            .menu-card:nth-child(3) {
+                padding: 16px 14px;
+                box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+                border-radius: 18px;
+            }
+
+            .menu-card:nth-child(3) .menu-card-icon {
+                width: 56px;
+                height: 56px;
+            }
+
+            .menu-card:nth-child(3) .menu-card-title {
+                font-size: 0.9em;
+                font-weight: 700;
+            }
+
+            /* Fourth card optimization for extra small screens */
+            .menu-card:nth-child(4) {
+                padding: 16px 14px;
+                box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+                border-radius: 18px;
+            }
+
+            .menu-card:nth-child(4) .menu-card-icon {
+                width: 56px;
+                height: 56px;
+            }
+
+            .menu-card:nth-child(4) .menu-card-title {
+                font-size: 0.9em;
+                font-weight: 700;
+            }
+
+            .header {
+                padding: 12px 10px;
+            }
+
+            .header h1 {
+                font-size: 1.2em;
+                margin-bottom: 2px;
+            }
+
+            .header p {
+                font-size: 0.65em;
+                line-height: 1.2;
+            }
+
+            .footer {
+                font-size: 0.65em;
+                padding: 8px 10px;
+            }
+        }
+
+        /* ===== SPLASH SCREEN STYLES ===== */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: splashFadeOut 0.8s ease-in-out forwards;
+            animation-delay: 2s;
+        }
+
+        #splash-screen.hidden {
+            animation: splashFadeOut 0.8s ease-in-out forwards;
+        }
+
+        .splash-container {
+            text-align: center;
+            animation: splashPulse 2s ease-in-out infinite;
+        }
+
+        .splash-logo-text {
+            font-size: 64px;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 12px;
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            letter-spacing: -2px;
+        }
+
+        .splash-tagline {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 400;
+            letter-spacing: 1px;
+            margin-bottom: 60px;
+        }
+
+        .splash-loader {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .splash-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: splashSpin 1s linear infinite;
+        }
+
+        .splash-loader p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        @keyframes splashSpin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes splashPulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes splashFadeOut {
+            0% {
+                opacity: 1;
+                visibility: visible;
+            }
+            100% {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
+        /* ===== SECURITY POPUP STYLES ===== */
+        /* ===== MAIN MENU STYLES ===== */
+        .main-menu {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            padding: 20px;
+            min-height: auto;
+        }
+
+        .menu-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(249,250,255,0.8) 100%);
+            border: 1px solid rgba(102, 126, 234, 0.15);
+            border-radius: 18px;
+            padding: 18px 14px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.1), inset 0 1px 0 rgba(255,255,255,0.8);
+        }
+
+        .menu-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 30%, rgba(102, 126, 234, 0.05) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(102, 126, 234, 0.3);
+            box-shadow: 0 16px 40px rgba(102, 126, 234, 0.2), inset 0 1px 0 rgba(255,255,255,0.9);
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(250,251,255,0.95) 100%);
+        }
+
+        .menu-card:active {
+            transform: scale(0.94);
+        }
+
+        /* ===== FIRST CARD DESIGN TEST ===== */
+        .menu-card:first-child {
+            padding: 28px 16px;
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+            border-radius: 20px;
+        }
+
+        .menu-card:first-child:hover {
+            box-shadow: 0 16px 42px rgba(102, 126, 234, 0.28);
+        }
+
+        .menu-card:first-child .menu-card-icon {
+            width: 72px;
+            height: 72px;
+        }
+
+        .menu-card:first-child .menu-card-title {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        /* ===== SECOND CARD DESIGN ===== */
+        .menu-card:nth-child(2) {
+            padding: 28px 16px;
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+            border-radius: 20px;
+        }
+
+        .menu-card:nth-child(2):hover {
+            box-shadow: 0 16px 42px rgba(102, 126, 234, 0.28);
+        }
+
+        .menu-card:nth-child(2) .menu-card-icon {
+            width: 72px;
+            height: 72px;
+        }
+
+        .menu-card:nth-child(2) .menu-card-title {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        /* ===== THIRD CARD DESIGN ===== */
+        .menu-card:nth-child(3) {
+            padding: 28px 16px;
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+            border-radius: 20px;
+        }
+
+        .menu-card:nth-child(3):hover {
+            box-shadow: 0 16px 42px rgba(102, 126, 234, 0.28);
+        }
+
+        .menu-card:nth-child(3) .menu-card-icon {
+            width: 72px;
+            height: 72px;
+        }
+
+        .menu-card:nth-child(3) .menu-card-title {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        /* ===== FOURTH CARD DESIGN ===== */
+        .menu-card:nth-child(4) {
+            padding: 28px 16px;
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+            border-radius: 20px;
+        }
+
+        .menu-card:nth-child(4):hover {
+            box-shadow: 0 16px 42px rgba(102, 126, 234, 0.28);
+        }
+
+        .menu-card:nth-child(4) .menu-card-icon {
+            width: 72px;
+            height: 72px;
+        }
+
+        .menu-card:nth-child(4) .menu-card-title {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .menu-card-icon {
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-card-icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .menu-card-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        /* ===== DEDICATED VIEW STYLES ===== */
+        .dedicated-view {
+            display: none;
+            padding: 24px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.08);
+            margin: 16px;
+        }
+
+        .dedicated-view.active {
+            display: block;
+        }
+
+        .view-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.08) 100%);
+            border: 1px solid rgba(102, 126, 234, 0.15);
+            border-radius: 12px;
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 10px 14px;
+            transition: all 0.2s ease;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.15) 100%);
+            border-color: rgba(102, 126, 234, 0.25);
+            transform: scale(1.05);
+        }
+
+        .back-btn:active {
+            transform: scale(0.98);
+        }
+
+        .view-header h2 {
+            flex: 1;
+            margin: 0;
+            color: #1e293b;
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ===== FORM STYLING ===== */
+        /* Labels - Clean & Professional */
+        .dedicated-view label {
+            display: block !important;
+            font-weight: 600;
+            margin-bottom: 10px !important;
+            color: #1e293b;
+            font-size: 0.95em;
+        }
+
+        /* Inputs - Modern Style */
+        .dedicated-view input[type="text"],
+        .dedicated-view input[type="date"],
+        .dedicated-view input[type="time"],
+        .dedicated-view input[type="number"],
+        .dedicated-view select {
+            width: 100% !important;
+            padding: 12px 14px !important;
+            font-size: 16px !important;
+            margin-bottom: 20px !important;
+            border: 2px solid #e2e8f0 !important;
+            border-radius: 12px !important;
+            background: white !important;
+            color: #1e293b !important;
+            transition: all 0.3s ease !important;
+            font-family: 'Segoe UI', sans-serif !important;
+            -webkit-appearance: none !important;
+            appearance: none !important;
+        }
+
+        /* Input Focus State */
+        .dedicated-view input[type="text"]:focus,
+        .dedicated-view input[type="date"]:focus,
+        .dedicated-view input[type="time"]:focus,
+        .dedicated-view input[type="number"]:focus,
+        .dedicated-view select:focus {
+            outline: none !important;
+            border-color: #667eea !important;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+            background: #f8f9fc !important;
+        }
+
+        /* Select Arrow Styling */
+        .dedicated-view select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23667eea' d='M1 4l5 4 5-4'/%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat !important;
+            background-position: left 14px center !important;
+            padding-left: 36px !important;
+        }
+
+        /* Hint Text - Modern Style */
+        .dedicated-view > p {
+            padding: 12px 16px !important;
+            border-radius: 12px !important;
+            background: #eef2ff !important;
+            border-left: 4px solid #667eea !important;
+            color: #4c51bf !important;
+            font-size: 0.95em !important;
+            line-height: 1.5 !important;
+            margin-bottom: 24px !important;
+        }
+
+        /* Alert Boxes - Error/Warning */
+        .dedicated-view > div[style*="background: #b71c1c"],
+        .dedicated-view > div[style*="background: #ff9800"],
+        .dedicated-view > div[style*="background: #fff3cd"] {
+            padding: 16px 16px !important;
+            border-radius: 12px !important;
+            border-left: 4px solid !important;
+            margin-bottom: 20px !important;
+        }
+
+        /* Age Warning - Modern Red */
+        .dedicated-view > div[style*="background: #b71c1c"] {
+            background: #fee2e2 !important;
+            border-left-color: #dc2626 !important;
+        }
+
+        .dedicated-view > div[style*="background: #b71c1c"] p {
+            color: #7f1d1d !important;
+            margin: 8px 0 !important;
+            font-size: 0.95em !important;
+            line-height: 1.5 !important;
+        }
+
+        .dedicated-view > div[style*="background: #b71c1c"] strong {
+            color: #b91c1c !important;
+        }
+
+        /* Transport Cost Display - Info Blue */
+        .dedicated-view > div[style*="background: #e3f2fd"] {
+            background: #eff6ff !important;
+            border: 2px solid #bfdbfe !important;
+            border-radius: 12px !important;
+            padding: 16px 16px !important;
+            margin-bottom: 20px !important;
+        }
+
+        .dedicated-view > div[style*="background: #e3f2fd"] p {
+            color: #1e40af !important;
+            margin: 0 !important;
+            font-size: 0.95em !important;
+        }
+
+        /* Distance Input Container */
+        .dedicated-view > div[style*="border: 2px solid #1565c0"] {
+            background: #f0f4ff !important;
+            border: 2px solid #c7d2fe !important;
+            border-radius: 12px !important;
+            padding: 16px 16px !important;
+            margin-bottom: 20px !important;
+        }
+
+        .dedicated-view > div[style*="border: 2px solid #1565c0"] p {
+            color: #4c51bf !important;
+            margin-bottom: 12px !important;
+            font-size: 0.95em !important;
+        }
+
+        .dedicated-view > div[style*="border: 2px solid #1565c0"] label {
+            color: #4c51bf !important;
+            margin-bottom: 8px !important;
+        }
+
+        .dedicated-view > div[style*="border: 2px solid #1565c0"] input {
+            border-color: #c7d2fe !important;
+        }
+
+        /* Deductions Checkbox Container */
+        .dedicated-view > div[style*="background: #f5f5f5"] {
+            background: #f8f9fc !important;
+            padding: 16px 16px !important;
+            border-radius: 12px !important;
+            border: 1px solid #e2e8f0 !important;
+            margin-bottom: 20px !important;
+        }
+
+        .dedicated-view > div[style*="background: #f5f5f5"] label {
+            display: flex !important;
+            align-items: center !important;
+            margin-bottom: 12px !important;
+            cursor: pointer !important;
+            font-weight: 500 !important;
+        }
+
+        .dedicated-view > div[style*="background: #f5f5f5"] input[type="checkbox"] {
+            width: 20px !important;
+            height: 20px !important;
+            margin-left: 10px !important;
+            cursor: pointer !important;
+            accent-color: #667eea !important;
+        }
+
+        .dedicated-view > div[style*="background: #f5f5f5"] span {
+            color: #1e293b !important;
+            font-size: 0.95em !important;
+        }
+
+        /* Button Styling */
+        .dedicated-view .btn {
+            min-height: 48px !important;
+            font-size: 16px !important;
+            border-radius: 12px !important;
+            font-weight: 600 !important;
+            transition: all 0.3s ease !important;
+            cursor: pointer !important;
+        }
+
+        .dedicated-view .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            color: white !important;
+            border: none !important;
+            width: 100% !important;
+            padding: 14px 24px !important;
+        }
+
+        .dedicated-view .btn-primary:hover {
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3) !important;
+            transform: translateY(-2px) !important;
+        }
+
+        .dedicated-view .btn-primary:active {
+            transform: translateY(0) !important;
+        }
+
+        /* SVG Icon Styling */
+        .dedicated-view svg {
+            color: currentColor;
+            display: inline;
+            vertical-align: middle;
+        }
+
+        .view-header svg {
+            color: #667eea;
+            stroke: currentColor;
+        }
+
+        .dedicated-view > p svg {
+            color: #4c51bf;
+            stroke: currentColor;
+        }
+
+        .dedicated-view label svg {
+            color: #dc2626;
+            stroke: currentColor;
+        }
+
+        .dedicated-view label span {
+            color: #7f1d1d;
+        }
+
+        .dedicated-view .btn svg {
+            color: white;
+            stroke: white;
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 480px) {
+            /* Extra Small Polish - 360px */
+            input[type="checkbox"],
+            input[type="radio"] {
+                width: 20px !important;
+                height: 20px !important;
+            }
+
+            .dedicated-view input[type="checkbox"]:hover,
+            .dedicated-view input[type="radio"]:hover {
+                transform: scale(1.12);
+            }
+
+            table {
+                font-size: 0.85em;
+            }
+
+            .wage-info {
+                border-left: 3px solid #667eea;
+            }
+
+            /* Smaller screens need tighter button active state */
+            button:active {
+                transform: scale(0.96);
+            }
+
+            /* Better spacing on small screens */
+            .upload-area {
+                margin-bottom: 16px;
+            }
+
+            .dedicated-view > p {
+                line-height: 1.5;
+            }
+        }
+
+        /* ===== SCORE RING & ACCORDION UI ===== */
+        
+        /* Score Ring Container */
+        .score-ring-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 40px 0 50px 0;
+            padding: 0 20px;
+        }
+
+        .score-ring-wrapper {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-ring-svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .score-ring-background {
+            fill: none;
+            stroke: #e2e8f0;
+            stroke-width: 12;
+        }
+
+        .score-ring-progress {
+            fill: none;
+            stroke: url(#scoreGradient);
+            stroke-width: 12;
+            stroke-linecap: round;
+            stroke-dasharray: 502.65;
+            stroke-dashoffset: 502.65;
+            transition: stroke-dashoffset 1s ease-in-out;
+            transform-origin: 50% 50%;
+        }
+
+        .score-ring-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .score-value {
+            font-size: 3.5em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            line-height: 1;
+        }
+
+        .score-percent {
+            font-size: 0.9em;
+            color: #667eea;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .score-title {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        /* Accordion Container */
+        .check-results-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 30px 0;
+        }
+
+        /* Accordion Item */
+        .accordion-item {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .accordion-item:hover {
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.12);
+            border-color: #cbd5e1;
+        }
+
+        .accordion-item.expanded {
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.15);
+        }
+
+        /* Accordion Header */
+        .accordion-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 20px;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.3s ease;
+        }
+
+        .accordion-header:active {
+            background: #f8f9fc;
+        }
+
+        .accordion-header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .accordion-icon {
+            font-size: 1.4em;
+            flex-shrink: 0;
+        }
+
+        .accordion-title {
+            font-weight: 600;
+            font-size: 1em;
+            color: #2d3748;
+            word-break: break-word;
+        }
+
+        .accordion-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .badge-ok {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .badge-error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .accordion-chevron {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #667eea;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .accordion-item.expanded .accordion-chevron {
+            transform: rotate(180deg);
+        }
+
+        /* Accordion Content */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .accordion-item.expanded .accordion-content {
+            max-height: 1200px;
+        }
+
+        .accordion-body {
+            padding: 0 20px 20px 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        /* Check Details */
+        .check-detail {
+            margin-bottom: 16px;
+            padding: 12px;
+            background: #f8f9fc;
+            border-radius: 8px;
+            border-right: 3px solid #667eea;
+        }
+
+        .detail-label {
+            font-size: 0.9em;
+            color: #64748b;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            font-size: 1.1em;
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .detail-secondary {
+            font-size: 0.85em;
+            color: #94a3b8;
+            margin-top: 6px;
+            font-weight: normal;
+        }
+
+        .formula-box {
+            background: #eef2ff;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            color: #4c51bf;
+            font-family: 'Courier New', monospace;
+            margin-top: 8px;
+            border-right: 3px solid #667eea;
+        }
+
+        /* Status Messages in Accordion */
+        .status-message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-size: 0.95em;
+        }
+
+        .status-ok {
+            background: #dcfce7;
+            color: #166534;
+            border-right: 4px solid #22c55e;
+        }
+
+        .status-warning {
+            background: #fef3c7;
+            color: #b45309;
+            border-right: 4px solid #f59e0b;
+        }
+
+        .status-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-right: 4px solid #ef4444;
+        }
+
+        /* Mobile Optimization for Accordion */
+        @media (max-width: 480px) {
+            .score-ring-wrapper {
+                width: 160px;
+                height: 160px;
+            }
+
+            .score-value {
+                font-size: 2.8em;
+            }
+
+            .score-title {
+                font-size: 1em;
+                margin-top: 16px;
+            }
+
+            .accordion-header {
+                padding: 16px 16px;
+                gap: 10px;
+            }
+
+            .accordion-badge {
+                font-size: 0.8em;
+                padding: 3px 10px;
+            }
+
+            .check-detail {
+                padding: 10px;
+                margin-bottom: 12px;
+            }
+
+            .detail-label {
+                font-size: 0.85em;
+            }
+
+            .detail-value {
+                font-size: 1em;
+            }
+
+            .accordion-title {
+                font-size: 0.95em;
+            }
+
+            .accordion-icon {
+                font-size: 1.2em;
+            }
+
+            .formula-box {
+                font-size: 0.8em;
+                padding: 8px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .score-ring-wrapper {
+                width: 140px;
+                height: 140px;
+            }
+
+            .score-value {
+                font-size: 2.4em;
+            }
+
+            .accordion-header {
+                padding: 14px 14px;
+            }
+
+            .accordion-body {
+                padding: 0 14px 14px 14px;
+            }
+
+            .check-detail {
+                padding: 8px;
+            }
+
+            .detail-label {
+                font-size: 0.8em;
+            }
+
+            .detail-value {
+                font-size: 0.95em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ===== SECURITY POPUP ===== -->
+
+    <!-- ===== SPLASH SCREEN ===== -->
+    <div id="splash-screen">
+        <div class="splash-container">
+            <div class="splash-logo">
+                <div class="splash-logo-text">MyPay</div>
+                <div class="splash-tagline">בדיקת תלוש שכר לנוער</div>
+            </div>
+            <div class="splash-loader">
+                <div class="splash-spinner"></div>
+                <p>טוען...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>MyPay</h1>
+            <p style="font-size: 1.15em;">אפליקציה לנוער בגילאי 14-18 לבדיקת תלוש שכר והעסקה חוקית</p>
+        </div>
+
+        <div class="main-menu" id="mainMenu">
+            <div class="menu-card" onclick="navigateToView('payslip')">
+                <div class="menu-card-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="60" height="60" fill="none" stroke="#5C2568" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <!-- Top ruffle of the bag -->
+                        <path d="M 38 22 L 32 12 C 32 12 42 16 50 16 C 58 16 68 12 68 12 L 62 22 Z" fill="none" stroke-width="3" />
+                        
+                        <!-- Tied neck ribbon/rope -->
+                        <line x1="36" y1="26" x2="64" y2="26" stroke-width="4" />
+                        <!-- Main Bag Body -->
+                        <path d="M 36 26 C 25 32 18 50 18 66 C 18 78 30 86 50 86 C 70 86 82 78 82 66 C 82 50 75 32 64 26 Z" stroke-width="3.5" />
+                        <!-- Dollar Sign ($) -->
+                        <path d="M 50 40 V 68" stroke-width="3" />
+                        <path d="M 58 46 C 58 41 42 40 42 48 C 42 56 58 54 58 62 C 58 70 42 69 42 64" stroke-width="3" />
+                    </svg>
+                </div>
+                <div class="menu-card-title" style="color: #5C2568;">מילוי נתוני תלוש שכר</div>
+            </div>
+            <div class="menu-card" onclick="navigateToView('attendance')">
+                <div class="menu-card-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="60" height="60" fill="none" stroke="#5C2568" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <!-- Outer Clock Face -->
+                        <circle cx="50" cy="50" r="35" stroke-width="3.5" />
+                        <!-- Center Pin -->
+                        <circle cx="50" cy="50" r="2.5" fill="#5C2568" />
+                        <!-- Clock Hands (Showing around 10:10 or 3:00) -->
+                        <line x1="50" y1="50" x2="50" y2="28" stroke-width="3" />
+                        <line x1="50" y1="50" x2="65" y2="50" stroke-width="3" />
+                        <!-- Hour Ticks -->
+                        <line x1="50" y1="19" x2="50" y2="22" />
+                        <line x1="50" y1="78" x2="50" y2="81" />
+                        <line x1="19" y1="50" x2="22" y2="50" />
+                        <line x1="78" y1="50" x2="81" y2="50" />
+                    </svg>
+                </div>
+                <div class="menu-card-title" style="color: #5C2568;">מילוי נתוני נוכחות</div>
+            </div>
+            <div class="menu-card" onclick="navigateToView('check')">
+                <div class="menu-card-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="60" height="60" fill="none" stroke="#5C2568" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+                        <!-- Checkmark -->
+                        <path d="M 22 52 L 42 72 L 78 30" />
+                    </svg>
+                </div>
+                <div class="menu-card-title" style="color: #5C2568;">בדיקת עמידה בחוק</div>
+            </div>
+            <div class="menu-card" onclick="navigateToView('chat')">
+                <div class="menu-card-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="60" height="60" fill="none" stroke="#5C2568" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <!-- Top sparks/lines -->
+                        <line x1="50" y1="12" x2="50" y2="18" />
+                        <line x1="38" y1="16" x2="42" y2="21" />
+                        <line x1="62" y1="16" x2="58" y2="21" />
+                        <line x1="30" y1="24" x2="35" y2="27" />
+                        <line x1="70" y1="24" x2="65" y2="27" />
+                        <!-- Center Stand -->
+                        <circle cx="50" cy="35" r="4" fill="#5C2568" />
+                        <line x1="50" y1="39" x2="50" y2="78" />
+                        <path d="M 42 78 L 58 78 C 58 78 58 75 50 75 C 42 75 42 78 42 78 Z" fill="#5C2568" />
+                        <line x1="38" y1="82" x2="62" y2="82" stroke-width="4" />
+                        <!-- Beam -->
+                        <path d="M 22 42 C 35 37 42 37 50 38 C 58 37 65 37 78 42" stroke-width="3.5" />
+                        <circle cx="22" cy="42" r="2.5" fill="#5C2568" />
+                        <circle cx="78" cy="42" r="2.5" fill="#5C2568" />
+                        <!-- Left Scale -->
+                        <line x1="22" y1="42" x2="14" y2="58" />
+                        <line x1="22" y1="42" x2="30" y2="58" />
+                        <path d="M 12 58 L 32 58 C 32 68 12 68 12 58 Z" />
+                        <!-- Right Scale -->
+                        <line x1="78" y1="42" x2="70" y2="58" />
+                        <line x1="78" y1="42" x2="86" y2="58" />
+                        <path d="M 68 58 L 88 58 C 88 68 68 68 68 58 Z" />
+                    </svg>
+                </div>
+                <div class="menu-card-title" style="color: #5C2568;">הזכויות שלי</div>
+            </div>
+        </div>
+
+        <!-- DEDICATED VIEWS -->
+        <div id="payslip" class="dedicated-view">
+            <div class="view-header">
+                <button class="back-btn" onclick="navigateToView('menu')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+                <h2>נתוני תלוש שכר</h2>
+            </div>
+            <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-right: 4px solid #ff9800;">
+            <p style="color: #e65100; margin: 0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff9800" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; margin-left: 6px; vertical-align: middle;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3.05h16.94a2 2 0 0 0 1.71-3.05l-8.47-14.14a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>מלא נתונים ולחץ "שמור"</p>
+            </div>
+            <label style="display: block; font-weight: 600; margin-bottom: 10px;">תאריך לידה:</label>
+            <input type="date" id="birthDateInput" onblur="displayAge()" style="width: 100%; margin-bottom: 10px; font-size: 1.1em; padding: 10px;">
+            <p id="ageDisplay" style="color: #1565c0; margin-bottom: 20px; display: none;">הגיל שלך: <span id="ageValue"></span> שנים</p>
+
+            <div id="ageWarning" style="background: #b71c1c; padding: 20px; border-radius: 8px; border-right: 4px solid #b71c1c; margin-bottom: 20px; display: none;">
+                <p style="margin: 0; color: #fff; font-size: 1.1em;"><strong><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display: inline-block; margin-left: 8px; vertical-align: middle;">
+<polygon points="12 2 15.09 10.26 24 10.27 17.18 15.14 20.27 23.73 12 19.01 3.73 23.73 6.82 15.14 0 10.27 8.91 10.26"/>
+</svg>אסור לך לעבוד לפי החוק!</strong></p>
+                <p style="color: #fff; margin: 10px 0 0 0; font-size: 0.95em;">
+                    הגיל המינימלי להעסקה בישראל הוא <strong>14 שנים</strong>.
+                </p>
+                <p style="color: #fff; margin: 10px 0 0 0; font-size: 0.95em;">
+                    גילך הנוכחי: <strong id="warningAge">-</strong> שנים
+                </p>
+            </div>
+
+            <div id="ageWarningOver18" style="background: #b71c1c; padding: 20px; border-radius: 8px; border-right: 4px solid #b71c1c; margin-bottom: 20px; display: none;">
+                <p style="margin: 0; color: #fff; font-size: 1.1em;"><strong><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" style="display: inline-block; margin-left: 8px; vertical-align: middle;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>אפליקציה זו אינה מותאמת לגילאים מעל 18</strong></p>
+                <p style="color: #fff; margin: 10px 0 0 0; font-size: 0.95em;">
+                    אפליקציית MyPay מותאמת לנוער בגיל <strong>14-18 שנים</strong>.
+                </p>
+                <p style="color: #fff; margin: 10px 0 0 0; font-size: 0.95em;">
+                    גילך הנוכחי: <strong id="warningAgeOver18">-</strong> שנים
+                </p>
+                <p style="color: #fff; margin: 10px 0 0 0; font-size: 0.9em;">
+                    זכויות עובדים מבוגרים שונות מהן של נוער.
+                </p>
+            </div>
+
+            <label style="display: block; font-weight: 600; margin-bottom: 10px;">עיר/מקום מגורים:</label>
+            <select id="cityHomeInput" onchange="updateTransportCost()" style="width: 100%; margin-bottom: 20px; font-size: 1.1em; padding: 10px;">
+                <option value="">-- בחר עיר --</option>
+                <option value="תל אביב">תל אביב</option>
+                <option value="ירושלים">ירושלים</option>
+                <option value="חיפה">חיפה</option>
+                <option value="באר שבע">באר שבע</option>
+                <option value="מודיעין">מודיעין</option>
+                <option value="ראשון לציון">ראשון לציון</option>
+                <option value="פתח תקווה">פתח תקווה</option>
+                <option value="קריית גת">קריית גת</option>
+                <option value="אשדוד">אשדוד</option>
+                <option value="נתניה">נתניה</option>
+            </select>
+
+            <label style="display: block; font-weight: 600; margin-bottom: 10px;">עיר/מקום העסק:</label>
+            <select id="cityWorkInput" onchange="updateTransportCost()" style="width: 100%; margin-bottom: 20px; font-size: 1.1em; padding: 10px;">
+                <option value="">-- בחר עיר --</option>
+                <option value="תל אביב">תל אביב</option>
+                <option value="ירושלים">ירושלים</option>
+                <option value="חיפה">חיפה</option>
+                <option value="באר שבע">באר שבע</option>
+                <option value="מודיעין">מודיעין</option>
+                <option value="ראשון לציון">ראשון לציון</option>
+                <option value="פתח תקווה">פתח תקווה</option>
+                <option value="קריית גת">קריית גת</option>
+                <option value="אשדוד">אשדוד</option>
+                <option value="נתניה">נתניה</option>
+            </select>
+
+            <div id="transportCostDisplay" style="display: none; background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                <p style="color: #1565c0; margin: 0;"><strong>עלות נסיעה יומית (צפויה):</strong> <span id="transportCostValue">0</span> ₪</p>
+            </div>
+
+            <div id="distanceInputContainer" style="display: none; background: transparent; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 2px solid #1565c0;">
+                <p style="color: #1565c0; margin-bottom: 10px;"><strong><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" style="display: inline-block; margin-left: 6px; vertical-align: middle;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>בחרת אותה עיר למגורים ולעבודה</strong></p>
+                <label style="display: block; font-weight: 600; margin-bottom: 10px; color: #1565c0;">הזן מרחק בק"מ בין הבית לעבודה: <span style="color: #1565c0;">*</span></label>
+                <input type="number" id="customDistanceInput" placeholder="לדוגמה: 15" step="0.1" min="0.1" onchange="updateTransportCost()" style="width: 100%; margin-bottom: 10px; font-size: 1.1em; padding: 10px; border: 2px solid #1565c0;">
+                <small style="color: #1565c0;"><strong>שדה זה הוא חובה!</strong></small>
+            </div>
+
+            <label style="display: block; font-weight: 600; margin-bottom: 10px;">סכום נסיעות ששולם (ש"ח):</label>
+            <input type="number" id="transportInput" placeholder="0.00" step="0.01" min="0" style="width: 100%; margin-bottom: 20px; font-size: 1.1em; padding: 10px;">
+
+            <label style="display: block; font-weight: 600; margin-bottom: 10px;">שכר ששולם (ש"ח) - כמות שעות X תעריף שעה:</label>
+            <input type="number" id="salaryInput" placeholder="0.00" step="0.01" min="0" style="width: 100%; margin-bottom: 20px; font-size: 1.1em; padding: 10px;">
+
+            <label style="display: block; font-weight: 600; margin-bottom: 10px;">תעריף שעה (ש"ח):</label>
+            <input type="number" id="hourlyRateInput" placeholder="0.00" step="0.01" min="0" style="width: 100%; margin-bottom: 20px; font-size: 1.1em; padding: 10px;">
+
+            <label style="display: block; font-weight: 600; margin-bottom: 10px;">סה"כ נטו לבנק (ש"ח):</label>
+            <input type="number" id="netSalaryInput" placeholder="0.00" step="0.01" min="0" style="width: 100%; margin-bottom: 20px; font-size: 1.1em; padding: 10px;">
+
+            <label style="display: block; font-weight: 600; margin-bottom: 15px; margin-top: 20px;">האם יש ניכויים בשכר שלך?</label>
+            <div style="background: #eef2ff; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                <label style="display: flex; align-items: center; margin-bottom: 10px; cursor: pointer;">
+                    <input type="checkbox" id="deductionNationalInsurance" style="width: 18px; height: 18px; margin-left: 10px; vertical-align: middle; flex-shrink: 0;">
+                    <span style="vertical-align: middle;">ניכוי ביטוח לאומי</span>
+                </label>
+                <label style="display: flex; align-items: center; margin-bottom: 10px; cursor: pointer;">
+                    <input type="checkbox" id="deductionHealthInsurance" style="width: 18px; height: 18px; margin-left: 10px; vertical-align: middle; flex-shrink: 0;">
+                    <span style="vertical-align: middle;">ניכוי דמי בריאות</span>
+                </label>
+                <label style="display: flex; align-items: center; margin-bottom: 10px; cursor: pointer;">
+                    <input type="checkbox" id="deductionIncomeTax" style="width: 18px; height: 18px; margin-left: 10px; vertical-align: middle; flex-shrink: 0;">
+                    <span style="vertical-align: middle;">ניכוי מס הכנסה</span>
+                </label>
+            </div>
+
+            <button class="btn btn-primary" onclick="savePayslipData()" style="display: block !important; width: 100% !important; margin-top: 20px !important; margin-bottom: 20px !important; padding: 14px 24px !important; font-size: 1.1em !important; z-index: 1000 !important; position: relative !important; cursor: pointer !important; pointer-events: auto !important; visibility: visible !important;">שמור</button>
+
+            <div id="payslipContent"></div>
+        </div>
+
+        <!-- TAB 2: נוכחות -->
+        <div id="attendance" class="dedicated-view">
+            <div class="view-header">
+                <button class="back-btn" onclick="navigateToView('menu')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+                <h2>נתוני נוכחות</h2>
+            </div>
+            <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-right: 4px solid #ff9800;">
+            <p style="color: #e65100; margin: 0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff9800" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; margin-left: 6px; vertical-align: middle;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3.05h16.94a2 2 0 0 0 1.71-3.05l-8.47-14.14a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>העלה קובץ או הזן ידנית</p>
+            </div>
+
+            <div class="upload-area" onclick="document.getElementById('attendanceFile').click();">
+                <p><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; margin-left: 6px; vertical-align: middle;"><path d="M22 19a2 2 0 0 1-2.414-.646l-5.106-6.564a2 2 0 0 0-3.16 0l-5.106 6.564A2 2 0 0 1 2.414 19H22z"/><circle cx="12" cy="9" r="5"/></svg>לחצו כאן והוסיפו קובץ נוכחות</p>
+                <small>Excel (.xlsx, .xls)</small>
+                <input type="file" id="attendanceFile" accept=".xlsx,.xls" onchange="handleAttendanceUpload(event)">
+            </div>
+
+            <div id="attendanceContent"></div>
+
+            <div id="excelUploadedWarning" style="background: #eef2ff; padding: 20px; border-radius: 8px; border-right: 4px solid #667eea; margin-bottom: 20px; display: none;">
+                <p style="color: #4c51bf; margin: 10px 0 0 0; font-size: 0.9em;">
+                    אם ברצונך לעדכן ידנית את הנוכחות, קודם תמחק את קובץ האקסל שהוספת
+                </p>
+            </div>
+
+            <hr style="margin: 30px 0; border: none; border-top: 2px solid #f0f0f0;">
+
+            <div id="manualEntrySection">
+                <h3 style="color: #333; margin-bottom: 20px;">📝 הזנה ידנית</h3>
+                
+                <label style="display: block; font-weight: 600; margin-bottom: 10px;">תאריך:</label>
+                <input type="date" id="manualDateInput" style="width: 100%; margin-bottom: 20px; font-size: 1.1em; padding: 10px;">
+
+                <label style="display: block; font-weight: 600; margin-bottom: 10px;">שעת כניסה:</label>
+                <input type="time" id="manualCheckInInput" style="width: 100%; margin-bottom: 20px; font-size: 1.1em; padding: 10px;">
+
+                <label style="display: block; font-weight: 600; margin-bottom: 10px;">שעת יציאה:</label>
+                <input type="time" id="manualCheckOutInput" style="width: 100%; margin-bottom: 20px; font-size: 1.1em; padding: 10px;">
+
+                <button class="btn btn-primary" onclick="addManualAttendance()">הוסף רשומה</button>
+
+                <div id="manualAttendanceList" style="margin-top: 20px;"></div>
+            </div>
+        </div>
+
+        <!-- DEDICATED VIEW: בדוק זכויות -->
+        <div id="check" class="dedicated-view">
+            <div class="view-header">
+                <button class="back-btn" onclick="navigateToView('menu')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+                <h2>בדיקת עמידה בחוק</h2>
+            </div>
+
+            <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-right: 4px solid #ff9800;">
+            <p style="color: #e65100; margin: 0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff9800" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; margin-left: 6px; vertical-align: middle;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3.05h16.94a2 2 0 0 0 1.71-3.05l-8.47-14.14a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>נדרש למלא קודם:<br><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; margin-left: 6px; vertical-align: middle;"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>נתוני תלוש שכר<br><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; margin-left: 6px; vertical-align: middle;"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>נתוני נוכחות</p>
+            </div>
+
+            <div id="checkRequirementsWarning" style="display: none;">
+                <span id="checkRequirementPayslip"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></span>
+                <span id="checkRequirementAttendance"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></span>
+            </div>
+            <button id="checkRightsButton" class="btn btn-primary" onclick="checkRights()" disabled style="opacity: 0.5; cursor: not-allowed;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; margin-left: 6px; vertical-align: middle;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>בצע בדיקה</button>
+
+            <div id="checkContent"></div>
+        </div>
+
+        <!-- DEDICATED VIEW: הזכויות שלי -->
+        <div id="chat" class="dedicated-view">
+            <div class="view-header">
+                <button class="back-btn" onclick="navigateToView('menu')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+                <h2>הזכויות שלי</h2>
+            </div>
+
+            <div id="chatContent" style="margin-top: 20px;"></div>
+        </div>
+
+        <div class="footer">
+            <p>MyPay © 2026</p>
+            <p style="margin-top: 8px;">⚖️ אפליקציה זו אינה מהווה ייעוץ משפטי. לעצות משפטית, אנא פנה לעורך דין.</p>
+            <p style="margin-top: 8px;">🔒 אבטחת מידע: המידע שלך מאוחסן בדפדפן המקומי בלבד. אנחנו לא שומרים את הנתונים בשרתים ולא משתפים אותם עם צדדים שלישיים.</p>
+        </div>
+    </div>
+
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <script>
+        // ===== APP DATA =====
+        let appData = {
+            age: null,
+            birthDate: null,
+            payslipData: null,
+            attendanceData: [],
+            minWages: {
+                '14-15': 26.07,
+                '16-16': 26.07,
+                '17-17': 27.94,
+                '18-18': 30.92,
+                '18+': 30.92
+            },
+            workHours: {
+                '14-15': 6,
+                '16-18': 8
+            },
+            nightHoursBlock: {
+                '14-15': '20:00-08:00',
+                '16-18': '22:00-06:00'
+            },
+            // מטריצת מרחקים בין הערים (ק"מ)
+            cityDistances: {
+                // תל אביב
+                'תל אביב-ירושלים': 55, 'ירושלים-תל אביב': 55,
+                'תל אביב-חיפה': 100, 'חיפה-תל אביב': 100,
+                'תל אביב-באר שבע': 110, 'באר שבע-תל אביב': 110,
+                'תל אביב-מודיעין': 27, 'מודיעין-תל אביב': 27,
+                'תל אביב-ראשון לציון': 15, 'ראשון לציון-תל אביב': 15,
+                'תל אביב-פתח תקווה': 20, 'פתח תקווה-תל אביב': 20,
+                'תל אביב-אשדוד': 40, 'אשדוד-תל אביב': 40,
+                'תל אביב-נתניה': 45, 'נתניה-תל אביב': 45,
+                'תל אביב-קריית גת': 125, 'קריית גת-תל אביב': 125,
+                
+                // ירושלים
+                'ירושלים-חיפה': 160, 'חיפה-ירושלים': 160,
+                'ירושלים-באר שבע': 100, 'באר שבע-ירושלים': 100,
+                'ירושלים-מודיעין': 50, 'מודיעין-ירושלים': 50,
+                'ירושלים-ראשון לציון': 45, 'ראשון לציון-ירושלים': 45,
+                'ירושלים-פתח תקווה': 60, 'פתח תקווה-ירושלים': 60,
+                'ירושלים-אשדוד': 60, 'אשדוד-ירושלים': 60,
+                'ירושלים-נתניה': 90, 'נתניה-ירושלים': 90,
+                'ירושלים-קריית גת': 50, 'קריית גת-ירושלים': 50,
+                
+                // חיפה
+                'חיפה-באר שבע': 200, 'באר שבע-חיפה': 200,
+                'חיפה-מודיעין': 80, 'מודיעין-חיפה': 80,
+                'חיפה-ראשון לציון': 95, 'ראשון לציון-חיפה': 95,
+                'חיפה-פתח תקווה': 85, 'פתח תקווה-חיפה': 85,
+                'חיפה-אשדוד': 110, 'אשדוד-חיפה': 110,
+                'חיפה-נתניה': 50, 'נתניה-חיפה': 50,
+                'חיפה-קריית גת': 100, 'קריית גת-חיפה': 100,
+                
+                // באר שבע
+                'באר שבע-מודיעין': 80, 'מודיעין-באר שבע': 80,
+                'באר שבע-ראשון לציון': 120, 'ראשון לציון-באר שבע': 120,
+                'באר שבע-פתח תקווה': 130, 'פתח תקווה-באר שבע': 130,
+                'באר שבע-אשדוד': 40, 'אשדוד-באר שבע': 40,
+                'באר שבע-נתניה': 150, 'נתניה-באר שבע': 150,
+                'באר שבע-קריית גת': 20, 'קריית גת-באר שבע': 20,
+                
+                // מודיעין
+                'מודיעין-ראשון לציון': 30, 'ראשון לציון-מודיעין': 30,
+                'מודיעין-פתח תקווה': 40, 'פתח תקווה-מודיעין': 40,
+                'מודיעין-אשדוד': 50, 'אשדוד-מודיעין': 50,
+                'מודיעין-נתניה': 70, 'נתניה-מודיעין': 70,
+                'מודיעין-קריית גת': 80, 'קריית גת-מודיעין': 80,
+                
+                // ראשון לציון
+                'ראשון לציון-פתח תקווה': 30, 'פתח תקווה-ראשון לציון': 30,
+                'ראשון לציון-אשדוד': 25, 'אשדוד-ראשון לציון': 25,
+                'ראשון לציון-נתניה': 60, 'נתניה-ראשון לציון': 60,
+                'ראשון לציון-קריית גת': 70, 'קריית גת-ראשון לציון': 70,
+                
+                // פתח תקווה
+                'פתח תקווה-אשדוד': 55, 'אשדוד-פתח תקווה': 55,
+                'פתח תקווה-נתניה': 50, 'נתניה-פתח תקווה': 50,
+                'פתח תקווה-קריית גת': 60, 'קריית גת-פתח תקווה': 60,
+                
+                // אשדוד
+                'אשדוד-נתניה': 70, 'נתניה-אשדוד': 70,
+                'אשדוד-קריית גת': 35, 'קריית גת-אשדוד': 35,
+                
+                // קריית גת
+                'קריית גת-נתניה': 105, 'נתניה-קריית גת': 105,
+            },
+            // טבלת תעריפים לפי מרחק - תעריפים רשמיים מ"צדק תחבורתי" (רשות הארצית לתחבורה ציבורית)
+            // תעריפים לנסיעה בודדת
+            transportRates: {
+                0: 0,       // עיר בעצמה / מרחק < 500 מטרים
+                15: 8,      // 0-15 ק"מ (צהוב)
+                40: 14.5,   // 15-40 ק"מ (ירוק)
+                75: 19,     // 40-75 ק"מ (תכלת)
+                120: 19,    // 75-120 ק"מ (כחול)
+                225: 30.5,  // 120-225 ק"מ (סגול)
+                Infinity: 74  // מעל 225 ק"מ (אפור)
+            },
+            // טבלת תעריפים ל-50% (עבור בני נוער גילאי 14-18)
+            transportRatesYouth: {
+                0: 0,       // עיר בעצמה / מרחק < 500 מטרים
+                15: 4,      // 0-15 ק"מ (צהוב) - 50% מ-8
+                40: 7.25,   // 15-40 ק"מ (ירוק) - 50% מ-14.5
+                75: 9.5,    // 40-75 ק"מ (תכלת) - 50% מ-19
+                120: 9.5,   // 75-120 ק"מ (כחול) - 50% מ-19
+                225: 15.25, // 120-225 ק"מ (סגול) - 50% מ-30.5
+                Infinity: 37  // מעל 225 ק"מ (אפור) - 50% מ-74
+            },
+            minDistanceMeters: 500  // מרחק מינימלי להזכאות לדמי נסיעות
+        };
+
+        // ===== NAVIGATION FUNCTIONS =====
+        function navigateToView(viewName) {
+            // Hide all views
+            document.querySelectorAll('.dedicated-view').forEach(view => view.classList.remove('active'));
+            document.getElementById('mainMenu').style.display = viewName === 'menu' ? 'grid' : 'none';
+            
+            // Show selected view
+            if (viewName !== 'menu') {
+                const view = document.getElementById(viewName);
+                if (view) {
+                    view.classList.add('active');
+                }
+            }
+        }
+
+        // ===== TAB SWITCHING =====
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            // כאשר פותחים כרטיסיית בדוק זכויות - עדכן דרישות
+            if (tabName === 'check') {
+                updateCheckRequirements();
+            }
+            
+            // כאשר פותחים כרטיסיית צ'אט - הצג חוקים לפי גיל
+            if (tabName === 'chat') {
+                displayChatRules();
+            }
+        }
+
+        // ===== TRANSPORT COST CALCULATION =====
+        // ===== TRANSPORT COST CALCULATION =====
+        function getTransportCost(cityHome, cityWork, customDistance = null, age = null) {
+            // בדוק אם יש הנחה לבני נוער (גילאי 14-18)
+            const isYouth = age && age >= 14 && age <= 18;
+            const rates = isYouth ? appData.transportRatesYouth : appData.transportRates;
+
+            // אם הזנת מרחק מדוייק - השתמש בו
+            if (customDistance && customDistance > 0) {
+                const distance = customDistance;
+                
+                // בדוק מרחק מינימלי של 500 מטרים (0.5 ק"מ)
+                if (distance < 0.5) {
+                    // אינו זקוק לתחבורה לפי החוק
+                    return 0;
+                }
+                
+                let cost = 0;
+
+                if (distance <= 15) {
+                    cost = rates[15]; // 0-15 ק"מ (צהוב)
+                } else if (distance <= 40) {
+                    cost = rates[40]; // 15-40 ק"מ (ירוק)
+                } else if (distance <= 75) {
+                    cost = rates[75]; // 40-75 ק"מ (תכלת)
+                } else if (distance <= 120) {
+                    cost = rates[120]; // 75-120 ק"מ (כחול)
+                } else if (distance <= 225) {
+                    cost = rates[225]; // 120-225 ק"מ (סגול)
+                } else {
+                    cost = rates[Infinity]; // מעל 225 ק"מ (אפור)
+                }
+
+                return cost;
+            }
+
+            // אם עיר בעצמה וללא מרחק - אין עלות (צריך מרחק!)
+            if (cityHome === cityWork || !cityHome || !cityWork) {
+                return 0;
+            }
+
+            // חיפוש המרחק
+            const key = `${cityHome}-${cityWork}`;
+            const distance = appData.cityDistances[key] || appData.cityDistances[`${cityWork}-${cityHome}`] || 0;
+
+            if (distance === 0) {
+                return 0;
+            }
+
+            // בדוק מרחק מינימלי של 500 מטרים (0.5 ק"מ)
+            if (distance < 0.5) {
+                return 0; // אינו זקוק לתחבורה
+            }
+
+            // חישוב התעריף לפי המרחק (צדק תחבורתי)
+            let cost = 0;
+
+            if (distance <= 15) {
+                cost = rates[15]; // 0-15 ק"מ (צהוב)
+            } else if (distance <= 40) {
+                cost = rates[40]; // 15-40 ק"מ (ירוק)
+            } else if (distance <= 75) {
+                cost = rates[75]; // 40-75 ק"מ (תכלת)
+            } else if (distance <= 120) {
+                cost = rates[120]; // 75-120 ק"מ (כחול)
+            } else if (distance <= 225) {
+                cost = rates[225]; // 120-225 ק"מ (סגול)
+            } else {
+                cost = rates[Infinity]; // מעל 225 ק"מ (אפור)
+            }
+
+            return cost;
+        }
+
+        function updateTransportCost() {
+            const cityHome = document.getElementById('cityHomeInput').value;
+            const cityWork = document.getElementById('cityWorkInput').value;
+            const customDistance = parseFloat(document.getElementById('customDistanceInput').value) || null;
+            
+            const distanceContainer = document.getElementById('distanceInputContainer');
+
+            // אם בחרו אותה עיר - הצג את שדה המרחק (חובה)
+            if (cityHome === cityWork && cityHome) {
+                distanceContainer.style.display = 'block';
+            } else {
+                distanceContainer.style.display = 'none';
+            }
+
+            // חשב עלות עם גיל (לבדוק הנחה לנוער)
+            let cost = 0;
+            const age = appData.age; // שלוח את הגיל
+            
+            if (cityHome === cityWork && cityHome) {
+                // אותה עיר - השתמש במרחק המדוייק (ללא ערך ברירת מחדל)
+                if (customDistance && customDistance > 0) {
+                    // בדוק אם מרחק קטן מ-500 מטרים
+                    if (customDistance < 0.5) {
+                        cost = 0;
+                    } else {
+                        cost = getTransportCost(cityHome, cityWork, customDistance, age);
+                    }
+                } else {
+                    cost = 0; // לא חישב כלום עד שלא מילאו מרחק
+                }
+            } else {
+                // ערים שונות - חשב לפי הערים
+                cost = getTransportCost(cityHome, cityWork, null, age);
+            }
+
+            const displayDiv = document.getElementById('transportCostDisplay');
+            const valueSpan = document.getElementById('transportCostValue');
+
+            if (cost > 0) {
+                displayDiv.style.display = 'block';
+                valueSpan.textContent = cost.toFixed(2);
+            } else {
+                displayDiv.style.display = 'none';
+            }
+        }
+
+        // ===== PAYSLIP DATA =====
+        function savePayslipData() {
+            console.log('savePayslipData clicked!');
+            const birthDate = document.getElementById('birthDateInput').value;
+            const cityHome = document.getElementById('cityHomeInput').value;
+            const cityWork = document.getElementById('cityWorkInput').value;
+            const customDistance = parseFloat(document.getElementById('customDistanceInput').value) || null;
+            const transport = parseFloat(document.getElementById('transportInput').value) || 0;
+            const salary = parseFloat(document.getElementById('salaryInput').value);
+            const hourlyRate = parseFloat(document.getElementById('hourlyRateInput').value);
+            const netSalary = parseFloat(document.getElementById('netSalaryInput').value);
+
+            if (!birthDate || !salary || !hourlyRate || !netSalary) {
+                alert('⚠️ הזן את כל השדות (חוץ מנסיעות)');
+                return;
+            }
+
+            // בדוק אם בחרו אותה עיר ולא מילאו מרחק
+            if (cityHome === cityWork && cityHome && (!customDistance || customDistance <= 0)) {
+                alert('⚠️ בחרת אותה עיר למגורים ולעבודה! צריך להזין את המרחק בק"מ בין הבית לעבודה.');
+                document.getElementById('customDistanceInput').focus();
+                return;
+            }
+
+            // בדוק מרחק מינימלי של 500 מטר
+            if (cityHome && cityWork && cityHome !== cityWork && customDistance) {
+                if (customDistance * 1000 < appData.minDistanceMeters) {
+                    const remaining = appData.minDistanceMeters - (customDistance * 1000);
+                    alert(`⚠️ לפי החוק, אתה זכאי להחזר נסיעות רק אם המרחק מעבודתך לביתך הוא לפחות 500 מטרים.\nהמרחק שהזנת (${customDistance} ק"מ) קטן מדי.\nאתה זקוק ל-${(remaining / 1000).toFixed(2)} ק"מ נוסף.`);
+                    document.getElementById('customDistanceInput').focus();
+                    return;
+                }
+            }
+
+            // חשב ושמור את הגיל
+            const age = calculateAge(birthDate);
+            appData.age = age;
+            
+            // בדיקה קריטית: אם גיל < 14 - אסור לשמור
+            if (age < 14) {
+                alert('🚨 אסור לך לעבוד לפי החוק! הגיל המינימלי להעסקה בישראל הוא 14 שנים.');
+                return;
+            }
+            
+            // בדיקה קריטית: אם גיל > 18 - אפליקציה לא מותאמת
+            if (age > 18) {
+                alert('⚠️ אפליקציה זו אינה מותאמת לגילאים מעל 18. זכויות עובדים מבוגרים שונות מהן של נוער.');
+                return;
+            }
+
+            // קרא את הניכויים מה-checkboxes
+            const deductions = {
+                nationalInsurance: document.getElementById('deductionNationalInsurance').checked,
+                healthInsurance: document.getElementById('deductionHealthInsurance').checked,
+                incomeTax: document.getElementById('deductionIncomeTax').checked
+            };
+
+            appData.payslipData = {
+                birthDate: birthDate,
+                cityHome: cityHome,
+                cityWork: cityWork,
+                customDistance: customDistance,
+                transport: transport,
+                salary: salary,
+                extractedWage: hourlyRate,
+                netSalary: netSalary,
+                deductions: deductions,
+                uploadedAt: new Date().toLocaleString('he-IL'),
+                manualEntry: true
+            };
+
+            document.getElementById('payslipContent').innerHTML = `
+                <div class="alert alert-success" style="margin-top: 20px;">
+                    <strong style="color: #1565c0;">נתונים נשמרו בהצלחה!</strong>
+                </div>
+            `;
+            
+            // עדכן את הדרישות לכרטיסיית בדוק זכויות וצ'אט
+            updateCheckRequirements();
+            if (document.getElementById('chatContent')) {
+                displayChatRules();
+            }
+        }
+
+        async function handlePayslipUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // בדוק אם הקובץ הוא PDF
+                if (file.type !== 'application/pdf') {
+                    const contentDiv = document.getElementById('payslipContent');
+                    contentDiv.innerHTML = `
+                        <div class="alert alert-error">
+                            <strong>❌ סוג קובץ לא נתמך</strong>
+                            <p>אנא העלה קובץ PDF בלבד. תמונות (JPG, PNG) לא תתמכו.</p>
+                            <p style="font-size: 0.9em; color: #666; margin-top: 10px;">סוג הקובץ שהעלית: ${file.type || 'לא ידוע'}</p>
+                        </div>
+                    `;
+                    return;
+                }
+                await handlePayslipFile(file);
+            }
+        }
+
+        async function handlePayslipFile(file) {
+            const contentDiv = document.getElementById('payslipContent');
+            contentDiv.innerHTML = '<div class="loading"><div class="loader"></div><p>⏳ סורק את ה-PDF...</p></div>';
+
+            try {
+                let text = '';
+
+                if (file.type === 'application/pdf') {
+                    text = await extractTextFromPDF(file);
+                } else {
+                    throw new Error('רק קובץ PDF תמוך');
+                }
+
+                // Parse extracted text
+                const wage = parseWageFromText(text);
+                displayPayslipResult(wage, file, text);
+
+            } catch (error) {
+                contentDiv.innerHTML = `
+                    <div class="alert alert-error">
+                        <strong>❌ שגיאה בקריאת ה-PDF</strong>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function extractTextFromPDF(file) {
+            return new Promise(async (resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    try {
+                        const pdf = await pdfjsLib.getDocument({data: e.target.result}).promise;
+                        let fullText = '';
+                        for (let i = 0; i < pdf.numPages; i++) {
+                            const page = await pdf.getPage(i + 1);
+                            const textContent = await page.getTextContent();
+                            fullText += textContent.items.map(item => item.str).join(' ');
+                        }
+                        resolve(fullText);
+                    } catch (err) {
+                        reject(new Error('לא הצליח לקרוא את ה-PDF'));
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            });
+        }
+
+        function parsePayslipData(text) {
+            // חילוץ תעריף שעה
+            const hourlyPatterns = [
+                /ערך\s*שעה[^\d]*([\d,\.]+)\s*ש"?ח/i,
+                /שכר\s*שעתי[^\d]*([\d,\.]+)/i,
+                /([\d]{1,3}[\.,]?\d{1,2})\s*ש"?ח/i,
+                /\b(\d{2}\.\d{2})\b/
+            ];
+
+            let hourlyRate = null;
+            for (let pattern of hourlyPatterns) {
+                const match = text.match(pattern);
+                if (match && match[1]) {
+                    const wage = parseFloat(match[1].replace(',', '.'));
+                    if (wage >= 20 && wage <= 150) {
+                        hourlyRate = wage;
+                        break;
+                    }
+                }
+            }
+
+            // חילוץ נטו/סכום בבנק - חפש מתחת למילים בדיוק
+            let netSalary = null;
+            
+            // חפש "סכום בבנק" ואחריו שורה חדשה ואז מספר
+            const netPattern = /סכום\s*ב?בנק\s*[\n\r]+\s*([\d,\.]+)/i;
+            const match = text.match(netPattern);
+            if (match && match[1]) {
+                const amount = parseFloat(match[1].replace(',', '.'));
+                if (amount >= 5000 && amount <= 50000) {
+                    netSalary = amount;
+                }
+            }
+
+            return {
+                hourlyRate: hourlyRate,
+                netSalary: netSalary
+            };
+        }
+
+        function parseWageFromText(text) {
+            const data = parsePayslipData(text);
+            return data.hourlyRate;
+        }
+
+        function displayPayslipResult(wage, file, rawText) {
+            const contentDiv = document.getElementById('payslipContent');
+            let html = `
+                <div class="file-item">
+                    <div>
+                        <strong>📄 ${file.name}</strong>
+                        <small>${(file.size / 1024 / 1024).toFixed(2)} MB</small>
+                    </div>
+                </div>
+            `;
+
+            // זהיון שדות רגישים בטקסט
+            const sensitiveFields = detectSensitiveFields(rawText);
+
+            if (sensitiveFields.found) {
+                html += `
+                    <div class="alert alert-warning">
+                        <strong>⚠️ שדות רגישים זוהו בתלוש!</strong>
+                        <p style="margin-top: 10px;">השדות הבאים לא יוצגו מטעמי בטיחות:</p>
+                        <ul style="margin-right: 20px; margin-top: 10px;">
+                            ${sensitiveFields.details.map(d => `<li>${d}</li>`).join('')}
+                        </ul>
+                        <p style="font-size: 0.9em; color: #f57f17; margin-top: 10px;">💡 אל תשתוף מידע זה עם אחרים!</p>
+                    </div>
+                `;
+            }
+
+            if (wage) {
+                html += `
+                    <div class="alert alert-success">
+                        <strong>✅ סריקה הצליחה!</strong>
+                        <p style="margin-top: 10px;">📊 מוצגים רק נתונים בטוחים</p>
+                    </div>
+                `;
+
+                // חלץ נתונים נוספים
+                const payslipData = parsePayslipData(rawText);
+
+                // הצג נתונים
+                html += '<div style="background: #f5f5f5; padding: 20px; border-radius: 10px;">';
+                html += '<p style="font-weight: 600; margin-bottom: 15px;">💰 נתונים שחולצו:</p>';
+
+                // תעריף שעה
+                if (payslipData.hourlyRate) {
+                    html += `
+                        <div style="background: white; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-right: 3px solid #2196f3;">
+                            <p style="margin: 0; color: #666;">⏰ תעריף שעה:</p>
+                            <p style="font-size: 1.4em; color: #2196f3; margin: 5px 0 0 0;"><strong>₪${payslipData.hourlyRate.toFixed(2)}</strong></p>
+                        </div>
+                    `;
+                }
+
+                // נטו
+                if (payslipData.netSalary) {
+                    html += `
+                        <div style="background: white; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-right: 3px solid #4caf50;">
+                            <p style="margin: 0; color: #666;">🏦 משכורה נטו (לבנק):</p>
+                            <p style="font-size: 1.4em; color: #4caf50; margin: 5px 0 0 0;"><strong>₪${payslipData.netSalary.toFixed(2)}</strong></p>
+                        </div>
+                    `;
+                }
+
+                html += '</div>';
+
+                appData.payslipData = {
+                    name: file.name,
+                    uploadedAt: new Date().toLocaleString('he-IL'),
+                    extractedWage: wage,
+                    grossSalary: payslipData.grossSalary,
+                    netSalary: payslipData.netSalary,
+                    rawText: rawText,
+                    hasSensitiveFields: sensitiveFields.found
+                };
+            } else {
+                html += `
+                    <div class="alert alert-warning">
+                        <strong>⚠️ לא הצליח לחלץ נתונים</strong>
+                        <p>הזן את השכר ידנית:</p>
+                        <input type="number" id="manualWageInput" step="0.01" placeholder="26.39" style="width: 100%; margin: 10px 0;">
+                        <button class="btn btn-primary" onclick="saveManualWage()">💾 שמור</button>
+                    </div>
+                `;
+            }
+
+            contentDiv.innerHTML = html;
+        }
+
+        function detectSensitiveFields(text) {
+            const sensitivePatterns = {
+                'מס׳ זהות / תיק מספר': /תיק.*?:?\s*\d{6,9}|זהות.*?:?\s*\d{6,9}/i,
+                'מספר חשבון בנק': /חשבון.*?:?\s*\d{8,20}|בנק.*?:?\s*\d{4,}/i,
+                'כתובת מגורים': /רחוב|רח׳|ת\.ד|תיבת דואר|כתובת.*?:/i,
+                'טלפון אישי': /\b0\d{1,2}-?\d{3,4}-?\d{4}\b/
+            };
+
+            let detectedFields = [];
+            let foundAny = false;
+
+            for (let [fieldName, pattern] of Object.entries(sensitivePatterns)) {
+                if (pattern.test(text)) {
+                    detectedFields.push(`🚫 ${fieldName}`);
+                    foundAny = true;
+                }
+            }
+
+            return {
+                found: foundAny,
+                details: detectedFields
+            };
+        }
+
+        function saveManualWage() {
+            const wage = parseFloat(document.getElementById('manualWageInput').value);
+            if (wage > 0) {
+                appData.payslipData = { 
+                    extractedWage: wage, 
+                    uploadedAt: new Date().toLocaleString('he-IL'),
+                    manualEntry: true
+                };
+                document.getElementById('payslipContent').innerHTML = `
+                    <div class="alert alert-success">
+                        <strong>✅ שכר נשמר: ₪${wage.toFixed(2)}</strong>
+                        <p style="margin-top: 10px;">🔒 הנתון נשמר בעצמך בלבד - לא בשרת</p>
+                    </div>
+                `;
+            }
+        }
+
+        // ===== ATTENDANCE =====
+        async function handleAttendanceUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const contentDiv = document.getElementById('attendanceContent');
+
+            // טיפול ב-Excel בלבד
+            contentDiv.innerHTML = '<div class="loading"><div class="loader"></div><p>⏳ קורא את קובץ ה-Excel...</p></div>';
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const workbook = XLSX.read(e.target.result, {type: 'array'});
+                    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const data = XLSX.utils.sheet_to_json(sheet);
+                    
+                    // עיבוד נתוני הנוכחות
+                    const processedData = processAttendanceData(data);
+                    
+                    // הצגה
+                    let html = `
+                        <div class="alert alert-success">
+                            <strong>✅ קובץ Excel נטען בהצלחה!</strong>
+                            <p style="margin-top: 10px;">📄 ${file.name}</p>
+                            <p style="font-size: 0.9em; color: #666; margin-top: 10px;">נמצאו ${processedData.length} רשומות</p>
+                            <button class="btn btn-secondary" onclick="deleteAttendanceUpload()" style="margin-top: 15px; background-color: #4caf50; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-size: 0.95em;">
+                                מחק קובץ
+                            </button>
+                        </div>
+                    `;
+                    html += displayAttendanceTable(processedData);
+                    
+                    contentDiv.innerHTML = html;
+                    appData.attendanceData = processedData;
+                    
+                    // הצג הודעה אדומה וטמן שדות ידניים
+                    document.getElementById('excelUploadedWarning').style.display = 'block';
+                    document.getElementById('manualEntrySection').style.display = 'none';
+                    
+                    // עדכן את הדרישות לכרטיסיית בדוק זכויות וצ'אט
+                    updateCheckRequirements();
+                    if (document.getElementById('chatContent')) {
+                        displayChatRules();
+                    }
+                } catch (err) {
+                    contentDiv.innerHTML = `<div class="alert alert-error"><strong>❌ שגיאה בקריאת Excel</strong><p>${err.message}</p></div>`;
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+        
+        // פונקציה לעיבוד טקסט PDF של טבלה
+        // ===== ATTENDANCE DATA PROCESSING =====
+        
+        // פונקציה לזיהוי תאריך בפורמטים שונים (כולל time objects)
+        function parseDate(cell) {
+            if (!cell && cell !== 0) return null;
+            
+            // אם זה Date object
+            if (cell instanceof Date) {
+                return cell;
+            }
+            
+            const cellStr = String(cell).trim();
+            
+            // אם זה מספר (Excel date serial)
+            if (!isNaN(cellStr) && cellStr.length > 5) {
+                const date = new Date((cellStr - 25569) * 86400 * 1000);
+                if (!isNaN(date.getTime())) return date;
+            }
+            
+            // פורמטים שונים של תאריך
+            const datePatterns = [
+                /(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})/,  // DD/MM/YYYY או MM/DD/YYYY
+                /(\d{4})[\/-](\d{1,2})[\/-](\d{1,2})/,  // YYYY/MM/DD
+            ];
+            
+            for (let pattern of datePatterns) {
+                const match = cellStr.match(pattern);
+                if (match) {
+                    let day, month, year;
+                    if (pattern === datePatterns[0]) {
+                        day = parseInt(match[1]);
+                        month = parseInt(match[2]);
+                        year = parseInt(match[3]);
+                    } else {
+                        year = parseInt(match[1]);
+                        month = parseInt(match[2]);
+                        day = parseInt(match[3]);
+                    }
+                    
+                    // אם יום > 12, זה בוודאות יום (DD/MM/YYYY)
+                    if (day > 12 && month <= 12) {
+                        return new Date(year, month - 1, day);
+                    }
+                    return new Date(year, month - 1, day);
+                }
+            }
+            
+            // spry להשתמש בפרסר הטבעי של JavaScript
+            const date = new Date(cellStr);
+            if (!isNaN(date.getTime())) return date;
+            
+            return null;
+        }
+        
+        // פונקציה לזיהוי שעה (כולל time objects)
+        function parseTime(cell) {
+            if (!cell) return null;
+            
+            // אם זה time-like object עם hours/minutes
+            if (typeof cell === 'object' && (cell.hours !== undefined || cell.hours !== undefined)) {
+                return {
+                    hours: cell.hours || 0,
+                    minutes: cell.minutes || 0,
+                    toString: function() {
+                        return `${String(this.hours).padStart(2, '0')}:${String(this.minutes).padStart(2, '0')}`;
+                    }
+                };
+            }
+            
+            const cellStr = String(cell).trim();
+            
+            // פורמט HH:MM או H:MM
+            const timePattern = /(\d{1,2}):(\d{2})/;
+            const match = cellStr.match(timePattern);
+            if (match) {
+                return {
+                    hours: parseInt(match[1]),
+                    minutes: parseInt(match[2]),
+                    toString: function() {
+                        return `${String(this.hours).padStart(2, '0')}:${String(this.minutes).padStart(2, '0')}`;
+                    }
+                };
+            }
+            return null;
+        }
+        
+        // פונקציה לחישוב יום בשבוע
+        function getDayName(date) {
+            const days = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
+            return days[date.getDay()];
+        }
+        
+        // פונקציה לחישוב שעות עבודה (כולל עבודה שנמשכה אחרי חצות)
+        function calculateHours(timeIn, timeOut) {
+            if (!timeIn || !timeOut) return 0;
+            const minutesIn = timeIn.hours * 60 + timeIn.minutes;
+            let minutesOut = timeOut.hours * 60 + timeOut.minutes;
+            
+            // אם יציאה קטנה מכניסה = עבודה נמשכה לאחרי חצות
+            if (minutesOut < minutesIn) {
+                minutesOut += 24 * 60; // הוסף 24 שעות
+            }
+            
+            const diffMinutes = minutesOut - minutesIn;
+            if (diffMinutes < 0) return 0;
+            return (diffMinutes / 60).toFixed(2);
+        }
+        
+        // פונקציה לעיבוד נתוני נוכחות
+        function processAttendanceData(rawData) {
+            const results = [];
+            
+            if (!Array.isArray(rawData)) return results;
+            
+            for (let row of rawData) {
+                if (!row || typeof row !== 'object') continue;
+                
+                const values = Object.values(row);
+                let foundDate = null;
+                let timeValues = [];
+                
+                // חיפוש תאריך ושעות בשורה
+                for (let value of values) {
+                    const date = parseDate(value);
+                    if (date && !foundDate) {
+                        foundDate = date;
+                    }
+                    
+                    const time = parseTime(value);
+                    if (time) {
+                        timeValues.push(time);
+                    }
+                }
+                
+                if (foundDate && timeValues.length >= 2) {
+                    // מיין שעות - קטנה ראשונה, גדולה שנייה
+                    timeValues.sort((a, b) => (a.hours * 60 + a.minutes) - (b.hours * 60 + b.minutes));
+                    
+                    const timeIn = timeValues[0];
+                    const timeOut = timeValues[1];
+                    
+                    results.push({
+                        date: foundDate.toLocaleDateString('he-IL'),
+                        dayName: getDayName(foundDate),
+                        timeIn: timeIn.toString(),
+                        timeOut: timeOut.toString(),
+                        hours: calculateHours(timeIn, timeOut)
+                    });
+                }
+            }
+            
+            return results;
+        }
+        
+        // פונקציה להצגת טבלה
+        function displayAttendanceTable(data) {
+            if (!data || data.length === 0) {
+                return '<div class="alert alert-warning">⚠️ לא נמצאו נתוני נוכחות בקובץ</div>';
+            }
+            
+            let html = `
+                <div style="margin-top: 20px;">
+                    <h3 style="margin-bottom: 15px;">נתוני נוכחות שחולצו:</h3>
+                    <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+                    <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd; min-width: 500px;">
+                        <thead>
+                            <tr style="background: #f5f5f5;">
+                                <th style="border: 1px solid #ddd; padding: 12px; text-align: right;">תאריך</th>
+                                <th style="border: 1px solid #ddd; padding: 12px; text-align: right;">יום בשבוע</th>
+                                <th style="border: 1px solid #ddd; padding: 12px; text-align: center;">שעת כניסה</th>
+                                <th style="border: 1px solid #ddd; padding: 12px; text-align: center;">שעת יציאה</th>
+                                <th style="border: 1px solid #ddd; padding: 12px; text-align: center;">סה"כ שעות</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            for (let row of data) {
+                html += `
+                    <tr>
+                        <td style="border: 1px solid #ddd; padding: 12px; text-align: right;">${row.date}</td>
+                        <td style="border: 1px solid #ddd; padding: 12px; text-align: right;">${row.dayName}</td>
+                        <td style="border: 1px solid #ddd; padding: 12px; text-align: center;">${row.timeIn}</td>
+                        <td style="border: 1px solid #ddd; padding: 12px; text-align: center;">${row.timeOut}</td>
+                        <td style="border: 1px solid #ddd; padding: 12px; text-align: center; font-weight: bold;">${row.hours}</td>
+                    </tr>
+                `;
+            }
+            
+            html += `
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+            `;
+            
+            return html;
+        }
+
+        // ===== MANUAL ATTENDANCE =====
+        
+        function deleteAttendanceUpload() {
+            // בדוק אם באמת רוצים למחוק
+            if (!confirm('🗑️ בטוח שרוצה למחוק את קובץ ה-Excel? לא ניתן לשחזר את הפעולה!')) {
+                return;
+            }
+            
+            // נקה את הנתונים
+            appData.attendanceData = [];
+            
+            // הסתר הודעת אזהרה
+            document.getElementById('excelUploadedWarning').style.display = 'none';
+            
+            // הצג שדות ידניים
+            document.getElementById('manualEntrySection').style.display = 'block';
+            
+            // נקה את תצוגת Excel
+            document.getElementById('attendanceContent').innerHTML = '';
+            
+            // אתחול קובץ ה-upload
+            const fileInput = document.getElementById('attendanceFile');
+            if (fileInput) {
+                fileInput.value = '';
+            }
+            
+            // עדכן את הדרישות לכרטיסיית בדוק זכויות וצ'אט
+            updateCheckRequirements();
+            if (document.getElementById('chatContent')) {
+                displayChatRules();
+            }
+            
+            alert('✅ קובץ Excel נמחק בהצלחה! כעת תוכל להוסיף רשומות ידניות.');
+        }
+        
+        function addManualAttendance() {
+            // בדוק אם Excel כבר העלו
+            if (appData.attendanceData && appData.attendanceData.length > 0) {
+                alert('⚠️ בחר אחד מהשתיים: או Excel או הוספה ידנית.');
+                return;
+            }
+            
+            const date = document.getElementById('manualDateInput').value;
+            const checkIn = document.getElementById('manualCheckInInput').value;
+            const checkOut = document.getElementById('manualCheckOutInput').value;
+
+            if (!date || !checkIn || !checkOut) {
+                alert('⚠️ הזן תאריך, כניסה ויציאה');
+                return;
+            }
+
+            // יצור רשומה
+            const record = {
+                date: date,
+                checkIn: checkIn,
+                checkOut: checkOut
+            };
+
+            // אתחול מערך אם צריך
+            if (!appData.manualAttendance) {
+                appData.manualAttendance = [];
+            }
+
+            // הוסף רשומה
+            appData.manualAttendance.push(record);
+
+            // עדכן תצוגה
+            displayManualAttendance();
+
+            // נקה שדות
+            document.getElementById('manualDateInput').value = '';
+            document.getElementById('manualCheckInInput').value = '';
+            document.getElementById('manualCheckOutInput').value = '';
+
+            // עדכן את הדרישות לכרטיסיית בדוק זכויות וצ'אט
+            updateCheckRequirements();
+            if (document.getElementById('chatContent')) {
+                displayChatRules();
+            }
+            
+            alert('✅ רשומה נוספה בהצלחה!');
+        }
+
+        function displayManualAttendance() {
+            if (!appData.manualAttendance || appData.manualAttendance.length === 0) {
+                document.getElementById('manualAttendanceList').innerHTML = '';
+                return;
+            }
+            
+            // הסתר את אזור ה-Excel כאשר יש הוספות ידניות
+            document.getElementById('manualEntrySection').style.display = 'block';
+            const uploadArea = document.querySelector('.upload-area');
+            if (uploadArea) {
+                uploadArea.style.display = 'none';
+            }
+            const attendanceContent = document.getElementById('attendanceContent');
+            if (attendanceContent) {
+                attendanceContent.innerHTML = '';
+            }
+
+            let html = '<div style="margin-top: 20px;"><h3 style="margin-bottom: 15px;">📊 רשומות נוכחות שהוספת:</h3>';
+            html += '<table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">';
+            html += '<thead><tr style="background: #f5f5f5;">';
+            html += '<th style="border: 1px solid #ddd; padding: 12px; text-align: right;">תאריך</th>';
+            html += '<th style="border: 1px solid #ddd; padding: 12px; text-align: right;">יום בשבוע</th>';
+            html += '<th style="border: 1px solid #ddd; padding: 12px; text-align: center;">שעת כניסה</th>';
+            html += '<th style="border: 1px solid #ddd; padding: 12px; text-align: center;">שעת יציאה</th>';
+            html += '<th style="border: 1px solid #ddd; padding: 12px; text-align: center;">סה"כ שעות</th>';
+            html += '<th style="border: 1px solid #ddd; padding: 12px; text-align: center;">פעולות</th>';
+            html += '</tr></thead><tbody>';
+            
+            appData.manualAttendance.forEach((record, index) => {
+                const dateObj = new Date(record.date);
+                const dayName = getDayName(dateObj);
+                
+                const checkInHour = new Date(`2000-01-01 ${record.checkIn}`);
+                const checkOutHour = new Date(`2000-01-01 ${record.checkOut}`);
+                const diffMinutes = (checkOutHour - checkInHour) / 60000;
+                const hours = (diffMinutes / 60).toFixed(2);
+
+                html += `
+                    <tr>
+                        <td style="border: 1px solid #ddd; padding: 12px; text-align: right;">${record.date}</td>
+                        <td style="border: 1px solid #ddd; padding: 12px; text-align: right;">${dayName}</td>
+                        <td style="border: 1px solid #ddd; padding: 12px; text-align: center;">${record.checkIn}</td>
+                        <td style="border: 1px solid #ddd; padding: 12px; text-align: center;">${record.checkOut}</td>
+                        <td style="border: 1px solid #ddd; padding: 12px; text-align: center; font-weight: bold;">${hours}</td>
+                        <td style="border: 1px solid #ddd; padding: 12px; text-align: center;">
+                            <button class="btn btn-secondary" style="font-size: 0.8em; padding: 5px 10px;" onclick="removeManualAttendance(${index})">🗑️ מחק</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table></div>';
+            document.getElementById('manualAttendanceList').innerHTML = html;
+        }
+
+        function removeManualAttendance(index) {
+            appData.manualAttendance.splice(index, 1);
+            displayManualAttendance();
+        }
+
+        // ===== CALCULATE AGE =====
+        function calculateAge(birthDate) {
+            const today = new Date();
+            const birth = new Date(birthDate);
+            let age = today.getFullYear() - birth.getFullYear();
+            const monthDiff = today.getMonth() - birth.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+                age--;
+            }
+            
+            return age;
+        }
+
+        function displayAge() {
+            const birthDate = document.getElementById('birthDateInput').value;
+            if (birthDate) {
+                const age = calculateAge(birthDate);
+                appData.age = age;
+                
+                // אם גיל < 14 - תציג אזהרה ותנטרל שדות
+                if (age < 14) {
+                    // הצג אזהרה אדומה
+                    document.getElementById('ageWarning').style.display = 'block';
+                    document.getElementById('ageWarningOver18').style.display = 'none';
+                    document.getElementById('warningAge').textContent = age;
+                    document.getElementById('ageDisplay').style.display = 'none';
+                    
+                    // נטרל את כל השדות האחרים
+                    disableAllFields();
+                    
+                    // הסתר את כפתור השמירה
+                    const saveButton = document.querySelector('button[onclick="savePayslipData()"]');
+                    if (saveButton) {
+                        saveButton.style.display = 'none';
+                    }
+                }
+                // אם גיל > 18 - תציג אזהרה ותנטרל שדות
+                else if (age > 18) {
+                    // הצג אזהרה אדומה
+                    document.getElementById('ageWarningOver18').style.display = 'block';
+                    document.getElementById('ageWarning').style.display = 'none';
+                    document.getElementById('warningAgeOver18').textContent = age;
+                    document.getElementById('ageDisplay').style.display = 'none';
+                    
+                    // נטרל את כל השדות האחרים
+                    disableAllFields();
+                    
+                    // הסתר את כפתור השמירה
+                    const saveButton = document.querySelector('button[onclick="savePayslipData()"]');
+                    if (saveButton) {
+                        saveButton.style.display = 'none';
+                    }
+                }
+                // אם גיל 14-18 - הכל בסדר
+                else {
+                    // אם גיל >= 14 - הסתר אזהרה והפעל שדות
+                    document.getElementById('ageWarning').style.display = 'none';
+                    document.getElementById('ageWarningOver18').style.display = 'none';
+                    document.getElementById('ageDisplay').style.display = 'block';
+                    document.getElementById('ageValue').innerHTML = `${age}`;
+                    
+                    // הפעל את כל השדות
+                    enableAllFields();
+                    
+                    // הצג את כפתור השמירה
+                    const saveButton = document.querySelector('button[onclick="savePayslipData()"]');
+                    if (saveButton) {
+                        saveButton.style.display = 'block';
+                    }
+                }
+            } else {
+                appData.age = null;
+                document.getElementById('ageDisplay').style.display = 'none';
+                document.getElementById('ageWarning').style.display = 'none';
+                document.getElementById('ageWarningOver18').style.display = 'none';
+                enableAllFields();
+                
+                // הצג את כפתור השמירה
+                const saveButton = document.querySelector('button[onclick="savePayslipData()"]');
+                if (saveButton) {
+                    saveButton.style.display = 'block';
+                }
+            }
+        }
+        
+        // פונקציה לנטרל את כל השדות
+        function disableAllFields() {
+            const fields = [
+                'cityHomeInput', 'cityWorkInput', 'customDistanceInput',
+                'transportInput', 'salaryInput', 'hourlyRateInput', 'netSalaryInput',
+                'deductionNationalInsurance', 'deductionHealthInsurance', 
+                'deductionIncomeTax'
+            ];
+            
+            fields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.disabled = true;
+                    field.style.opacity = '0.5';
+                    field.style.cursor = 'not-allowed';
+                }
+            });
+        }
+        
+        // פונקציה להפעיל את כל השדות
+        function enableAllFields() {
+            const fields = [
+                'cityHomeInput', 'cityWorkInput', 'customDistanceInput',
+                'transportInput', 'salaryInput', 'hourlyRateInput', 'netSalaryInput',
+                'deductionNationalInsurance', 'deductionHealthInsurance', 
+                'deductionIncomeTax'
+            ];
+            
+            fields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.disabled = false;
+                    field.style.opacity = '1';
+                    field.style.cursor = 'pointer';
+                }
+            });
+        }
+
+        // ===== CHAT - DISPLAY RULES BASED ON AGE =====
+        function displayChatRules() {
+            const contentDiv = document.getElementById('chatContent');
+            const age = appData.age || null;
+            
+            if (!age) {
+                // אם אין גיל - הצג הודעה
+                contentDiv.innerHTML = `
+                    <div style="background: #fff3cd; padding: 20px; border-radius: 8px; border-right: 4px solid #ff9800;">
+                        <p style="margin: 0; color: #e65100;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff9800" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; margin-left: 6px; vertical-align: middle;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3.05h16.94a2 2 0 0 0 1.71-3.05l-8.47-14.14a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> טרם הוזן תאריך לידה</p>
+                        <p style="color: #e65100; margin: 10px 0 0 0;">
+                            כדי לראות את החוקים הקשורים לגילך, אנא הזן תאריך לידה בכרטיסיית "תלוש שכר" ולחץ "שמור נתונים".
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // אם גיל < 14 - אסור לעבוד
+            if (age < 14) {
+                contentDiv.innerHTML = `
+                    <div style="background: #ffebee; padding: 20px; border-radius: 8px; border-right: 4px solid #ef5350;">
+                        <p style="margin: 0; color: #b71c1c; font-size: 1.2em;"><strong>🚨 אסור לך לעבוד לפי החוק</strong></p>
+                        <p style="color: #b71c1c; margin: 10px 0 0 0; font-size: 1em;">
+                            הגיל המינימלי להעסקה בישראל הוא <strong>14 שנים</strong>.
+                        </p>
+                        <p style="color: #b71c1c; margin: 10px 0 0 0;">
+                            גילך: <strong>${age} שנים</strong>
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // אם גיל > 18 - לא מותאם
+            if (age > 18) {
+                contentDiv.innerHTML = `
+                    <div style="background: #ffebee; padding: 20px; border-radius: 8px; border-right: 4px solid #ef5350;">
+                        <p style="margin: 0; color: #b71c1c; font-size: 1.2em;"><strong>⚠️ אפליקציה זו אינה מותאמת לגילאים מעל 18</strong></p>
+                        <p style="color: #b71c1c; margin: 10px 0 0 0;">
+                            MyPay מותאמת לנוער בגיל 14-18 שנים בלבד.
+                        </p>
+                        <p style="color: #b71c1c; margin: 10px 0 0 0;">
+                            זכויות עובדים מבוגרים שונות מהן של נוער.
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // גיל 14-18 - הצג חוקים
+            let html = `
+                <div style="background: #e8f5e9; padding: 20px; border-radius: 8px; border-right: 4px solid #4caf50; margin-bottom: 20px;">
+                    <p style="margin: 0; color: #2e7d32; font-size: 1.1em;"><strong>📋 החוקים שלך לפי הגיל (לפי כל-זכות):</strong></p>
+                    <p style="color: #2e7d32; margin: 10px 0 0 0; font-size: 1.05em;">
+                        גיל: <strong>${age} שנים</strong>
+                    </p>
+                </div>
+            `;
+            
+            // ===== שכר מינימום =====
+            let minWage = 0;
+            if (age <= 15) {
+                minWage = 26.07;
+                html += `
+                    <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; border-right: 4px solid #2196f3; margin-bottom: 15px;">
+                        <p style="margin: 0; color: #1565c0; font-weight: bold;">💰 שכר מינימום שלך:</p>
+                        <p style="color: #1565c0; margin: 10px 0 0 0;">
+                            <strong>₪26.07 לשעה</strong> (עד גיל 16)
+                        </p>
+                        <p style="color: #1565c0; margin: 5px 0 0 0; font-size: 0.95em;">
+                            (נכון ל-01.04.2026)
+                        </p>
+                    </div>
+                `;
+            } else if (age <= 16) {
+                minWage = 26.07;
+                html += `
+                    <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; border-right: 4px solid #2196f3; margin-bottom: 15px;">
+                        <p style="margin: 0; color: #1565c0; font-weight: bold;">💰 שכר מינימום שלך:</p>
+                        <p style="color: #1565c0; margin: 10px 0 0 0;">
+                            <strong>₪26.07 לשעה</strong> (עד גיל 16)
+                        </p>
+                        <p style="color: #1565c0; margin: 5px 0 0 0; font-size: 0.95em;">
+                            (נכון ל-01.04.2026)
+                        </p>
+                    </div>
+                `;
+            } else if (age <= 17) {
+                minWage = 27.94;
+                html += `
+                    <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; border-right: 4px solid #2196f3; margin-bottom: 15px;">
+                        <p style="margin: 0; color: #1565c0; font-weight: bold;">💰 שכר מינימום שלך:</p>
+                        <p style="color: #1565c0; margin: 10px 0 0 0;">
+                            <strong>₪27.94 לשעה</strong> (גיל 16-17)
+                        </p>
+                        <p style="color: #1565c0; margin: 5px 0 0 0; font-size: 0.95em;">
+                            (נכון ל-01.04.2026)
+                        </p>
+                    </div>
+                `;
+            } else {
+                minWage = 30.92;
+                html += `
+                    <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; border-right: 4px solid #2196f3; margin-bottom: 15px;">
+                        <p style="margin: 0; color: #1565c0; font-weight: bold;">💰 שכר מינימום שלך:</p>
+                        <p style="color: #1565c0; margin: 10px 0 0 0;">
+                            <strong>₪30.92 לשעה</strong> (גיל עד 18)
+                        </p>
+                        <p style="color: #1565c0; margin: 5px 0 0 0; font-size: 0.95em;">
+                            (נכון ל-01.04.2026)
+                        </p>
+                    </div>
+                `;
+            }
+            
+            // ===== שעות עבודה =====
+            if (age < 16) {
+                html += `
+                    <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; border-right: 4px solid #2196f3; margin-bottom: 15px;">
+                        <p style="margin: 0; color: #1565c0; font-weight: bold;">⏰ שעות עבודה מותרות:</p>
+                        <ul style="color: #1565c0; margin-right: 20px; margin-top: 10px;">
+                            <li>עד <strong>8 שעות ביום</strong></li>
+                            <li>עד <strong>40 שעות בשבוע</strong></li>
+                            <li>רק בזמן חופשות מהלימודים</li>
+                        </ul>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; border-right: 4px solid #2196f3; margin-bottom: 15px;">
+                        <p style="margin: 0; color: #1565c0; font-weight: bold;">⏰ שעות עבודה מותרות:</p>
+                        <ul style="color: #1565c0; margin-right: 20px; margin-top: 10px;">
+                            <li>עד <strong>8 שעות ביום</strong> (או עד 9 בימים מסוגלים)</li>
+                            <li>עד <strong>40 שעות בשבוע</strong></li>
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            // ===== עבודה בלילה =====
+            if (age < 16) {
+                html += `
+                    <div style="background: #fff3cd; padding: 15px; border-radius: 8px; border-right: 4px solid #ff9800; margin-bottom: 15px;">
+                        <p style="margin: 0; color: #e65100; font-weight: bold;">🌙 עבודה בלילה:</p>
+                        <p style="color: #e65100; margin: 10px 0 0 0;">
+                            <strong>❌ אסור לעבוד בין 20:00 ל-08:00</strong>
+                        </p>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div style="background: #fff3cd; padding: 15px; border-radius: 8px; border-right: 4px solid #ff9800; margin-bottom: 15px;">
+                        <p style="margin: 0; color: #e65100; font-weight: bold;">🌙 עבודה בלילה:</p>
+                        <p style="color: #e65100; margin: 10px 0 0 0;">
+                            <strong>❌ אסור לעבוד בין 22:00 ל-08:00</strong>
+                        </p>
+                    </div>
+                `;
+            }
+            
+            // ===== דמי נסיעה =====
+            html += `
+                <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; border-right: 4px solid #2196f3; margin-bottom: 15px;">
+                    <p style="margin: 0; color: #1565c0; font-weight: bold;">🚌 דמי נסיעה:</p>
+                    <ul style="color: #1565c0; margin-right: 20px; margin-top: 10px;">
+                        <li>זכאי להחזר דמי נסיעות מביתך לעבודה ובחזורה</li>
+                        <li><strong>50% הנחה</strong> בתחבורה ציבורית</li>
+                        <li>תנאי: מרחק של לפחות <strong>500 מטרים</strong></li>
+                        <li>כיסוי: ימי עבודה בפועל בלבד</li>
+                    </ul>
+                </div>
+            `;
+            
+            // ===== ניכויים אסורים =====
+            html += `
+                <div style="background: #ffebee; padding: 15px; border-radius: 8px; border-right: 4px solid #ef5350; margin-bottom: 15px;">
+                    <p style="margin: 0; color: #b71c1c; font-weight: bold;">❌ ניכויים אסורים מנוער:</p>
+                    <ul style="color: #b71c1c; margin-right: 20px; margin-top: 10px;">
+                        <li>❌ <strong>ביטוח לאומי</strong> - אסור!</li>
+                        <li>❌ <strong>דמי בריאות</strong> - אסור!</li>
+                        <li>✅ <strong>מס הכנסה</strong> - מותר אבל בדרך כלל לא חל</li>
+                    </ul>
+                </div>
+            `;
+            
+            contentDiv.innerHTML = html;
+        }
+        
+        // ===== CHECK REQUIREMENTS FOR RIGHTS CHECK =====
+        function updateCheckRequirements() {
+            // בדוק אם יש payslip עם נתונים נדרשים
+            const hasPayslipData = appData.payslipData && 
+                                 appData.payslipData.birthDate && 
+                                 appData.payslipData.extractedWage;
+            
+            // בדוק אם יש נוכחות (Excel או ידנית)
+            const hasAttendance = (appData.attendanceData && appData.attendanceData.length > 0) ||
+                                 (appData.manualAttendance && appData.manualAttendance.length > 0);
+            
+            // עדכן סימונים
+            const payslipIcon = hasPayslipData ? '✅' : '❌';
+            const attendanceIcon = hasAttendance ? '✅' : '❌';
+            
+            document.getElementById('checkRequirementPayslip').textContent = payslipIcon;
+            document.getElementById('checkRequirementAttendance').textContent = attendanceIcon;
+            
+            // הצג/הסתר הודעה
+            if (hasPayslipData && hasAttendance) {
+                // הכל בסדר - הפעל כפתור ו-hide warning
+                document.getElementById('checkRequirementsWarning').style.display = 'none';
+                const btn = document.getElementById('checkRightsButton');
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                btn.style.cursor = 'pointer';
+            } else {
+                // חסר משהו - הציג warning וחסום כפתור
+                document.getElementById('checkRequirementsWarning').style.display = 'block';
+                const btn = document.getElementById('checkRightsButton');
+                btn.disabled = true;
+                btn.style.opacity = '0.5';
+                btn.style.cursor = 'not-allowed';
+            }
+        }
+        
+        // ===== SCORE RING & ACCORDION HELPERS =====
+        function generateScoreRing(score) {
+            const percentage = Math.min(100, Math.max(0, score));
+            const circumference = 2 * Math.PI * 80; // radius = 80
+            const offset = circumference - (percentage / 100) * circumference;
+            
+            return `
+                <div class="score-ring-container">
+                    <div class="score-ring-wrapper">
+                        <svg class="score-ring-svg" viewBox="0 0 200 200">
+                            <defs>
+                                <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <circle class="score-ring-background" cx="100" cy="100" r="80"></circle>
+                            <circle class="score-ring-progress" cx="100" cy="100" r="80" style="stroke-dashoffset: ${offset}"></circle>
+                        </svg>
+                        <div class="score-ring-label">
+                            <span class="score-value">${Math.round(percentage)}</span>
+                            <span class="score-percent">%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="score-title">תוצאות הבדיקות:</div>
+            `;
+        }
+        
+        function generateAccordionItem(icon, title, status, badgeClass, content) {
+            const badgeText = status.text || 'בדיקה';
+            const isExpanded = status.expanded ? 'expanded' : '';
+            
+            return `
+                <div class="accordion-item ${isExpanded}">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <div class="accordion-header-left">
+                            <span class="accordion-icon">${icon}</span>
+                            <span class="accordion-title">${title}</span>
+                        </div>
+                        <span class="accordion-badge ${badgeClass}">${badgeText}</span>
+                        <div class="accordion-chevron">▼</div>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            ${content}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function generateDetailItem(label, value, secondary = '') {
+            return `
+                <div class="check-detail">
+                    <div class="detail-label">${label}</div>
+                    <div class="detail-value">${value}</div>
+                    ${secondary ? `<div class="detail-secondary">${secondary}</div>` : ''}
+                </div>
+            `;
+        }
+        
+        // ===== ACCORDION TOGGLE =====
+        function toggleAccordion(element) {
+            const item = element.closest('.accordion-item');
+            if (!item) return;
+            
+            // סגור את כל ה-accordions האחרים
+            document.querySelectorAll('.accordion-item').forEach(otherItem => {
+                if (otherItem !== item && otherItem.classList.contains('expanded')) {
+                    otherItem.classList.remove('expanded');
+                }
+            });
+            
+            // התחלף את ה-expanded class של הפריט הנוכחי
+            item.classList.toggle('expanded');
+        }
+        
+        // ===== CHECK RIGHTS =====
+        function checkRights() {
+            // חשב גיל מתאריך לידה
+            let age = null;
+            if (appData.payslipData && appData.payslipData.birthDate) {
+                age = calculateAge(appData.payslipData.birthDate);
+            }
+
+            let wage = null;
+
+            // אם יש שכר מהנתונים - השתמש בזה
+            if (appData.payslipData && appData.payslipData.extractedWage) {
+                wage = appData.payslipData.extractedWage;
+            }
+
+            if (!age || !wage) {
+                alert('⚠️ וודא שהזנת את תאריך הלידה ותעריף השעה בכרטיסייה "תלוש שכר"');
+                return;
+            }
+
+            // בדיקה קריטית: אם גיל < 14 - אסור לעבוד כלל
+            if (age < 14) {
+                let html = generateScoreRing(0) + `
+                    <div style="margin-top: 40px; padding: 24px; background: #fee2e2; border: 2px solid #ef4444; border-radius: 12px; border-right: 6px solid #dc2626;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            <span style="font-size: 2em; flex-shrink: 0;">🚨</span>
+                            <div style="flex: 1;">
+                                <h3 style="font-size: 1.3em; color: #991b1b; margin-bottom: 12px; font-weight: 700;">אסור לך לעבוד לפי החוק!</h3>
+                                <p style="color: #b91c1c; font-size: 1.05em; margin-bottom: 12px; font-weight: 600;">הגיל המינימלי להעסקה בישראל הוא 14 שנים.</p>
+                                <p style="color: #7f1d1d; font-size: 0.95em; margin-bottom: 12px;">
+                                    <strong>גילך הנוכחי:</strong> ${age} שנים
+                                </p>
+                                <p style="color: #7f1d1d; font-size: 0.95em; line-height: 1.6;">
+                                    <strong>למה זה חשוב:</strong><br>
+                                    החוק מגן על ילדים וצעירים מהשתתקות בעבודה שלא מתאימה לגילם. בני נוער בגיל זה צריכים להתמקד בלימודים ובהתפתחות אישית.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('checkContent').innerHTML = html;
+                return;
+            }
+
+            // בדיקה קריטית: אם גיל > 18 - אפליקציה לא מותאמת
+            if (age > 18) {
+                let html = generateScoreRing(0) + `
+                    <div style="margin-top: 40px; padding: 24px; background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; border-right: 6px solid #d97706;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            <span style="font-size: 2em; flex-shrink: 0;">⚠️</span>
+                            <div style="flex: 1;">
+                                <h3 style="font-size: 1.3em; color: #b45309; margin-bottom: 12px; font-weight: 700;">אפליקציה זו אינה מותאמת לגילאים מעל 18</h3>
+                                <p style="color: #c2410c; font-size: 1.05em; margin-bottom: 12px; font-weight: 600;">MyPay מותאמת לנוער בגיל 14-18 שנים בלבד.</p>
+                                <p style="color: #92400e; font-size: 0.95em; margin-bottom: 12px;">
+                                    <strong>גילך הנוכחי:</strong> ${age} שנים
+                                </p>
+                                <p style="color: #92400e; font-size: 0.95em; line-height: 1.6;">
+                                    <strong>למה זה חשוב:</strong><br>
+                                    זכויות עובדים מבוגרים שונות מאלה של בני נוער. עובדים בגילאים 19 ומעלה כפופים לחוקים שונים.
+                                </p>
+                                <p style="color: #92400e; font-size: 0.95em; margin-top: 12px; line-height: 1.6;">
+                                    <strong>מה לעשות:</strong><br>
+                                    פנה לעמותות כמו "כל זכות", "תאגיד הסכמי עבודה", או לאיגוד העובדים שלך לקבלת ייעוץ מתאים.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('checkContent').innerHTML = html;
+                return;
+            }
+
+            const ageGroup = age <= 15 ? '14-15' : age <= 16 ? '16-16' : age <= 17 ? '17-17' : '18-18';
+            const minWage = appData.minWages[ageGroup];
+
+            // ===== חישוב ציון דינמי =====
+            let checksCount = 0;
+            let passedChecks = 0;
+            
+            // בדיקה 1: שכר מינימום
+            let wageCheckPass = wage >= minWage;
+            checksCount++;
+            if (wageCheckPass) passedChecks++;
+            
+            // בדיקה 2: נסיעות (מיתחילת החישוב)
+            let workDays = 0;
+            let transportPerDay = 0;
+            let transportExpected = 0;
+            let attendanceToUse = null;
+            if (appData.payslipData && Array.isArray(appData.attendanceData) && appData.attendanceData.length > 0) {
+                attendanceToUse = appData.attendanceData;
+                workDays = appData.attendanceData.length;
+            } else if (appData.manualAttendance && Array.isArray(appData.manualAttendance) && appData.manualAttendance.length > 0) {
+                attendanceToUse = appData.manualAttendance;
+                workDays = appData.manualAttendance.length;
+            }
+            
+            if (attendanceToUse) {
+                if (appData.payslipData && appData.payslipData.cityHome && appData.payslipData.cityWork) {
+                    const customDist = appData.payslipData.customDistance || null;
+                    transportPerDay = getTransportCost(appData.payslipData.cityHome, appData.payslipData.cityWork, customDist, age);
+                    if (appData.payslipData.cityHome === appData.payslipData.cityWork && !customDist) {
+                        transportPerDay = 0;
+                    }
+                } else {
+                    transportPerDay = (age && age >= 14 && age <= 18) ? 11.30 : 22.60;
+                }
+                transportExpected = (workDays * transportPerDay).toFixed(2);
+            }
+            
+            const transportPaid = appData.payslipData && appData.payslipData.transport ? parseFloat(appData.payslipData.transport) : 0;
+            let transportCheckPass = transportPaid >= transportExpected && transportExpected > 0;
+            checksCount++;
+            if (transportCheckPass) passedChecks++;
+            
+            // בדיקה 3: התאמת שכר
+            let salaryCheckPass = false;
+            if (workDays > 0 && attendanceToUse) {
+                let totalHours = 0;
+                attendanceToUse.forEach(day => {
+                    if (day.hours) {
+                        totalHours += parseFloat(day.hours);
+                    }
+                });
+                const expectedSalary = (totalHours * wage).toFixed(2);
+                const actualSalary = appData.payslipData && appData.payslipData.salary ? parseFloat(appData.payslipData.salary) : 0;
+                salaryCheckPass = actualSalary >= expectedSalary;
+                checksCount++;
+                if (salaryCheckPass) passedChecks++;
+            }
+            
+            // בדיקה 4: ניכויים חוקיים (רק לנוער)
+            let deductionsCheckPass = true;
+            if (age && age >= 14 && age <= 18) {
+                const deductions = appData.payslipData && appData.payslipData.deductions ? appData.payslipData.deductions : {};
+                const hasIllegalDeductions = deductions.nationalInsurance || deductions.healthInsurance;
+                deductionsCheckPass = !hasIllegalDeductions;
+                checksCount++;
+                if (deductionsCheckPass) passedChecks++;
+            }
+            
+            // חשב את הציון
+            let score = checksCount > 0 ? Math.round((passedChecks / checksCount) * 100) : 0;
+            let html = generateScoreRing(score);
+            
+            // בדיקת שכר - accordion
+            let wageCheckStatus = wage >= minWage ? 'pass' : 'fail';
+            let wageCheckIcon = wage >= minWage ? '💵' : '💵';
+            let wageCheckResultIcon = wageCheckPass ? '<span style="color: #22c55e;">✔</span>' : '❌';
+            let wageCheckTitle = `${wageCheckIcon} בדיקת שכר מינימום ${wageCheckResultIcon}`;
+            
+            html += `
+                <div style="margin-top: 20px;">
+                    <div class="accordion-item" style="background: ${wageCheckPass ? '#f0fdf4' : '#fef2f2'}; border-radius: 8px; padding: 10px;">
+                        <div class="accordion-header" onclick="this.parentElement.classList.toggle('expanded'); this.nextElementSibling.style.display = this.parentElement.classList.contains('expanded') ? 'block' : 'none';" style="cursor: pointer;">
+                            <span>${wageCheckTitle}</span>
+                            <span style="float: left; font-size: 0.8em;">▼</span>
+                        </div>
+                        <div style="display: none; padding: 15px; background: #f9f9f9; border-radius: 6px; margin-top: 10px;">
+                            <p><strong>גיל:</strong> ${age}</p>
+                            <p><strong>תעריף שעה שקיבלת:</strong> ₪${wage.toFixed(2)}</p>
+                            <p><strong>תעריף מינימום להגיל שלך:</strong> ₪${minWage.toFixed(2)}</p>
+            `;
+
+            if (wage >= minWage) {
+                html += `
+                    <div class="rights-status rights-ok">
+                        <strong>✅ הזכויות שלך מוגנות!</strong>
+                        <p>קיבלת את השכר המינימלי 🎉</p>
+                    </div>
+                `;
+            } else {
+                const deficit = (minWage - wage).toFixed(2);
+                html += `
+                    <div class="rights-status rights-not-ok">
+                        <strong>🚨 הזכויות שלך הופרו!</strong>
+                        <p>חסר לך: ₪${deficit} לשעה</p>
+                        <p style="font-size: 0.9em; margin-top: 10px;">צור קשר עם התאגדות העובדים או שכת העבודה</p>
+                    </div>
+                `;
+            }
+            
+            html += `
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // בדיקת נסיעות - accordion
+            let transportCheckStatus = transportCheckPass ? 'pass' : 'fail';
+            let transportCheckIcon = transportCheckStatus === 'pass' ? '🚗' : '🚗';
+            let transportCheckResultIcon = transportCheckPass ? '<span style="color: #22c55e;">✔</span>' : '❌';
+            let transportCheckTitle = `${transportCheckIcon} בדיקת נסיעות ${transportCheckResultIcon}`;
+            
+            html += `
+                <div style="margin-top: 20px;">
+                    <div class="accordion-item" style="background: ${transportCheckPass ? '#f0fdf4' : '#fef2f2'}; border-radius: 8px; padding: 10px;">
+                        <div class="accordion-header" onclick="this.parentElement.classList.toggle('expanded'); this.nextElementSibling.style.display = this.parentElement.classList.contains('expanded') ? 'block' : 'none';" style="cursor: pointer;">
+                            <span>${transportCheckTitle}</span>
+                            <span style="float: left; font-size: 0.8em;">▼</span>
+                        </div>
+                        <div style="display: none; padding: 15px; background: #f9f9f9; border-radius: 6px; margin-top: 10px;">
+                            <p><strong>מספר ימי עבודה:</strong> ${workDays}</p>
+            `;
+
+            // הצג מידע על נוער
+            if (age && age >= 14 && age <= 18) {
+                html += `
+                    <div style="background: #e3f2fd; padding: 10px; border-radius: 5px; margin-bottom: 10px; border-right: 4px solid #1976d2;">
+                        <p style="color: #1565c0; margin: 0; font-size: 0.95em;">
+                            <strong>👤 גיל:</strong> ${age} שנים | <strong>💰 הנחה:</strong> 50% בדמי נסיעות (חוק)
+                        </p>
+                    </div>
+                `;
+            }
+
+            if (appData.payslipData && appData.payslipData.cityHome && appData.payslipData.cityWork) {
+                html += `
+                    <p><strong>מקום מגורים:</strong> ${appData.payslipData.cityHome}</p>
+                    <p><strong>מקום העסק:</strong> ${appData.payslipData.cityWork}</p>
+                `;
+                
+                if (appData.payslipData.customDistance) {
+                    html += `<p><strong>מרחק:</strong> ${appData.payslipData.customDistance} ק"מ</p>`;
+                } else if (appData.payslipData.cityHome !== appData.payslipData.cityWork) {
+                    // חיפוש המרחק מהערים
+                    const key = `${appData.payslipData.cityHome}-${appData.payslipData.cityWork}`;
+                    const distance = appData.cityDistances[key] || appData.cityDistances[`${appData.payslipData.cityWork}-${appData.payslipData.cityHome}`] || 0;
+                    if (distance > 0) {
+                        html += `<p><strong>מרחק:</strong> ${distance} ק"מ</p>`;
+                    }
+                }
+
+                // בדוק אם מרחק פחות מ-500 מטר
+                if (appData.payslipData.customDistance && appData.payslipData.customDistance * 1000 < appData.minDistanceMeters) {
+                    html += `
+                        <div style="background: #fff3cd; padding: 10px; border-radius: 5px; margin-bottom: 10px; border-right: 4px solid #ff9800;">
+                            <p style="color: #e65100; margin: 0; font-size: 0.9em;">
+                                <strong>⚠️ חוק:</strong> זכאות להחזר נסיעות חלה רק על מרחק של 500 מטרים לפחות.
+                                <br>המרחק שהזנת (${appData.payslipData.customDistance} ק"מ) קטן מהמינימום.
+                            </p>
+                        </div>
+                    `;
+                }
+            }
+
+            if (workDays > 0) {
+                html += `
+                    <p><strong>עלות נסיעה ליום:</strong> ₪${transportPerDay.toFixed(2)}</p>
+                    <p><strong>סכום נסיעות צפוי (חוקי):</strong> ₪${transportExpected} (${workDays} ימים × ₪${transportPerDay.toFixed(2)})</p>
+                `;
+            }
+
+            html += `<p><strong>סכום נסיעות ששולם:</strong> ₪${transportPaid.toFixed(2)}</p>`;
+
+            if (workDays === 0) {
+                html += `
+                    <div class="rights-status rights-warning">
+                        <strong>⚠️ לא נמצאו רשומות נוכחות</strong>
+                        <p>הוסף נתוני נוכחות כדי לבדוק נסיעות</p>
+                    </div>
+                `;
+            } else if (transportExpected == 0 && transportPaid > 0) {
+                // מקרה חמור: אינו זקוי לנסיעות אבל קיבל סכום!
+                html += `
+                    <div class="rights-status rights-not-ok">
+                        <strong>🚨 הפרה של החוק - תשלום בלתי חוקי!</strong>
+                        <p>אתה <strong>אינך זקוי</strong> להחזר נסיעות (מרחק < 500 מטרים)</p>
+                        <p>אבל קיבלת: ₪${transportPaid.toFixed(2)} ❌</p>
+                        <p style="font-size: 0.9em; margin-top: 10px;">⚠️ זה לא חוקי! יתכן שזה שגיאה או שהמעסיק טעה בחישוב.</p>
+                    </div>
+                `;
+            } else if (transportPaid >= transportExpected && transportExpected > 0) {
+                html += `
+                    <div class="rights-status rights-ok">
+                        <strong>✅ נסיעות שולמו כחוק!</strong>
+                        <p>קיבלת את התשלום המלא עבור הנסיעות 🎉</p>
+                    </div>
+                `;
+            } else if (transportExpected > 0 && transportPaid > 0 && transportPaid < transportExpected) {
+                const deficit = (transportExpected - transportPaid).toFixed(2);
+                html += `
+                    <div class="rights-status rights-not-ok">
+                        <strong>🚨 חסרות נסיעות!</strong>
+                        <p>חסר לך: ₪${deficit}</p>
+                        <p style="font-size: 0.9em; margin-top: 10px;">צור קשר עם המעסיק כדי לתבוע את הסכום החסר</p>
+                    </div>
+                `;
+            } else if (transportExpected > 0 && transportPaid == 0) {
+                html += `
+                    <div class="rights-status rights-not-ok">
+                        <strong>🚨 לא קיבלת דמי נסיעות!</strong>
+                        <p>אתה זקוי: ₪${transportExpected}</p>
+                        <p>אבל קיבלת: ₪0 ❌</p>
+                        <p style="font-size: 0.9em; margin-top: 10px;">צור קשר עם המעסיק כדי לתבוע את הסכום המלא</p>
+                    </div>
+                `;
+            }
+            
+            html += `
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // ===== בדיקת התאמה שכר - accordion =====
+            let salaryCheckResultIcon = salaryCheckPass ? '<span style="color: #22c55e;">✔</span>' : '❌';
+            let salaryCheckTitle = `💰 בדיקת התאמה שכר ${salaryCheckResultIcon}`;
+            
+            html += `
+                <div style="margin-top: 20px;">
+                    <div class="accordion-item" style="background: ${salaryCheckPass ? '#f0fdf4' : '#fef2f2'}; border-radius: 8px; padding: 10px;">
+                        <div class="accordion-header" onclick="this.parentElement.classList.toggle('expanded'); this.nextElementSibling.style.display = this.parentElement.classList.contains('expanded') ? 'block' : 'none';" style="cursor: pointer;">
+                            <span>${salaryCheckTitle}</span>
+                            <span style="float: left; font-size: 0.8em;">▼</span>
+                        </div>
+                        <div style="display: none; padding: 15px; background: #f9f9f9; border-radius: 6px; margin-top: 10px;">
+            `;
+
+            if (workDays > 0 && attendanceToUse) {
+                // חשב סה"כ שעות עבודה מנוכחות
+                let totalHours = 0;
+                attendanceToUse.forEach(day => {
+                    if (day.hours) {
+                        totalHours += parseFloat(day.hours);
+                    }
+                });
+
+                // חשב שכר צפוי
+                const expectedSalary = (totalHours * wage).toFixed(2);
+                const actualSalary = appData.payslipData && appData.payslipData.salary ? parseFloat(appData.payslipData.salary) : 0;
+
+                html += `
+                    <p><strong>סה"כ שעות עבודה:</strong> ${totalHours.toFixed(2)} שעות</p>
+                    <p><strong>תעריף שעה:</strong> ₪${wage.toFixed(2)}</p>
+                    <p><strong>שכר צפוי (חוקי):</strong> ₪${expectedSalary} (${totalHours.toFixed(2)} שעות × ₪${wage.toFixed(2)})</p>
+                    <p><strong>שכר ששולם בפועל:</strong> ₪${actualSalary.toFixed(2)}</p>
+                `;
+
+                // בדוק התאמה
+                const difference = (actualSalary - expectedSalary).toFixed(2);
+                
+                if (actualSalary >= expectedSalary) {
+                    html += `
+                        <div class="rights-status rights-ok">
+                            <strong>✅ השכר תואם את הנוכחות!</strong>
+                            <p>קיבלת את הסכום הנכון 🎉</p>
+                        </div>
+                    `;
+                } else if (actualSalary > 0 && actualSalary < expectedSalary) {
+                    const deficit = (expectedSalary - actualSalary).toFixed(2);
+                    html += `
+                        <div class="rights-status rights-not-ok">
+                            <strong>🚨 חסר לך שכר!</strong>
+                            <p>לפי הנוכחות שלך, היית צריך לקבל ₪${expectedSalary}</p>
+                            <p>אבל קיבלת רק ₪${actualSalary.toFixed(2)}</p>
+                            <p><strong>חסר: ₪${deficit}</strong></p>
+                            <p style="font-size: 0.9em; margin-top: 10px;">צור קשר עם המעסיק כדי לתבוע את הסכום החסר</p>
+                        </div>
+                    `;
+                } else if (actualSalary == 0) {
+                    html += `
+                        <div class="rights-status rights-not-ok">
+                            <strong>🚨 לא קיבלת שכר!</strong>
+                            <p>לפי הנוכחות שלך, אתה זכאי לקבל ₪${expectedSalary}</p>
+                            <p>אבל קיבלת ₪0 ❌</p>
+                            <p style="font-size: 0.9em; margin-top: 10px;">צור קשר עם המעסיק כדי לתבוע את הסכום המלא</p>
+                        </div>
+                    `;
+                }
+            } else {
+                html += `
+                    <div class="rights-status rights-warning">
+                        <p>⚠️ אין נתוני נוכחות לחישוב שכר</p>
+                        <p>הוסף נתוני נוכחות כדי לבדוק התאמת שכר</p>
+                    </div>
+                `;
+            }
+            
+            html += `
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // ===== בדיקת ניכויים לנוער - accordion =====
+            if (age && age >= 14 && age <= 18) {
+                let deductionsCheckResultIcon = deductionsCheckPass ? '<span style="color: #22c55e;">✔</span>' : '❌';
+                let deductionsCheckTitle = `👎 בדיקת ניכויים חוקיים ${deductionsCheckResultIcon}`;
+                
+                html += `
+                    <div style="margin-top: 20px;">
+                        <div class="accordion-item" style="background: ${deductionsCheckPass ? '#f0fdf4' : '#fef2f2'}; border-radius: 8px; padding: 10px;">
+                            <div class="accordion-header" onclick="this.parentElement.classList.toggle('expanded'); this.nextElementSibling.style.display = this.parentElement.classList.contains('expanded') ? 'block' : 'none';" style="cursor: pointer;">
+                                <span>${deductionsCheckTitle}</span>
+                                <span style="float: left; font-size: 0.8em;">▼</span>
+                            </div>
+                            <div style="display: none; padding: 15px; background: #f9f9f9; border-radius: 6px; margin-top: 10px;">
+                `;
+                
+                const deductions = appData.payslipData && appData.payslipData.deductions ? appData.payslipData.deductions : {};
+                
+                // בדוק אם יש ניכויים כלשהם
+                const hasAnyDeductions = deductions.nationalInsurance || deductions.healthInsurance || deductions.incomeTax || deductions.other;
+                
+                if (!hasAnyDeductions) {
+                    // אם לא סומנו ניכויים כלל
+                    html += `
+                        <div class="rights-status rights-ok">
+                            <strong>✅ לא סומנו ניכויים</strong>
+                            <p>אם אתה לא מקבל ניכויים בשכר שלך - מצוין!</p>
+                        </div>
+                    `;
+                } else {
+                    // בנה טבלת ניכויים - רק לניכויים שסומנו
+                    html += `
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 15px; font-size: 0.95em;">
+                            <thead>
+                                <tr style="background-color: #f5f5f5; border-bottom: 2px solid #ddd;">
+                                    <th style="padding: 12px; text-align: right; font-weight: bold; color: #333;">סוג ניכוי</th>
+                                    <th style="padding: 12px; text-align: center; font-weight: bold; color: #333;">סטטוס</th>
+                                    <th style="padding: 12px; text-align: right; font-weight: bold; color: #333;">הערות / תנאים</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    
+                    let hasIllegalDeductions = false;
+                    
+                    // ניכוי ביטוח לאומי - הצג רק אם סומן
+                    if (deductions.nationalInsurance) {
+                        hasIllegalDeductions = true;
+                        html += `
+                            <tr style="background-color: #ffebee; border-right: 4px solid #ef5350; border-bottom: 1px solid #eee;">
+                                <td style="padding: 12px; text-align: right;">ביטוח לאומי</td>
+                                <td style="padding: 12px; text-align: center; font-weight: bold;">❌ לא חוקי</td>
+                                <td style="padding: 12px; text-align: right;">אסור לנכות מנוער - המעסיק חייב לשלם</td>
+                            </tr>
+                        `;
+                    }
+                    
+                    // ניכוי דמי בריאות - הצג רק אם סומן
+                    if (deductions.healthInsurance) {
+                        hasIllegalDeductions = true;
+                        html += `
+                            <tr style="background-color: #ffebee; border-right: 4px solid #ef5350; border-bottom: 1px solid #eee;">
+                                <td style="padding: 12px; text-align: right;">דמי בריאות</td>
+                                <td style="padding: 12px; text-align: center; font-weight: bold;">❌ לא חוקי</td>
+                                <td style="padding: 12px; text-align: right;">אסור לנכות מנוער - המעסיק חייב לשלם</td>
+                            </tr>
+                        `;
+                    }
+                    
+                    // ניכוי מס הכנסה - הצג רק אם סומן
+                    if (deductions.incomeTax) {
+                        html += `
+                            <tr style="background-color: #f1f8f6; border-right: 4px solid #4caf50; border-bottom: 1px solid #eee;">
+                                <td style="padding: 12px; text-align: right;">מס הכנסה</td>
+                                <td style="padding: 12px; text-align: center; font-weight: bold;">✅ מותר</td>
+                                <td style="padding: 12px; text-align: right;">בדרך כלל בני נוער זכאים לזיכויים ולא משלמים</td>
+                            </tr>
+                        `;
+                    }
+                    
+                    // ניכויים אחרים - הצג רק אם סומן
+                    if (deductions.other) {
+                        html += `
+                            <tr style="background-color: #fff8f0; border-right: 4px solid #ff9800; border-bottom: 1px solid #eee;">
+                                <td style="padding: 12px; text-align: right;">קנסות / חובות</td>
+                                <td style="padding: 12px; text-align: center; font-weight: bold;">⚠️ בתנאים</td>
+                                <td style="padding: 12px; text-align: right;">תלוי בתנאים (הסכם קיבוצי, עד 25%, וכו')</td>
+                            </tr>
+                        `;
+                    }
+                    
+                    html += `
+                            </tbody>
+                        </table>
+                    `;
+                    
+                    // הצג סיכום לפי ניכויים שקיימים
+                    if (hasIllegalDeductions) {
+                        html += `
+                            <div class="rights-status rights-not-ok">
+                                <strong>🚨 זוהו ניכויים לא חוקיים!</strong>
+                                <p>לפי הטבלה לעיל, יש ניכויים שאסורים לנוער עובד.</p>
+                                <p style="margin-top: 10px; font-size: 0.9em;">
+                                    <strong>צעד הבא:</strong> צור קשר עם המעסיק כדי לתקן את הניכויים, או דווח למשרד העבודה.
+                                </p>
+                            </div>
+                        `;
+                    } else {
+                        html += `
+                            <div class="rights-status rights-ok">
+                                <strong>✅ כל הניכויים חוקיים!</strong>
+                                <p>הניכויים שלך עולים בקנה אחד עם החוק המגן על בני נוער עובדים.</p>
+                            </div>
+                        `;
+                    }
+                    
+                    // הערה על ניכויים אחרים אם סומנו
+                    if (deductions.other) {
+                        html += `
+                            <div style="background: #fff8f0; padding: 15px; border-radius: 8px; margin-top: 15px; border-right: 4px solid #ff9800;">
+                                <p style="color: #e65100; margin: 0 0 10px 0; font-weight: bold;">⚠️ תנאים לניכויים אחרים:</p>
+                                <p style="color: #e65100; margin: 5px 0; font-size: 0.95em;">
+                                    <strong>קנסות משמעתיים:</strong> מותרים רק אם:
+                                </p>
+                                <ul style="margin-right: 20px; color: #e65100; margin-bottom: 10px;">
+                                    <li>✓ קיים הסכם קיבוצי במקום עבודה שלך</li>
+                                    <li>✓ הקנס הוטל בהחלטה של ועדת משמעת</li>
+                                    <li>✓ קיבלת שימוע לפני הטלת הקנס</li>
+                                </ul>
+                                <p style="color: #e65100; margin: 5px 0; font-size: 0.95em;">
+                                    <strong>חובות (הלוואה/מקדמה):</strong> מותרים רק אם:
+                                </p>
+                                <ul style="margin-right: 20px; color: #e65100;">
+                                    <li>✓ יש התחייבות בכתב שחתמת עליה</li>
+                                    <li>✓ הניכוי לא עולה על 25% מהשכר</li>
+                                    <li>✓ החוב לא שנוי במחלוקת</li>
+                                </ul>
+                                <p style="color: #e65100; margin: 10px 0 0 0; font-size: 0.9em;">
+                                    <strong>💡 עצה:</strong> אם יש לך ניכויים אחרים, בדוק שמתקיימים כל התנאים לעיל. אם לא - זה לא חוקי!
+                                </p>
+                            </div>
+                        `;
+                    }
+                }
+                
+                html += `
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            html += '</div>';
+            document.getElementById('checkContent').innerHTML = html;
+        }
+
+        // ===== LOAD DATA =====
+        window.addEventListener('load', () => {
+            // ===== HIDE SPLASH SCREEN =====
+            function hideSplashScreen() {
+                const splashScreen = document.getElementById('splash-screen');
+                if (splashScreen) {
+                    splashScreen.classList.add('hidden');
+                    
+                    setTimeout(() => {
+                        splashScreen.style.pointerEvents = 'none';
+                    }, 800);
+                }
+            }
+
+            // Add event listener to save button as backup
+            const saveBtn = document.querySelector('button[onclick="savePayslipData()"]');
+            if (saveBtn) {
+                saveBtn.addEventListener('click', savePayslipData);
+                console.log('✅ Save button event listener attached');
+            }
+
+            // Hide splash after 4 seconds from load
+            setTimeout(hideSplashScreen, 4000);
+            
+            console.log('✅ MyPay loaded successfully!');
+            console.log('📊 App ready - Tesseract.js active');
+            
+            // בדוק דרישות בעת טעינת הדף
+            updateCheckRequirements();
+            displayChatRules();
+        });
+
+        // ===== SECURITY POPUP FUNCTIONS =====
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            // ===== INITIALIZE MAIN MENU =====
+            navigateToView('menu');
+        });
+
+        // Hide splash on error too
+        window.addEventListener('error', () => {
+            const splashScreen = document.getElementById('splash-screen');
+            if (splashScreen) {
+                splashScreen.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
